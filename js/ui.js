@@ -195,18 +195,9 @@
           '<span>Merkeze Al</span>' +
         '</button>' +
       '</div>' +
-      '<div class="particle-modal-stage-wrap" id="particleModalStageWrap" title="Modeli basılı tutup sürükleyerek kaydırabilirsiniz">' +
+      '<div class="particle-modal-stage-wrap" id="particleModalStageWrap" title="Modeli dokunarak veya sürükleyerek kaydırabilirsiniz">' +
         '<div class="particle-modal-drag-hint">' +
-          '<span>🖐️ Sürükleyerek veya oklarla dilediğiniz tarafı inceleyebilirsiniz</span>' +
-        '</div>' +
-        '<div class="particle-modal-pan-dpad">' +
-          '<button type="button" class="pan-btn pan-up" data-pan="up" title="Yukarı Kaydır">▲</button>' +
-          '<div class="pan-mid-row">' +
-            '<button type="button" class="pan-btn pan-left" data-pan="left" title="Sola Kaydır">◀</button>' +
-            '<button type="button" class="pan-btn pan-center" data-pan="center" title="Merkeze Sıfırla">●</button>' +
-            '<button type="button" class="pan-btn pan-right" data-pan="right" title="Sağa Kaydır">▶</button>' +
-          '</div>' +
-          '<button type="button" class="pan-btn pan-down" data-pan="down" title="Aşağı Kaydır">▼</button>' +
+          '<span>🖐️ Modeli dokunarak veya sürükleyerek dilediğiniz yöne kaydırabilirsiniz</span>' +
         '</div>' +
         '<div class="particle-modal-stage" id="particleModalStage">' +
           svgContent +
@@ -223,7 +214,6 @@
     var stage = document.getElementById('particleModalStage');
     var btnReset = document.getElementById('btnResetPan');
     var scaleBtns = bodyEl.querySelectorAll('.zoom-scale-btn');
-    var dpadBtns = bodyEl.querySelectorAll('[data-pan]');
 
     var currentScale = 1;
     var panX = 0;
@@ -281,25 +271,9 @@
       });
     }
 
-    dpadBtns.forEach(function(b) {
-      b.addEventListener('click', function(e) {
-        e.stopPropagation();
-        var dir = b.getAttribute('data-pan');
-        var step = 55;
-        if (dir === 'up') panY += step;
-        else if (dir === 'down') panY -= step;
-        else if (dir === 'left') panX += step;
-        else if (dir === 'right') panX -= step;
-        else if (dir === 'center') { panX = 0; panY = 0; }
-        clampPan();
-        updateTransform(true);
-        if (window.MebiAudio) window.MebiAudio.playClick();
-      });
-    });
-
     if (stageWrap) {
       stageWrap.addEventListener('pointerdown', function(e) {
-        if (e.target.closest('.particle-modal-pan-dpad') || e.target.closest('button')) return;
+        if (e.target.closest('button')) return;
         isDragging = true;
         stageWrap.classList.add('is-dragging');
         try { stageWrap.setPointerCapture(e.pointerId); } catch(err) {}
