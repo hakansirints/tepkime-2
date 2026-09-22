@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="MEBİ Tepkime Arenası - İnteraktif Kimya Laboratuvarı ve Deney Simülasyonu">
+  <title>Tepkime Arenası - MEBİ İnteraktif Kimya Laboratuvarı</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- MEBİ Tasarım Sistemi ve Proje CSS Dosyaları -->
+  <link rel="stylesheet" href="css/mebi-theme.css">
+  <link rel="stylesheet" href="css/mebi-components.css">
+  <link rel="stylesheet" href="css/arena.css">
+</head>
+<body class="mebi-landscape-required">
+
+  <!-- MEBİ TAM EKRAN CİHAZI YATAY ÇEVİRİN EKRANI (ORIENTATION OVERLAY) -->
+  <div class="mebi-orientation-overlay" id="mebiOrientationOverlay" role="dialog" aria-modal="true" aria-labelledby="mebiOrientationTitle">
+    <div class="mebi-orientation-card">
+      <!-- Kapat / Geri Dön Butonu (Önizleme ve Test İçin) -->
+      <button class="mebi-orientation-close-btn" id="btnCloseOrientation" title="Önizlemeyi Kapat" aria-label="Ekranı Kapat">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <!-- Dokunsal Çukur Rozet -->
+      <div class="mebi-badge-sunken mebi-orientation-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="18" height="12" x="3" y="6" rx="2"></rect>
+          <path d="m9 2 3-2 3 2"></path>
+        </svg>
+        <span>YATAY EKRAN MODU GEREKLİ</span>
+      </div>
+
+      <!-- Minimal Animasyonlu Cihaz Döndürme İllüstrasyonu -->
+      <div class="mebi-orientation-stage">
+        <div class="mebi-device-rotator">
+          <div class="mebi-device-minimal">
+            <div class="mebi-device-notch"></div>
+            <div class="mebi-device-screen-minimal"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Başlık ve Yönerge Metni -->
+      <h2 class="mebi-orientation-title" id="mebiOrientationTitle">Lütfen Cihazınızı Yatay Çevirin</h2>
+      <p class="mebi-orientation-text">
+        Bu kimya laboratuvarı simülasyonu; reaktif düzeneklerinin, deney tezgahının ve atomik tanecik kamerasının tam sığabilmesi için sadece <strong>yatay ekran (landscape)</strong> modunda çalışacak şekilde tasarlanmıştır.
+      </p>
+
+      <!-- Çukur Pedagojik İpucu Çerçevesi -->
+      <div class="mebi-orientation-hint">
+        <span class="mebi-orientation-hint-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v4"></path><path d="m16.2 7.8 2.9-2.9"></path><path d="M18 12h4"></path><path d="m16.2 16.2 2.9 2.9"></path><path d="M12 18v4"></path><path d="m4.9 19.1 2.9-2.9"></path><path d="M2 12h4"></path><path d="m4.9 4.9 2.9 2.9"></path>
+          </svg>
+        </span>
+        <span class="mebi-orientation-hint-text">
+          Telefon veya tabletinizin <strong>otomatik ekran döndürme</strong> kilidinin açık (döndürmeye izin verir) olduğundan emin olunuz.
+        </span>
+      </div>
+
+      <!-- Eylem Butonu -->
+      <div class="mebi-orientation-actions">
+        <button class="mebi-btn mebi-btn-secondary mebi-btn-sm" id="btnDismissOrientation">
+          <span class="mebi-btn-text">ÖNİZLEMEYİ KAPAT</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ana Uygulama Kapsayıcısı -->
+  <main id="app" role="main"></main>
+
+  <!-- MEBİ Dokunsal Toast Bildirim Kapsayıcısı -->
+  <div id="mebiToastContainer" class="mebi-toast-container"></div>
+
+  <!-- MEBİ Çekmece Panel Örtüsü ve Gövdesi (Drawer) -->
+  <div id="mebiDrawerOverlay" class="mebi-overlay" aria-hidden="true"></div>
+  <aside id="mebiDrawer" class="mebi-drawer" role="dialog" aria-labelledby="mebiDrawerTitle">
+    <div class="mebi-drawer-header">
+      <h3 id="mebiDrawerTitle" class="mebi-card-title">Uygulama ve Laboratuvar Rehberi</h3>
+      <button type="button" class="mebi-btn-icon mebi-btn-ghost" id="btnCloseDrawer" title="Kapat" aria-label="Kapat">✕</button>
+    </div>
+    <div id="mebiDrawerBody" class="mebi-drawer-body"></div>
+    <div class="mebi-drawer-footer">
+      <button type="button" class="mebi-btn mebi-btn-primary mebi-btn-sm" onclick="MebiUI.closeDrawer()">
+        <span>Anladım</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MEBİ 3B Tanecik Büyütme ve İnceleme Modalı (Particle Zoom Modal) -->
+  <div id="particleModalOverlay" class="mebi-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="particleModalTitle" aria-hidden="true">
+    <div class="particle-modal-card" id="particleModalCard">
+      <div class="particle-modal-header">
+        <div class="particle-modal-title-wrap" id="particleModalTitleWrap">
+          <span class="particle-state-badge" id="particleModalBadge">Sulu Çözelti</span>
+          <h3 class="particle-modal-title" id="particleModalTitle">Madde Adı</h3>
+        </div>
+        <button type="button" class="particle-modal-close-btn" id="btnCloseParticleModal" title="Kapat" aria-label="Kapat">✕</button>
+      </div>
+      <div class="particle-modal-body" id="particleModalBody">
+        <!-- Dinamik İçerik -->
+      </div>
+      <div class="particle-modal-footer">
+        <div class="particle-modal-footer-hint">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>3B Mikroskobik model laboratuvar ortamındaki gerçek fiziksel düzeni yansıtır.</span>
+        </div>
+        <button type="button" class="mebi-btn mebi-btn-primary mebi-btn-sm" id="btnDismissParticleModal">
+          <span>Kapat</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modüler JavaScript Dosyaları -->
+  <script src="js/audio.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/svg-models.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

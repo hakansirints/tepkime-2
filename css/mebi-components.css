@@ -1,0 +1,1225 @@
+/* ==========================================================================
+   MEBİ TASARIM SİSTEMİ - BİLEŞEN STANDARTLARI (mebi-components.css)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. BUTONLAR (3D Gamified, Pill-Shape & Sıfır Kenarlık)
+   -------------------------------------------------------------------------- */
+.mebi-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 48px;
+  min-width: 140px;
+  padding: 0 22px;
+  border-radius: var(--mebi-radius-full);
+  border: 0;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 150ms ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.mebi-btn:active:not(:disabled) {
+  transform: translateY(4px);
+}
+
+.mebi-btn-sm {
+  height: 38px;
+  min-width: 100px;
+  padding: 0 16px;
+  font-size: 12.5px;
+}
+
+.mebi-btn-icon {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  position: relative;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.mebi-btn-icon:active:not(:disabled) {
+  transform: translateY(3px);
+}
+
+.mebi-btn-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  flex-shrink: 0;
+}
+
+.mebi-btn:hover:not(:disabled) .mebi-btn-badge {
+  transform: scale(1.12);
+}
+
+.mebi-btn-badge svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Buton Renk Varyantları */
+/* Birincil (Primary - Mavi) */
+.mebi-btn-primary {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 5px 0 #1d4ed8;
+}
+.mebi-btn-primary:active:not(:disabled) {
+  box-shadow: 0 1px 0 #1d4ed8;
+}
+
+/* Başarı (Success - Zümrüt Yeşili) */
+.mebi-btn-success {
+  background: #10b981;
+  color: #ffffff;
+  box-shadow: 0 5px 0 #059669;
+}
+.mebi-btn-success:active:not(:disabled) {
+  box-shadow: 0 1px 0 #059669;
+}
+
+/* Tehlike / Sıfırla (Danger - Mercan Kırmızı) */
+.mebi-btn-danger {
+  background: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 5px 0 #b91c1c;
+}
+.mebi-btn-danger:active:not(:disabled) {
+  box-shadow: 0 1px 0 #b91c1c;
+}
+
+/* Uyarı / Kehribar (Warning - Sarı/Turuncu) */
+.mebi-btn-warning {
+  background: #f59e0b;
+  color: #ffffff;
+  box-shadow: 0 5px 0 #b45309;
+}
+.mebi-btn-warning:active:not(:disabled) {
+  box-shadow: 0 1px 0 #b45309;
+}
+
+/* Turkuaz (Cyan / Simülasyon) */
+.mebi-btn-cyan {
+  background: #06b6d4;
+  color: #ffffff;
+  box-shadow: 0 5px 0 #0284c7;
+}
+.mebi-btn-cyan:active:not(:disabled) {
+  box-shadow: 0 1px 0 #0284c7;
+}
+
+/* İndigo / Mor */
+.mebi-btn-indigo {
+  background: #6366f1;
+  color: #ffffff;
+  box-shadow: 0 5px 0 #4338ca;
+}
+.mebi-btn-indigo:active:not(:disabled) {
+  box-shadow: 0 1px 0 #4338ca;
+}
+
+.mebi-btn-purple {
+  background: #8b5cf6;
+  color: #ffffff;
+  box-shadow: 0 5px 0 #6d28d9;
+}
+.mebi-btn-purple:active:not(:disabled) {
+  box-shadow: 0 1px 0 #6d28d9;
+}
+
+/* İkincil Buton (Secondary - Nötr Gri) */
+.mebi-btn-secondary {
+  background: #e2e8f0;
+  color: #1e293b;
+  box-shadow: 0 5px 0 #cbd5e1;
+}
+.mebi-btn-secondary .mebi-btn-badge {
+  color: #1e293b;
+}
+.mebi-btn-secondary:active:not(:disabled) {
+  box-shadow: 0 1px 0 #cbd5e1;
+}
+
+[data-theme="dark"] .mebi-btn-secondary {
+  background: #27272b;
+  color: #f4f4f5;
+  box-shadow: 0 5px 0 #141416;
+}
+[data-theme="dark"] .mebi-btn-secondary .mebi-btn-badge {
+  color: #f4f4f5;
+}
+[data-theme="dark"] .mebi-btn-secondary:active:not(:disabled) {
+  box-shadow: 0 1px 0 #141416;
+}
+
+/* Hayalet Buton (Ghost) */
+.mebi-btn-ghost {
+  background: transparent;
+  color: var(--mebi-text-secondary);
+  box-shadow: none;
+  min-width: auto;
+  padding: 0 14px;
+}
+.mebi-btn-ghost:hover:not(:disabled) {
+  background: var(--mebi-bg-subtle);
+  color: var(--mebi-text-main);
+}
+.mebi-btn-ghost .mebi-btn-badge {
+  color: currentColor;
+}
+
+/* Pasif Buton (Disabled) */
+.mebi-btn:disabled,
+.mebi-btn.is-disabled {
+  background: #e2e8f0 !important;
+  color: #94a3b8 !important;
+  box-shadow: 0 4px 0 #cbd5e1 !important;
+  cursor: not-allowed !important;
+  opacity: 0.7;
+  transform: none !important;
+}
+.mebi-btn:disabled .mebi-btn-badge,
+.mebi-btn.is-disabled .mebi-btn-badge {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .mebi-btn:disabled,
+[data-theme="dark"] .mebi-btn.is-disabled {
+  background: #222226 !important;
+  color: #71717a !important;
+  box-shadow: 0 4px 0 #141416 !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. 3D KARTLAR (Cards - Sıfır Kenarlık & 6px Katı Taban)
+   -------------------------------------------------------------------------- */
+.mebi-card {
+  background: var(--mebi-bg-surface);
+  border: 0;
+  border-radius: var(--mebi-radius-lg);
+  padding: 24px;
+  box-shadow: 0 6px 0 var(--mebi-base-card), var(--mebi-shadow-md);
+  transition: box-shadow var(--mebi-transition), background-color var(--mebi-transition);
+  position: relative;
+}
+
+.mebi-card-hoverable:hover {
+  box-shadow: 0 6px 0 var(--mebi-base-card-hover), var(--mebi-shadow-lg);
+}
+
+.mebi-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.mebi-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--mebi-text-main);
+}
+
+/* --------------------------------------------------------------------------
+   3. ÇUKUR ROZETLER (Sunken Debossed Badges)
+   -------------------------------------------------------------------------- */
+.mebi-badge,
+.mebi-badge-sunken {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--mebi-radius-full);
+  border: 0;
+  background: var(--mebi-bg-sunken);
+  box-shadow: var(--mebi-base-sunken-shadow);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--mebi-text-secondary);
+}
+
+.mebi-badge-primary { color: var(--mebi-primary); }
+[data-theme="dark"] .mebi-badge-primary { color: #60a5fa; }
+
+.mebi-badge-success { color: var(--mebi-success); }
+[data-theme="dark"] .mebi-badge-success { color: #34d399; }
+
+.mebi-badge-danger { color: var(--mebi-danger); }
+[data-theme="dark"] .mebi-badge-danger { color: #f87171; }
+
+.mebi-badge-warning { color: #d97706; }
+[data-theme="dark"] .mebi-badge-warning { color: #fbbf24; }
+
+.mebi-badge-info,
+.mebi-badge-purple { color: var(--mebi-info); }
+[data-theme="dark"] .mebi-badge-info,
+[data-theme="dark"] .mebi-badge-purple { color: #a78bfa; }
+
+.mebi-badge-cyan { color: #0891b2; }
+[data-theme="dark"] .mebi-badge-cyan { color: #22d3ee; }
+
+/* --------------------------------------------------------------------------
+   4. ÇUKUR METİN GİRİŞLERİ VE ARAMA KUTUSU (Sunken Inputs)
+   -------------------------------------------------------------------------- */
+.mebi-search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--mebi-bg-sunken);
+  box-shadow: var(--mebi-base-sunken-shadow);
+  border-radius: var(--mebi-radius-full);
+  padding: 4px 14px;
+  transition: box-shadow var(--mebi-transition);
+  position: relative;
+  min-width: 220px;
+}
+
+.mebi-search-box:focus-within {
+  box-shadow: var(--mebi-base-sunken-shadow), 0 0 0 2.5px var(--mebi-primary);
+}
+
+[data-theme="dark"] .mebi-search-box:focus-within {
+  box-shadow: var(--mebi-base-sunken-shadow), 0 0 0 2.5px #71717a;
+}
+
+.mebi-search-box svg {
+  color: var(--mebi-text-muted);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.mebi-search-input {
+  border: 0;
+  background: transparent;
+  color: var(--mebi-text-main);
+  outline: none;
+  font-size: 13.5px;
+  width: 100%;
+  padding: 6px 0;
+}
+
+.mebi-search-input::placeholder {
+  color: var(--mebi-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   5. TOPBAR VE DOKUNSAL ÇUKUR İLERLEME ÇUBUĞU (Progress Wrapper)
+   -------------------------------------------------------------------------- */
+.mebi-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 64px;
+  padding: 0 20px;
+  background: var(--mebi-bg-surface);
+  box-shadow: 0 4px 0 var(--mebi-base-card), var(--mebi-shadow-sm);
+  border-radius: var(--mebi-radius-lg);
+  margin-bottom: 20px;
+  transition: background-color var(--mebi-transition), box-shadow var(--mebi-transition);
+}
+
+.mebi-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: var(--mebi-text-main);
+  cursor: pointer;
+  user-select: none;
+}
+
+.mebi-brand-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--mebi-primary-light);
+  color: var(--mebi-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme="dark"] .mebi-brand-icon {
+  background: #27272b;
+  color: #38bdf8;
+}
+
+.mebi-topbar-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Çukur İlerleme Kutusu (Topbar Progress Wrapper) */
+.mebi-progress-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--mebi-bg-sunken);
+  box-shadow: var(--mebi-base-sunken-shadow);
+  border-radius: var(--mebi-radius-full);
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--mebi-text-secondary);
+  user-select: none;
+}
+
+.mebi-progress-star {
+  color: #f59e0b;
+  display: inline-flex;
+}
+
+.mebi-progress-bar-mini {
+  width: 90px;
+  height: 8px;
+  background: #cbd5e1;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+  border-radius: var(--mebi-radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+[data-theme="dark"] .mebi-progress-bar-mini {
+  background: #09090b;
+}
+
+.mebi-progress-fill-mini {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+  border-radius: var(--mebi-radius-full);
+  transition: width 0.4s ease;
+  position: relative;
+}
+
+[data-theme="dark"] .mebi-progress-fill-mini {
+  background: linear-gradient(90deg, #10b981, #059669);
+}
+
+/* --------------------------------------------------------------------------
+   6. KAYAR TEMA ANAHTARI (Sliding Theme Toggle)
+   -------------------------------------------------------------------------- */
+.mebi-theme-toggle {
+  width: 62px;
+  height: 32px;
+  border-radius: var(--mebi-radius-full);
+  border: 0;
+  background: #e2e8f0;
+  box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.15);
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+  transition: background-color var(--mebi-transition);
+}
+
+[data-theme="dark"] .mebi-theme-toggle {
+  background: #09090b;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.85);
+}
+
+.mebi-theme-icon-sun {
+  color: #f59e0b;
+  font-size: 14px;
+}
+
+.mebi-theme-icon-moon {
+  color: #a1a1aa;
+  font-size: 14px;
+}
+
+.mebi-theme-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+  transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-theme="dark"] .mebi-theme-thumb {
+  transform: translateX(30px);
+  background: #27272b;
+}
+
+/* --------------------------------------------------------------------------
+   7. STEPPER (5 Aşamalı Deney İlerleme Göstergesi)
+   -------------------------------------------------------------------------- */
+.mebi-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  position: relative;
+}
+
+.mebi-step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+}
+
+.mebi-step-node {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--mebi-bg-surface);
+  box-shadow: 0 4px 0 var(--mebi-base-card), var(--mebi-shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--mebi-text-muted);
+  transition: all var(--mebi-transition);
+}
+
+.mebi-step-item.is-active .mebi-step-node {
+  background: var(--mebi-primary);
+  color: #ffffff;
+  box-shadow: 0 4px 0 var(--mebi-primary-taban), 0 0 16px rgba(37, 99, 235, 0.4);
+}
+
+.mebi-step-item.is-done .mebi-step-node {
+  background: var(--mebi-success);
+  color: #ffffff;
+  box-shadow: 0 4px 0 var(--mebi-success-taban);
+}
+
+.mebi-step-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  margin-top: 6px;
+  color: var(--mebi-text-muted);
+  text-align: center;
+  transition: color var(--mebi-transition);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mebi-step-item.is-active .mebi-step-label {
+  color: var(--mebi-primary);
+}
+
+[data-theme="dark"] .mebi-step-item.is-active .mebi-step-label {
+  color: #f4f4f5;
+}
+
+.mebi-step-item.is-done .mebi-step-label {
+  color: var(--mebi-success);
+}
+
+.mebi-step-line {
+  position: absolute;
+  top: 18px;
+  left: 8%;
+  right: 8%;
+  height: 3px;
+  background: var(--mebi-border);
+  z-index: 1;
+}
+
+.mebi-step-line-fill {
+  height: 100%;
+  background: var(--mebi-success);
+  transition: width 0.35s ease;
+}
+
+/* --------------------------------------------------------------------------
+   8. SORU ŞIKLARI (Quiz Choice - Dokunsal 3D Buton-Kart Yapısı)
+   -------------------------------------------------------------------------- */
+.mebi-quiz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.mebi-quiz-choice {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: var(--mebi-radius-md);
+  border: 0;
+  background: var(--mebi-bg-subtle);
+  color: var(--mebi-text-main);
+  box-shadow: 0 4px 0 var(--mebi-border-hover);
+  font-size: 14.5px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 150ms ease;
+  position: relative;
+}
+
+.mebi-quiz-choice:hover:not(:disabled) {
+  background: var(--mebi-border);
+  box-shadow: 0 4px 0 #94a3b8;
+}
+
+[data-theme="dark"] .mebi-quiz-choice:hover:not(:disabled) {
+  background: #323238;
+  box-shadow: 0 4px 0 #18181b;
+}
+
+.mebi-quiz-choice:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--mebi-border-hover);
+}
+
+.mebi-quiz-letter {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--mebi-bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--mebi-text-secondary);
+  flex-shrink: 0;
+}
+
+.mebi-quiz-choice.is-selected {
+  background: #cbd5e1;
+  box-shadow: 0 4px 0 #94a3b8;
+  color: #0f172a;
+}
+
+.mebi-quiz-choice.is-selected .mebi-quiz-letter {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .mebi-quiz-choice.is-selected {
+  background: #3f3f46;
+  box-shadow: 0 4px 0 #27272a;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .mebi-quiz-choice.is-selected .mebi-quiz-letter {
+  background: #09090b;
+  color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   9. BİLGİ PANELLERİ VE GERİ BİLDİRİM BANNER'LARI
+   -------------------------------------------------------------------------- */
+.mebi-panel {
+  border-radius: var(--mebi-radius-lg);
+  padding: 18px 22px;
+  border: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin: 16px 0;
+  position: relative;
+}
+
+.mebi-panel-success {
+  background: #047857;
+  color: #ffffff;
+  box-shadow: 0 6px 0 #064e3b, 0 14px 28px -4px rgba(4, 120, 87, 0.35);
+}
+
+.mebi-panel-info {
+  background: #6d28d9;
+  color: #ffffff;
+  box-shadow: 0 6px 0 #4c1d95, 0 14px 28px -4px rgba(109, 40, 217, 0.35);
+}
+
+.mebi-panel-warning {
+  background: #ea580c;
+  color: #ffffff;
+  box-shadow: 0 6px 0 #9a3412, 0 14px 28px -4px rgba(234, 88, 12, 0.38);
+}
+
+.mebi-panel-danger {
+  background: #dc2626;
+  color: #ffffff;
+  box-shadow: 0 6px 0 #991b1b, 0 14px 28px -4px rgba(220, 38, 38, 0.35);
+}
+
+[data-theme="dark"] .mebi-panel-success {
+  background: #1c3029;
+  color: #a7f3d0;
+  box-shadow: 0 6px 0 #11201a, 0 16px 32px -4px rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="dark"] .mebi-panel-info {
+  background: #262136;
+  color: #ddd6fe;
+  box-shadow: 0 6px 0 #181424, 0 16px 32px -4px rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="dark"] .mebi-panel-warning {
+  background: #342b1a;
+  color: #fde68a;
+  box-shadow: 0 6px 0 #211a0f, 0 16px 32px -4px rgba(0, 0, 0, 0.7);
+}
+
+.mebi-panel-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .mebi-panel-icon {
+  background: rgba(255, 255, 255, 0.1);
+  color: currentColor;
+}
+
+.mebi-panel-content {
+  flex: 1;
+}
+
+.mebi-panel-title {
+  font-size: 15.5px;
+  font-weight: 800;
+  margin-bottom: 3px;
+}
+
+.mebi-panel-text {
+  font-size: 13.5px;
+  line-height: 1.55;
+  opacity: 0.95;
+}
+
+/* --------------------------------------------------------------------------
+   10. TOAST BİLDİRİM SİSTEMİ (360° SVG Çember Sayaçlı)
+   -------------------------------------------------------------------------- */
+.mebi-toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.mebi-toast {
+  pointer-events: auto;
+  min-width: 300px;
+  max-width: 380px;
+  border-radius: var(--mebi-radius-lg);
+  border: 0;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
+  position: relative;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3), var(--mebi-shadow-lg);
+  animation: mebiFadeIn 250ms ease;
+  transition: transform 250ms ease, opacity 250ms ease;
+}
+
+.mebi-toast.is-hiding {
+  opacity: 0;
+  transform: translateX(40px);
+}
+
+.mebi-toast-success {
+  background: #10b981;
+  box-shadow: 0 6px 0 #059669, 0 10px 24px rgba(16, 185, 129, 0.4);
+}
+
+.mebi-toast-info {
+  background: #2563eb;
+  box-shadow: 0 6px 0 #1d4ed8, 0 10px 24px rgba(37, 99, 235, 0.4);
+}
+
+[data-theme="dark"] .mebi-toast-info {
+  background: #27272b;
+  box-shadow: 0 6px 0 #141416, 0 10px 24px rgba(0, 0, 0, 0.7);
+}
+
+.mebi-toast-warning {
+  background: #f59e0b;
+  box-shadow: 0 6px 0 #b45309, 0 10px 24px rgba(245, 158, 11, 0.4);
+}
+
+.mebi-toast-danger {
+  background: #ef4444;
+  box-shadow: 0 6px 0 #b91c1c, 0 10px 24px rgba(239, 68, 68, 0.4);
+}
+
+.mebi-toast-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mebi-toast-content {
+  flex: 1;
+}
+
+.mebi-toast-title {
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+
+.mebi-toast-desc {
+  font-size: 12.5px;
+  opacity: 0.92;
+  line-height: 1.4;
+}
+
+.mebi-toast-timer-wrap {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mebi-toast-circle-svg {
+  width: 28px;
+  height: 28px;
+  transform: rotate(-90deg);
+}
+
+.mebi-toast-circle-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.25);
+  stroke-width: 3;
+}
+
+.mebi-toast-circle-meter {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 3;
+  stroke-dasharray: 81.68;
+  stroke-dashoffset: 0;
+  animation: mebiCircleCountdown linear forwards;
+}
+
+@keyframes mebiCircleCountdown {
+  to { stroke-dashoffset: 81.68; }
+}
+
+.mebi-toast-close {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   11. ÇEKMECE VE MODAL (Drawer & Modal)
+   -------------------------------------------------------------------------- */
+.mebi-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--mebi-transition);
+}
+
+.mebi-overlay.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mebi-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 380px;
+  max-width: 90vw;
+  background: var(--mebi-bg-surface);
+  box-shadow: -8px 0 0 var(--mebi-base-card), var(--mebi-shadow-lg);
+  z-index: 550;
+  transform: translateX(100%);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.mebi-drawer.is-active {
+  transform: translateX(0);
+}
+
+.mebi-drawer-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--mebi-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mebi-drawer-body {
+  padding: 24px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.mebi-drawer-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--mebi-border);
+  background: var(--mebi-bg-subtle);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* --------------------------------------------------------------------------
+   12. TAM EKRAN CİHAZI YATAY ÇEVİRİN EKRANI (Landscape Orientation Lock Overlay)
+   -------------------------------------------------------------------------- */
+.mebi-orientation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  padding: 20px;
+  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] .mebi-orientation-overlay {
+  background: rgba(0, 0, 0, 0.88);
+}
+
+/* Açık / Tetiklenmiş / Zorunlu Durum */
+.mebi-orientation-overlay.is-active,
+.mebi-orientation-overlay.is-forced {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Mobil Dikey Ekranlarda Otomatik Kilit (body.mebi-landscape-required sınıfı ile) */
+@media screen and (orientation: portrait) and (max-width: 900px) {
+  body.mebi-landscape-required .mebi-orientation-overlay {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+.mebi-orientation-card {
+  position: relative;
+  background: var(--mebi-bg-surface);
+  border: 0;
+  border-radius: var(--mebi-radius-xl, 24px);
+  width: 500px;
+  max-width: 100%;
+  padding: 38px 28px 28px;
+  text-align: center;
+  box-shadow: 0 10px 0 #cbd5e1, 0 30px 65px -10px rgba(15, 23, 42, 0.28);
+  transform: scale(0.92) translateY(12px);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.25s ease;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .mebi-orientation-card {
+  background: #18181b;
+  box-shadow: 0 10px 0 #09090b, 0 35px 75px -10px rgba(0, 0, 0, 0.95);
+}
+
+.mebi-orientation-overlay.is-active .mebi-orientation-card,
+.mebi-orientation-overlay.is-forced .mebi-orientation-card,
+body.mebi-landscape-required .mebi-orientation-overlay .mebi-orientation-card {
+  transform: scale(1) translateY(0);
+}
+
+/* Kapatma Butonu (Sağ Üst 3D Buton) */
+.mebi-orientation-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--mebi-radius-full);
+  border: 0;
+  background: #e2e8f0;
+  color: #475569;
+  box-shadow: 0 3px 0 #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  z-index: 10;
+}
+
+.mebi-orientation-close-btn:hover {
+  background: #cbd5e1;
+  box-shadow: 0 3px 0 #94a3b8;
+  color: #0f172a;
+}
+
+.mebi-orientation-close-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #cbd5e1;
+}
+
+[data-theme="dark"] .mebi-orientation-close-btn {
+  background: #27272b;
+  color: #a1a1aa;
+  box-shadow: 0 3px 0 #141416;
+}
+
+[data-theme="dark"] .mebi-orientation-close-btn:hover {
+  background: #323238;
+  color: #f4f4f5;
+  box-shadow: 0 3px 0 #1c1c20;
+}
+
+[data-theme="dark"] .mebi-orientation-close-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #141416;
+}
+
+/* Çukur Rozet */
+.mebi-orientation-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--mebi-radius-full);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  background: #eef2f6;
+  color: #d97706;
+  box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.1),
+              inset 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="dark"] .mebi-orientation-badge {
+  background: #141417;
+  color: #f59e0b;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+/* Sahne ve Dönen Minimal Cihaz İllüstrasyonu */
+.mebi-orientation-stage {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  margin: 4px auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dönen Cihaz Konteyneri */
+.mebi-device-rotator {
+  position: relative;
+  z-index: 2;
+  animation: mebiDeviceRotate 3.4s cubic-bezier(0.34, 1.4, 0.64, 1) infinite;
+  transform-origin: center center;
+}
+
+@keyframes mebiDeviceRotate {
+  0%, 15% {
+    transform: rotate(0deg);
+  }
+  42%, 78% {
+    transform: rotate(-90deg);
+  }
+  92%, 100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* Minimal Telefon Gövdesi */
+.mebi-device-minimal {
+  width: 44px;
+  height: 76px;
+  background: var(--mebi-bg-surface);
+  border: 2.5px solid #334155;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+[data-theme="dark"] .mebi-device-minimal {
+  background: #18181b;
+  border-color: #52525b;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+/* Minimalist Kamera / Dinamik Çentik */
+.mebi-device-notch {
+  width: 10px;
+  height: 2.5px;
+  background: #334155;
+  border-radius: 2px;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .mebi-device-notch {
+  background: #52525b;
+}
+
+/* Minimal Ekran */
+.mebi-device-screen-minimal {
+  width: 100%;
+  flex: 1;
+  background: #eef2f6;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+[data-theme="dark"] .mebi-device-screen-minimal {
+  background: #27272a;
+}
+
+/* Ekran Ortasındaki Çok Hafif Monolit Yatay Çizgi */
+.mebi-device-screen-minimal::after {
+  content: '';
+  width: 14px;
+  height: 2px;
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+[data-theme="dark"] .mebi-device-screen-minimal::after {
+  background: #3f3f46;
+}
+
+/* Başlık ve Metin */
+.mebi-orientation-title {
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--mebi-text-main);
+  letter-spacing: -0.3px;
+  margin-bottom: 10px;
+}
+
+.mebi-orientation-text {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--mebi-text-secondary);
+  margin-bottom: 20px;
+}
+
+/* Çukur İpucu Kutusu */
+.mebi-orientation-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  padding: 13px 16px;
+  border-radius: var(--mebi-radius-md);
+  border: 0;
+  margin-bottom: 22px;
+  background: #eef2f6;
+  box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.08),
+              inset 0 1px 2px rgba(15, 23, 42, 0.06);
+  color: var(--mebi-text-secondary);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+[data-theme="dark"] .mebi-orientation-hint {
+  background: #141417;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.8);
+  color: #a1a1aa;
+}
+
+.mebi-orientation-hint-icon {
+  color: var(--mebi-warning, #d97706);
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+}
+
+[data-theme="dark"] .mebi-orientation-hint-icon {
+  color: #f59e0b;
+}
+
+.mebi-orientation-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+

@@ -1,0 +1,260 @@
+/* ==========================================================================
+   MEBİ TASARIM SİSTEMİ - TEMA VE KÖK DEĞİŞKENLER (mebi-theme.css)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
+
+:root {
+  /* 1. Marka ve Birincil Renkler */
+  --mebi-primary: #1e40af;
+  --mebi-primary-hover: #1d4ed8;
+  --mebi-primary-active: #1e3a8a;
+  --mebi-primary-light: #eff6ff;
+  --mebi-primary-border: #bfdbfe;
+  --mebi-primary-taban: #172554;
+
+  /* 2. Vurgu ve Simülasyon Renkleri */
+  --mebi-accent: #0284c7;
+  --mebi-accent-hover: #0369a1;
+  --mebi-accent-light: #f0f9ff;
+  --mebi-cyan: #06b6d4;
+  --mebi-teal: #0d9488;
+  --mebi-indigo: #4f46e5;
+  --mebi-pink: #ec4899;
+
+  /* 3. Durum ve Geri Bildirim Renkleri */
+  --mebi-success: #10b981;
+  --mebi-success-hover: #059669;
+  --mebi-success-light: #ecfdf5;
+  --mebi-success-border: #a7f3d0;
+  --mebi-success-taban: #047857;
+
+  --mebi-danger: #ef4444;
+  --mebi-danger-hover: #dc2626;
+  --mebi-danger-light: #fef2f2;
+  --mebi-danger-border: #fecaca;
+  --mebi-danger-taban: #b91c1c;
+
+  --mebi-warning: #f59e0b;
+  --mebi-warning-hover: #d97706;
+  --mebi-warning-light: #fffbeb;
+  --mebi-warning-border: #fde68a;
+  --mebi-warning-taban: #b45309;
+
+  --mebi-info: #8b5cf6;
+  --mebi-info-hover: #7c3aed;
+  --mebi-info-light: #f5f3ff;
+  --mebi-info-border: #ddd6fe;
+  --mebi-info-taban: #6d28d9;
+
+  /* 4. Yüzey, Arka Plan ve Kenarlıklar (Aydınlık Mod) */
+  --mebi-bg-body: #f8fafc;
+  --mebi-bg-surface: #ffffff;
+  --mebi-bg-subtle: #f1f5f9;
+  --mebi-bg-sunken: #eef2f6;
+  --mebi-bg-elevated: #ffffff;
+
+  --mebi-border: #e2e8f0;
+  --mebi-border-hover: #cbd5e1;
+  --mebi-border-focus: #3b82f6;
+
+  /* 5. Tipografi Renkleri (Aydınlık Mod) */
+  --mebi-text-main: #0f172a;
+  --mebi-text-secondary: #475569;
+  --mebi-text-muted: #94a3b8;
+  --mebi-text-white: #ffffff;
+
+  /* 6. 3D Derinlik Taban Renkleri (Aydınlık) */
+  --mebi-base-card: #e2e8f0;
+  --mebi-base-card-hover: #cbd5e1;
+  --mebi-base-modal: #cbd5e1;
+  --mebi-base-secondary-btn: #cbd5e1;
+  --mebi-base-sunken-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.12), inset 0 1px 2px rgba(15, 23, 42, 0.14), inset 0 -1px 1px rgba(255, 255, 255, 0.85);
+
+  /* 7. Yuvarlatmalar */
+  --mebi-radius-xs: 4px;
+  --mebi-radius-sm: 8px;
+  --mebi-radius-md: 12px;
+  --mebi-radius-lg: 16px;
+  --mebi-radius-xl: 24px;
+  --mebi-radius-full: 9999px;
+
+  /* 8. Gölgeler */
+  --mebi-shadow-sm: 0 2px 4px -1px rgba(15, 23, 42, 0.06);
+  --mebi-shadow-md: 0 6px 16px -2px rgba(15, 23, 42, 0.08);
+  --mebi-shadow-lg: 0 14px 28px -4px rgba(15, 23, 42, 0.12);
+  --mebi-shadow-modal: 0 10px 0 #cbd5e1, 0 25px 60px -10px rgba(15, 23, 42, 0.28);
+
+  /* 9. Geçişler ve Hız */
+  --mebi-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --mebi-transition: 250ms var(--mebi-ease);
+  --mebi-theme-transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+
+  /* 10. Dokunsal Scrollbar */
+  --mebi-scrollbar-track: transparent;
+  --mebi-scrollbar-thumb: #cbd5e1;
+  --mebi-scrollbar-thumb-hover: #94a3b8;
+  --mebi-scrollbar-thumb-active: #64748b;
+
+  /* 11. Cam Laboratuvar Malzemeleri (Beher & Cam Eşya Konturları) */
+  --mebi-glass-stroke: #475569;         /* Slate-600: Açık modda belirgin cam çerçeve konturu */
+  --mebi-glass-stroke-rim: #334155;     /* Slate-700: Beher ağzı ve dökme gagası */
+  --mebi-glass-inner: #94a3b8;          /* Slate-400: İç cam katmanı ve yansıma */
+  --mebi-glass-grad: #334155;           /* Slate-700: Beyaz madde üstünde de net okunan dereceler */
+  --mebi-glass-shadow: rgba(15, 23, 42, 0.16);
+  --mebi-glass-bg: rgba(248, 250, 252, 0.35);
+}
+
+/* ==========================================================================
+   KARANLIK MOD (DARK MODE - NÖTR GRİ STANDARDI)
+   Kural: Mavi alt ton kullanılmaz, nötr grafit/kömür gri ve parlak nötr beyaz metin.
+   ========================================================================== */
+[data-theme="dark"] {
+  --mebi-bg-body: #161619;
+  --mebi-bg-surface: #222226;
+  --mebi-bg-subtle: #2b2b30;
+  --mebi-bg-sunken: #141417;
+  --mebi-bg-elevated: #26262c;
+
+  --mebi-border: #38383e;
+  --mebi-border-hover: #4e4e56;
+  --mebi-border-focus: #71717a;
+
+  --mebi-text-main: #f4f4f5;
+  --mebi-text-secondary: #a1a1aa;
+  --mebi-text-muted: #71717a;
+
+  /* 3D Katı Tabanlar (Koyu Mod) */
+  --mebi-base-card: #121214;
+  --mebi-base-card-hover: #09090b;
+  --mebi-base-modal: #09090b;
+  --mebi-base-secondary-btn: #141416;
+  --mebi-base-sunken-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.85), inset 0 1px 2px rgba(0, 0, 0, 0.95), inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+
+  --mebi-primary-light: rgba(59, 130, 246, 0.16);
+  --mebi-primary-border: rgba(96, 165, 250, 0.28);
+  --mebi-success-light: rgba(16, 185, 129, 0.16);
+  --mebi-danger-light: rgba(239, 68, 68, 0.16);
+  --mebi-warning-light: rgba(245, 158, 11, 0.16);
+  --mebi-info-light: rgba(139, 92, 246, 0.16);
+
+  --mebi-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.6);
+  --mebi-shadow-md: 0 8px 20px rgba(0, 0, 0, 0.7);
+  --mebi-shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.85);
+  --mebi-shadow-modal: 0 10px 0 #09090b, 0 35px 70px -10px rgba(0, 0, 0, 0.95);
+
+  --mebi-scrollbar-thumb: #333338;
+  --mebi-scrollbar-thumb-hover: #484850;
+  --mebi-scrollbar-thumb-active: #71717a;
+
+  /* Cam Laboratuvar Malzemeleri (Koyu Mod) */
+  --mebi-glass-stroke: #94a3b8;         /* Slate-400: Koyu zemin üstünde parlak cam konturu */
+  --mebi-glass-stroke-rim: #cbd5e1;     /* Slate-300: Beher ağzı ve gaga */
+  --mebi-glass-inner: rgba(255, 255, 255, 0.4);
+  --mebi-glass-grad: #cbd5e1;           /* Koyu zeminde ve sıvıda net okunan dereceler */
+  --mebi-glass-shadow: rgba(0, 0, 0, 0.65);
+  --mebi-glass-bg: rgba(255, 255, 255, 0.05);
+}
+
+/* ==========================================================================
+   TEMEL SIFIRLAMA VE ERİŞİLEBİLİRLİK
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  background-color: var(--mebi-bg-body);
+  color: var(--mebi-text-main);
+  transition: var(--mebi-theme-transition);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input, button, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+  user-select: none;
+}
+
+a {
+  color: var(--mebi-primary);
+  text-decoration: none;
+  transition: color var(--mebi-transition);
+}
+
+img, svg {
+  vertical-align: middle;
+}
+
+/* ==========================================================================
+   DOKUNSAL KAYDIRMA ÇUBUĞU (SCROLLBAR)
+   ========================================================================== */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--mebi-scrollbar-thumb) var(--mebi-scrollbar-track);
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--mebi-scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--mebi-scrollbar-thumb);
+  border-radius: var(--mebi-radius-full);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background-color var(--mebi-transition);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--mebi-scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--mebi-scrollbar-thumb-active);
+}
+
+/* ==========================================================================
+   TEMEL YARDIMCI VE ANİMASYON SINIFLARI
+   ========================================================================== */
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+@keyframes mebiSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes mebiPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.75; transform: scale(1.04); }
+}
+
+@keyframes mebiShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes mebiFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
