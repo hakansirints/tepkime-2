@@ -1068,6 +1068,119 @@
     return '<svg viewBox="0 0 24 24" class="' + (extraClass || '') + '" width="20" height="20">' + content + '</svg>';
   }
 
+  /* ----------------- 8. FOTOGERÇEKÇİ BOROSİLİKAT 3.3 CAM BEHER MODELLERİ ----------------- */
+  // Beher Arka Cam ve Ağız Arka Çizgisi (Daldırma probunun arkasında kalır - z-index: 2)
+  function renderRealisticMainBeakerBackSVG() {
+    return '<svg viewBox="0 0 160 200" width="160" height="200" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:2;" role="presentation">' +
+      '<defs>' +
+        '<radialGradient id="gRealGroundShadow" cx="50%" cy="50%" r="50%">' +
+          '<stop offset="0%" stop-color="rgba(15, 23, 42, 0.45)"/>' +
+          '<stop offset="50%" stop-color="rgba(15, 23, 42, 0.16)"/>' +
+          '<stop offset="100%" stop-color="rgba(15, 23, 42, 0)"/>' +
+        '</radialGradient>' +
+      '</defs>' +
+      '<ellipse cx="82" cy="195" rx="66" ry="5.5" fill="url(#gRealGroundShadow)"/>' +
+      '<path d="M 27 24 L 27 178 A 13 13 0 0 0 40 192 L 124 192 A 13 13 0 0 0 137 178 L 137 24 Z" fill="rgba(240, 249, 255, 0.05)"/>' +
+      '<path d="M 26 22 A 56 4.2 0 0 1 138 22" fill="none" stroke="rgba(255, 255, 255, 0.65)" stroke-width="2.4" stroke-linecap="round"/>' +
+      '<path d="M 29 22 A 53 3.4 0 0 1 135 22" fill="none" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1.2" stroke-linecap="round"/>' +
+    '</svg>';
+  }
+
+  // Beher Ön Cam, Ağız Ön Kavisi, Skala ve Yansımalar (Daldırma probunun önünden geçer - z-index: 8)
+  function renderRealisticMainBeakerGlassSVG() {
+    return '<svg viewBox="0 0 160 200" width="160" height="200" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:8;" role="img" aria-label="Gerçek Borosilikat 3.3 Cam Beher">' +
+      '<defs>' +
+        '<linearGradient id="gRealGlassHighlight" x1="0" y1="0" x2="1" y2="0">' +
+          '<stop offset="0%" stop-color="rgba(255, 255, 255, 0.98)"/>' +
+          '<stop offset="35%" stop-color="rgba(255, 255, 255, 0.65)"/>' +
+          '<stop offset="70%" stop-color="rgba(255, 255, 255, 0.18)"/>' +
+          '<stop offset="100%" stop-color="rgba(255, 255, 255, 0)"/>' +
+        '</linearGradient>' +
+        '<linearGradient id="gRealGlassFresnel" x1="0" y1="0" x2="1" y2="0">' +
+          '<stop offset="0%" stop-color="rgba(255, 255, 255, 0.45)"/>' +
+          '<stop offset="10%" stop-color="rgba(240, 249, 255, 0.08)"/>' +
+          '<stop offset="90%" stop-color="rgba(240, 249, 255, 0.06)"/>' +
+          '<stop offset="100%" stop-color="rgba(255, 255, 255, 0.40)"/>' +
+        '</linearGradient>' +
+        '<linearGradient id="gRealGlassBase" x1="0" y1="0" x2="0" y2="1">' +
+          '<stop offset="0%" stop-color="rgba(255, 255, 255, 0.35)"/>' +
+          '<stop offset="45%" stop-color="rgba(226, 232, 240, 0.55)"/>' +
+          '<stop offset="85%" stop-color="rgba(148, 163, 184, 0.75)"/>' +
+          '<stop offset="100%" stop-color="rgba(100, 116, 139, 0.88)"/>' +
+        '</linearGradient>' +
+      '</defs>' +
+      '<path d="M 26 176 L 26 180 A 14 14 0 0 0 40 194 L 124 194 A 14 14 0 0 0 138 180 L 138 176 Z" fill="url(#gRealGlassBase)"/>' +
+      '<path d="M 26 24 L 26 180 A 14 14 0 0 0 40 194 L 124 194 A 14 14 0 0 0 138 180 L 138 24 Z" fill="url(#gRealGlassFresnel)"/>' +
+      '<path d="M 28 26 L 28 178 A 12 12 0 0 0 40 190 L 124 190 A 12 12 0 0 0 136 178 L 136 26" fill="none" stroke="rgba(255, 255, 255, 0.42)" stroke-width="1.6" stroke-linecap="round"/>' +
+      '<path d="M 8 18 Q 14 18 18 20 L 26 24 L 26 180 A 14 14 0 0 0 40 194 L 124 194 A 14 14 0 0 0 138 180 L 138 24 Q 142 22 146 22" fill="none" stroke="rgba(255, 255, 255, 0.88)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="M 8 18 Q 14 18 18 20 L 26 24 L 26 180 A 14 14 0 0 0 40 194 L 124 194 A 14 14 0 0 0 138 180 L 138 24 Q 142 22 146 22" fill="none" stroke="rgba(71, 85, 105, 0.45)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="M 8 18 L 16 26" stroke="rgba(255, 255, 255, 0.95)" stroke-width="2.4" stroke-linecap="round"/>' +
+      '<path d="M 26 22 A 56 4.2 0 0 0 138 22" fill="none" stroke="rgba(255, 255, 255, 0.88)" stroke-width="2.6" stroke-linecap="round"/>' +
+      '<path d="M 29 22 A 53 3.4 0 0 0 135 22" fill="none" stroke="rgba(255, 255, 255, 0.45)" stroke-width="1.2" stroke-linecap="round"/>' +
+      '<path d="M 26 22 Q 82 26.5 138 22" stroke="#ffffff" stroke-width="1.8" fill="none" opacity="0.95"/>' +
+      '<path d="M 31 28 L 31 176" stroke="url(#gRealGlassHighlight)" stroke-width="3.5" stroke-linecap="round" opacity="0.95"/>' +
+      '<path d="M 35 32 L 35 170" stroke="rgba(255, 255, 255, 0.55)" stroke-width="1.2" stroke-linecap="round"/>' +
+      '<path d="M 133 30 L 133 174" stroke="rgba(255, 255, 255, 0.65)" stroke-width="2.2" stroke-linecap="round"/>' +
+      '<path d="M 44 191 Q 82 194.5 120 191" stroke="rgba(255, 255, 255, 0.88)" stroke-width="2.2" stroke-linecap="round"/>' +
+      '<g opacity="0.94">' +
+        '<rect x="74" y="44" width="28" height="19" rx="3" fill="rgba(255, 255, 255, 0.28)" stroke="rgba(255, 255, 255, 0.75)" stroke-width="0.9"/>' +
+        '<text x="88" y="52" font-family="JetBrains Mono, monospace" font-size="4.5" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">BORO 3.3</text>' +
+        '<text x="88" y="59.5" font-family="Plus Jakarta Sans, sans-serif" font-size="3.2" font-weight="700" fill="rgba(255, 255, 255, 0.95)" text-anchor="middle">APPROX. VOL.</text>' +
+        '<g font-family="JetBrains Mono, monospace" font-size="6.8" font-weight="700" fill="#ffffff" text-anchor="end">' +
+          '<line x1="46" y1="68" x2="68" y2="68" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/><text x="44" y="70.5">250ml</text>' +
+          '<line x1="52" y1="81" x2="64" y2="81" stroke="#ffffff" stroke-width="1.0" stroke-linecap="round"/>' +
+          '<line x1="48" y1="94" x2="68" y2="94" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round"/><text x="44" y="96.5">200</text>' +
+          '<line x1="52" y1="107" x2="64" y2="107" stroke="#ffffff" stroke-width="1.0" stroke-linecap="round"/>' +
+          '<line x1="48" y1="120" x2="68" y2="120" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round"/><text x="44" y="122.5">150</text>' +
+          '<line x1="52" y1="133" x2="64" y2="133" stroke="#ffffff" stroke-width="1.0" stroke-linecap="round"/>' +
+          '<line x1="48" y1="146" x2="68" y2="146" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round"/><text x="44" y="148.5">100</text>' +
+          '<line x1="52" y1="158" x2="64" y2="158" stroke="#ffffff" stroke-width="1.0" stroke-linecap="round"/>' +
+          '<line x1="48" y1="168" x2="68" y2="168" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round"/><text x="44" y="170.5">50</text>' +
+        '</g>' +
+      '</g>' +
+    '</svg>';
+  }
+
+  function renderRealisticDragBeakerGlassSVG() {
+    return '<svg viewBox="0 0 115 150" width="115" height="150" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:8;" role="img" aria-label="Dökülen Borosilikat 3.3 Cam Beher">' +
+      '<defs>' +
+        '<linearGradient id="gDragRealHighlight" x1="0" y1="0" x2="1" y2="0">' +
+          '<stop offset="0%" stop-color="rgba(255, 255, 255, 0.98)"/>' +
+          '<stop offset="40%" stop-color="rgba(255, 255, 255, 0.55)"/>' +
+          '<stop offset="100%" stop-color="rgba(255, 255, 255, 0)"/>' +
+        '</linearGradient>' +
+        '<linearGradient id="gDragRealBase" x1="0" y1="0" x2="0" y2="1">' +
+          '<stop offset="0%" stop-color="rgba(255, 255, 255, 0.3)"/>' +
+          '<stop offset="50%" stop-color="rgba(226, 232, 240, 0.5)"/>' +
+          '<stop offset="100%" stop-color="rgba(148, 163, 184, 0.8)"/>' +
+        '</linearGradient>' +
+        '<linearGradient id="gDragRealFresnel" x1="0" y1="0" x2="1" y2="0">' +
+          '<stop offset="0%" stop-color="rgba(255, 255, 255, 0.42)"/>' +
+          '<stop offset="12%" stop-color="rgba(240, 249, 255, 0.08)"/>' +
+          '<stop offset="88%" stop-color="rgba(240, 249, 255, 0.06)"/>' +
+          '<stop offset="100%" stop-color="rgba(255, 255, 255, 0.38)"/>' +
+        '</linearGradient>' +
+      '</defs>' +
+      '<path d="M 16 130 L 16 134 A 10 10 0 0 0 26 144 L 90 144 A 10 10 0 0 0 100 134 L 100 130 Z" fill="url(#gDragRealBase)"/>' +
+      '<path d="M 16 16 L 16 134 A 10 10 0 0 0 26 144 L 90 144 A 10 10 0 0 0 100 134 L 100 16 Z" fill="url(#gDragRealFresnel)"/>' +
+      '<path d="M 18 18 L 18 132 A 8 8 0 0 0 26 140 L 90 140 A 8 8 0 0 0 98 132 L 98 18" fill="none" stroke="rgba(255, 255, 255, 0.42)" stroke-width="1.5" stroke-linecap="round"/>' +
+      '<path d="M 4 12 Q 9 12 12 14 L 16 16 L 16 134 A 10 10 0 0 0 26 144 L 90 144 A 10 10 0 0 0 100 134 L 100 16 Q 104 14 107 14" fill="none" stroke="rgba(255, 255, 255, 0.88)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="M 4 12 Q 9 12 12 14 L 16 16 L 16 134 A 10 10 0 0 0 26 144 L 90 144 A 10 10 0 0 0 100 134 L 100 16 Q 104 14 107 14" fill="none" stroke="rgba(71, 85, 105, 0.45)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="M 4 12 L 12 20" stroke="rgba(255, 255, 255, 0.95)" stroke-width="2.4" stroke-linecap="round"/>' +
+      '<ellipse cx="58" cy="15" rx="42" ry="3.6" fill="none" stroke="rgba(255, 255, 255, 0.78)" stroke-width="2.4"/>' +
+      '<path d="M 16 15 Q 58 18.5 100 15" stroke="#ffffff" stroke-width="1.6" fill="none" opacity="0.95"/>' +
+      '<path d="M 20 20 L 20 132" stroke="url(#gDragRealHighlight)" stroke-width="3" stroke-linecap="round" opacity="0.92"/>' +
+      '<path d="M 96 20 L 96 130" stroke="rgba(255, 255, 255, 0.6)" stroke-width="1.8" stroke-linecap="round"/>' +
+      '<g opacity="0.92" font-family="JetBrains Mono, monospace" font-size="5.8" font-weight="700" fill="#ffffff" text-anchor="end">' +
+        '<line x1="36" y1="38" x2="52" y2="38" stroke="#ffffff" stroke-width="1.3" stroke-linecap="round"/><text x="34" y="40">100ml</text>' +
+        '<line x1="40" y1="60" x2="52" y2="60" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round"/><text x="34" y="62">80</text>' +
+        '<line x1="40" y1="82" x2="52" y2="82" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round"/><text x="34" y="84">60</text>' +
+        '<line x1="40" y1="104" x2="52" y2="104" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round"/><text x="34" y="106">40</text>' +
+        '<line x1="40" y1="124" x2="52" y2="124" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round"/><text x="34" y="126">20</text>' +
+      '</g>' +
+    '</svg>';
+  }
+
   // Global erişim
   window.MebiSVG = {
     getShared3DDefs: getShared3DDefs,
@@ -1101,6 +1214,9 @@
     renderGenericReactantParticle: renderGenericReactantParticle,
     renderGenericProductParticle: renderGenericProductParticle,
     renderBeakerSVG: renderBeakerSVG,
+    renderRealisticMainBeakerBackSVG: renderRealisticMainBeakerBackSVG,
+    renderRealisticMainBeakerGlassSVG: renderRealisticMainBeakerGlassSVG,
+    renderRealisticDragBeakerGlassSVG: renderRealisticDragBeakerGlassSVG,
     renderProductBeakerSVG: renderProductBeakerSVG,
     icon: icon
   };

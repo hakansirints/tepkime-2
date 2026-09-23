@@ -47,12 +47,13 @@
   --mebi-info-border: #ddd6fe;
   --mebi-info-taban: #6d28d9;
 
-  /* 4. Yüzey, Arka Plan ve Kenarlıklar (Aydınlık Mod) */
+  /* 4. Yüzey, Arka Plan ve Kenarlıklar (Aydınlık Mod - Yarı Saydam Cam Morfolojisi) */
   --mebi-bg-body: #f8fafc;
-  --mebi-bg-surface: #ffffff;
-  --mebi-bg-subtle: #f1f5f9;
-  --mebi-bg-sunken: #eef2f6;
-  --mebi-bg-elevated: #ffffff;
+  --mebi-bg-surface: rgba(255, 255, 255, 0.84);
+  --mebi-bg-surface-solid: #ffffff;
+  --mebi-bg-subtle: rgba(241, 245, 249, 0.84);
+  --mebi-bg-sunken: rgba(238, 242, 246, 0.78);
+  --mebi-bg-elevated: rgba(255, 255, 255, 0.92);
 
   --mebi-border: #e2e8f0;
   --mebi-border-hover: #cbd5e1;
@@ -103,6 +104,27 @@
   --mebi-glass-grad: #334155;           /* Slate-700: Beyaz madde üstünde de net okunan dereceler */
   --mebi-glass-shadow: rgba(15, 23, 42, 0.16);
   --mebi-glass-bg: rgba(248, 250, 252, 0.35);
+
+  /* 12. Moleküler Heksagon / Benzen Ağı Deseni (Hexagonal Chemical Lattice) */
+  --mebi-benzene-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='93.53' viewBox='0 0 54 93.53'%3E%3Cg fill='none' stroke='%232563eb' stroke-width='1.2' opacity='0.20'%3E%3Cpath d='M27 0 L54 15.588 L54 46.765 L27 62.353 L0 46.765 L0 15.588 Z M27 93.53 L54 77.942 L54 46.765 M27 93.53 L0 77.942 L0 46.765'/%3E%3Ccircle cx='27' cy='31.176' r='10.5' stroke-width='0.9' stroke-dasharray='3 2.5'/%3E%3Ccircle cx='0' cy='77.942' r='10.5' stroke-width='0.9' stroke-dasharray='3 2.5'/%3E%3Ccircle cx='54' cy='77.942' r='10.5' stroke-width='0.9' stroke-dasharray='3 2.5'/%3E%3C/g%3E%3C/svg%3E");
+
+  /* 13. Yumuşak Laboratuvar Ortam Işıltısı (Ambient Glow / Mesh Gradient) */
+  --mebi-ambient-blue-core: rgba(37, 99, 235, 0.15);      /* Sol üst: MEBİ kurumsal mavisi çekirdek */
+  --mebi-ambient-blue-soft: rgba(59, 130, 246, 0.08);      /* MEBİ mavisi buğulu geçiş */
+  --mebi-ambient-blue-haze: rgba(147, 197, 253, 0.025);    /* Geniş buğu */
+
+  --mebi-ambient-react-core: rgba(13, 148, 136, 0.14);     /* Sağ alt: Kimyasal deney/reaksiyon ışıltısı */
+  --mebi-ambient-react-soft: rgba(6, 182, 212, 0.075);     /* Camgöbeği buğulu yayılma */
+  --mebi-ambient-react-haze: rgba(20, 184, 166, 0.02);     /* Geniş buğu */
+
+  /* Geriye dönük uyumluluk */
+  --mebi-ambient-glow-1: var(--mebi-ambient-blue-core);
+  --mebi-ambient-glow-2: var(--mebi-ambient-react-core);
+
+  /* Çok katmanlı buğulu ortam aydınlatması (Laboratory Ambient Mesh) */
+  --mebi-mesh-gradient:
+    radial-gradient(ellipse 75% 65% at 0% 0%, var(--mebi-ambient-blue-core) 0%, var(--mebi-ambient-blue-soft) 38%, var(--mebi-ambient-blue-haze) 68%, transparent 85%),
+    radial-gradient(ellipse 75% 70% at 100% 100%, var(--mebi-ambient-react-core) 0%, var(--mebi-ambient-react-soft) 38%, var(--mebi-ambient-react-haze) 68%, transparent 85%);
 }
 
 /* ==========================================================================
@@ -111,10 +133,11 @@
    ========================================================================== */
 [data-theme="dark"] {
   --mebi-bg-body: #161619;
-  --mebi-bg-surface: #222226;
-  --mebi-bg-subtle: #2b2b30;
-  --mebi-bg-sunken: #141417;
-  --mebi-bg-elevated: #26262c;
+  --mebi-bg-surface: rgba(34, 34, 38, 0.85);
+  --mebi-bg-surface-solid: #222226;
+  --mebi-bg-subtle: rgba(43, 43, 48, 0.82);
+  --mebi-bg-sunken: rgba(20, 20, 23, 0.78);
+  --mebi-bg-elevated: rgba(38, 38, 44, 0.90);
 
   --mebi-border: #38383e;
   --mebi-border-hover: #4e4e56;
@@ -154,6 +177,25 @@
   --mebi-glass-grad: #cbd5e1;           /* Koyu zeminde ve sıvıda net okunan dereceler */
   --mebi-glass-shadow: rgba(0, 0, 0, 0.65);
   --mebi-glass-bg: rgba(255, 255, 255, 0.05);
+
+  /* 12. Moleküler Heksagon / Benzen Ağı Deseni (Koyu Mod) */
+  --mebi-benzene-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='93.53' viewBox='0 0 54 93.53'%3E%3Cg fill='none' stroke='%2338bdf8' stroke-width='1.2' opacity='0.16'%3E%3Cpath d='M27 0 L54 15.588 L54 46.765 L27 62.353 L0 46.765 L0 15.588 Z M27 93.53 L54 77.942 L54 46.765 M27 93.53 L0 77.942 L0 46.765'/%3E%3Ccircle cx='27' cy='31.176' r='10.5' stroke-width='0.9' stroke-dasharray='3 2.5'/%3E%3Ccircle cx='0' cy='77.942' r='10.5' stroke-width='0.9' stroke-dasharray='3 2.5'/%3E%3Ccircle cx='54' cy='77.942' r='10.5' stroke-width='0.9' stroke-dasharray='3 2.5'/%3E%3C/g%3E%3C/svg%3E");
+
+  /* 13. Yumuşak Laboratuvar Ortam Işıltısı (Karanlık Mod) */
+  --mebi-ambient-blue-core: rgba(30, 64, 175, 0.32);     /* Koyu mod MEBİ mavisi aura */
+  --mebi-ambient-blue-soft: rgba(37, 99, 235, 0.18);     /* Buğulu geçiş */
+  --mebi-ambient-blue-haze: rgba(59, 130, 246, 0.05);    /* Dış hare */
+
+  --mebi-ambient-react-core: rgba(13, 148, 136, 0.25);    /* Koyu mod reaksiyon neon parıltısı */
+  --mebi-ambient-react-soft: rgba(6, 182, 212, 0.15);     /* Camgöbeği ışıltı */
+  --mebi-ambient-react-haze: rgba(20, 184, 166, 0.04);    /* Dış hare */
+
+  --mebi-ambient-glow-1: var(--mebi-ambient-blue-core);
+  --mebi-ambient-glow-2: var(--mebi-ambient-react-core);
+
+  --mebi-mesh-gradient:
+    radial-gradient(ellipse 80% 70% at 0% 0%, var(--mebi-ambient-blue-core) 0%, var(--mebi-ambient-blue-soft) 40%, var(--mebi-ambient-blue-haze) 70%, transparent 88%),
+    radial-gradient(ellipse 80% 75% at 100% 100%, var(--mebi-ambient-react-core) 0%, var(--mebi-ambient-react-soft) 40%, var(--mebi-ambient-react-haze) 70%, transparent 88%);
 }
 
 /* ==========================================================================
@@ -171,6 +213,12 @@ html, body {
   font-size: 15px;
   line-height: 1.6;
   background-color: var(--mebi-bg-body);
+  background-image:
+    var(--mebi-mesh-gradient),
+    var(--mebi-benzene-pattern);
+  background-size: 100% 100%, 100% 100%, 54px 93.53px;
+  background-attachment: fixed, fixed, fixed;
+  background-repeat: no-repeat, no-repeat, repeat;
   color: var(--mebi-text-main);
   transition: var(--mebi-theme-transition);
   -webkit-font-smoothing: antialiased;

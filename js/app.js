@@ -222,59 +222,37 @@
     var html = topbarHTML(true) +
       '<div class="mebi-card">' +
         '<div class="pool-intro">' +
-          '<div class="mebi-badge mebi-badge-primary">1. AŞAMA: REAKTİF SEÇİMİ</div>' +
-          '<h2 style="font-size:24px;margin-top:6px;font-weight:800;letter-spacing:-0.4px;">Madde Havuzundan Deney Seçimi Yap</h2>' +
-          '<div style="font-size:15px;font-weight:700;color:var(--mebi-primary);margin-top:4px;">Maddelerin Gerçek Görünümü</div>' +
-          '<p style="color:var(--mebi-text-secondary);font-size:13.5px;margin-top:2px;">Sulu çözeltilerin çoğu renksizdir; Cu(NO₃)₂ çözeltisi mavidir. Katılar beyaz tozdur. Tepkimeye sokmak istediğin iki maddeyi seçerek tepken bölmesine yerleştir.</p>' +
-        '</div>' +
-
-        '<div class="pool-controls-bar">' +
-          // Arama Kutusu
-          '<div class="mebi-search-box">' +
-            window.MebiSVG.icon('search') +
-            '<input type="text" id="poolSearchInput" class="mebi-search-input" placeholder="Madde ara (örn: asit, NaOH, kalsiyum)..." value="' + esc(S.searchQuery) + '">' +
+          '<div class="pool-badge-row">' +
+            '<span class="mebi-badge mebi-badge-primary">1. AŞAMA: REAKTİF SEÇİMİ</span>' +
+            '<span class="pool-status-chip ' + (canStart ? 'status-ready' : ((r1 || r2) ? 'status-partial' : '')) + '">' +
+              (canStart ? '✓ 2 Reaktif Seçildi (Hazır)' : ((r1 || r2) ? '1/2 Reaktif Seçildi' : 'Reaktif Bekleniyor (0/2)')) +
+            '</span>' +
           '</div>' +
-
-          // Filtre Hapları
-          '<div class="pool-filters">' +
-            '<button class="mebi-filter-chip ' + (S.categoryFilter === 'all' ? 'is-active' : '') + '" data-action="setFilter" data-arg="all">Tümü (12)</button>' +
-            '<button class="mebi-filter-chip ' + (S.categoryFilter === 'acid' ? 'is-active' : '') + '" data-action="setFilter" data-arg="acid">Asitler</button>' +
-            '<button class="mebi-filter-chip ' + (S.categoryFilter === 'base' ? 'is-active' : '') + '" data-action="setFilter" data-arg="base">Bazlar</button>' +
-            '<button class="mebi-filter-chip ' + (S.categoryFilter === 'salt' ? 'is-active' : '') + '" data-action="setFilter" data-arg="salt">Tuzlar</button>' +
-          '</div>' +
+          '<h2 class="pool-title">Madde Havuzundan Deney Seçimi Yap</h2>' +
+          '<p class="pool-subtitle">Tepkimeye sokmak istediğiniz iki reaktifi aşağıdaki havuzdan seçerek Tepken Bölmesine yerleştiriniz.</p>' +
         '</div>' +
 
-        // Reaktif Izgarası
-        '<div class="reagents-grid">' +
-          filteredReagents.map(function(r) {
-            var isSel1 = (S.selectedSlot1 === r.id);
-            var isSel2 = (S.selectedSlot2 === r.id);
-            var selCls = isSel1 ? ' selected-1' : (isSel2 ? ' selected-2' : '');
-
-            return '<div class="beaker-card' + selCls + '" data-action="clickReagent" data-arg="' + esc(r.id) + '" title="' + esc(r.name) + '">' +
-              '<div class="card-beaker-box">' + window.MebiSVG.renderBeakerSVG(r, false) + '</div>' +
-              '<div class="card-formula">' + esc(r.f) + '</div>' +
-              '<div class="card-name">' + esc(r.name) + '</div>' +
-              '<div class="card-state">' + esc(r.state) + '</div>' +
-            '</div>';
-          }).join('') +
-        '</div>' +
-
-        // Tepken Bölmesi (Staging Area - Yönerge standardı)
-        '<div style="margin-top:20px;margin-bottom:8px;">' +
-          '<span style="font-size:14px;font-weight:800;color:var(--mebi-text-main);">TEPKEN BÖLMESİ</span>' +
-          '<span style="font-size:12.5px;color:var(--mebi-text-muted);margin-left:8px;">(Deney İçin Seçilen Maddeler)</span>' +
+        // Tepken Bölmesi (ÜST TARAFTA - Deney İçin Seçilen Maddeler)
+        '<div class="staging-header-row">' +
+          '<span class="staging-title">TEPKEN BÖLMESİ</span>' +
+          '<span class="staging-subtitle">(Deney İçin Seçilen Maddeler)</span>' +
         '</div>' +
 
         '<div class="staging-area">' +
           // Yuva 1
           '<div class="slot-card slot-1' + (r1 ? ' filled' : '') + '">' +
             (r1 ? '<button class="btn-remove-slot" data-action="clearSlot" data-arg="1" title="Kaldır">✕</button>' : '') +
-            '<div class="slot-beaker-box">' + window.MebiSVG.renderBeakerSVG(r1, !r1) + '</div>' +
+            (r1
+              ? '<div class="slot-tile-badge slot-1-badge">' +
+                  '<span class="slot-order-tag">1. TEPKEN</span>' +
+                  '<span class="slot-formula-big">' + esc(r1.f) + '</span>' +
+                '</div>'
+              : '<div class="slot-icon-box">' + window.MebiSVG.icon('flaskOutline') + '</div>'
+            ) +
             '<div class="slot-text-box">' +
               (r1
-                ? '<div class="slot-main-text" style="color:var(--mebi-primary);">' + esc(r1.f) + '</div><div style="font-size:12.5px;font-weight:700;">' + esc(r1.name) + '</div><div class="slot-sub-text">' + esc(r1.state) + '</div>'
-                : '<div class="slot-main-text">1. Tepkeni Seç</div><div class="slot-sub-text">Havuzdan bir maddeye tıkla</div>'
+                ? '<div class="slot-main-text" style="color:var(--mebi-primary);">' + esc(r1.name) + '</div><div class="slot-sub-text">' + esc(r1.category === 'acid' ? 'Asit' : (r1.category === 'base' ? 'Baz' : 'Tuz')) + ' • ' + esc(r1.state) + '</div>'
+                : '<div class="slot-main-text">1. Tepkeni Seç</div><div class="slot-sub-text">Aşağıdaki havuzdan bir maddeye tıkla</div>'
               ) +
             '</div>' +
           '</div>' +
@@ -284,20 +262,66 @@
           // Yuva 2
           '<div class="slot-card slot-2' + (r2 ? ' filled' : '') + '">' +
             (r2 ? '<button class="btn-remove-slot" data-action="clearSlot" data-arg="2" title="Kaldır">✕</button>' : '') +
-            '<div class="slot-beaker-box">' + window.MebiSVG.renderBeakerSVG(r2, !r2) + '</div>' +
+            (r2
+              ? '<div class="slot-tile-badge slot-2-badge">' +
+                  '<span class="slot-order-tag">2. TEPKEN</span>' +
+                  '<span class="slot-formula-big">' + esc(r2.f) + '</span>' +
+                '</div>'
+              : '<div class="slot-icon-box">' + window.MebiSVG.icon('flaskOutline') + '</div>'
+            ) +
             '<div class="slot-text-box">' +
               (r2
-                ? '<div class="slot-main-text" style="color:var(--mebi-success);">' + esc(r2.f) + '</div><div style="font-size:12.5px;font-weight:700;">' + esc(r2.name) + '</div><div class="slot-sub-text">' + esc(r2.state) + '</div>'
-                : '<div class="slot-main-text">2. Tepkeni Seç</div><div class="slot-sub-text">Havuzdan ikinci maddeye tıkla</div>'
+                ? '<div class="slot-main-text" style="color:var(--mebi-success);">' + esc(r2.name) + '</div><div class="slot-sub-text">' + esc(r2.category === 'acid' ? 'Asit' : (r2.category === 'base' ? 'Baz' : 'Tuz')) + ' • ' + esc(r2.state) + '</div>'
+                : '<div class="slot-main-text">2. Tepkeni Seç</div><div class="slot-sub-text">Aşağıdaki havuzdan ikinci maddeye tıkla</div>'
               ) +
             '</div>' +
           '</div>' +
 
           // Deneye Başla Butonu
-          '<button class="mebi-btn mebi-btn-primary" data-action="startExperiment" style="height:96px;min-width:180px;font-size:15px;" ' + (canStart ? '' : 'disabled') + '>' +
+          '<button class="mebi-btn mebi-btn-primary staging-start-btn" data-action="startExperiment" style="height:52px;min-width:160px;font-size:14px;padding:0 18px;" ' + (canStart ? '' : 'disabled') + '>' +
             '<span class="mebi-btn-badge">' + window.MebiSVG.icon('flaskIc') + '</span>' +
             '<span>Deney Masasına Geç</span>' +
           '</button>' +
+        '</div>' +
+
+        // Arama ve Filtre Kontrolleri
+        '<div class="pool-controls-bar">' +
+          '<div class="mebi-search-box">' +
+            window.MebiSVG.icon('search') +
+            '<input type="text" id="poolSearchInput" class="mebi-search-input" placeholder="Formül veya kimyasal ada göre filtrele..." value="' + esc(S.searchQuery) + '">' +
+          '</div>' +
+
+          '<div class="pool-filters">' +
+            '<button class="mebi-filter-chip ' + (S.categoryFilter === 'all' ? 'is-active' : '') + '" data-action="setFilter" data-arg="all">Tümü (12)</button>' +
+            '<button class="mebi-filter-chip ' + (S.categoryFilter === 'acid' ? 'is-active' : '') + '" data-action="setFilter" data-arg="acid">Asitler</button>' +
+            '<button class="mebi-filter-chip ' + (S.categoryFilter === 'base' ? 'is-active' : '') + '" data-action="setFilter" data-arg="base">Bazlar</button>' +
+            '<button class="mebi-filter-chip ' + (S.categoryFilter === 'salt' ? 'is-active' : '') + '" data-action="setFilter" data-arg="salt">Tuzlar</button>' +
+          '</div>' +
+        '</div>' +
+
+        // Madde Havuzu (ALT TARAFTA - 2 Satır x 6 Sütun, Beher filigransız)
+        '<div class="reagents-grid">' +
+          filteredReagents.map(function(r) {
+            var isSel1 = (S.selectedSlot1 === r.id);
+            var isSel2 = (S.selectedSlot2 === r.id);
+            var selCls = isSel1 ? ' selected-1' : (isSel2 ? ' selected-2' : '');
+            var catLabel = r.category === 'acid' ? 'Asit' : (r.category === 'base' ? 'Baz' : 'Tuz');
+            var stateClean = r.state ? r.state.replace(/[()]/g, '') : '';
+            var selBadge = isSel1
+              ? '<span class="card-sel-badge badge-slot1">1. TEPKEN</span>'
+              : (isSel2 ? '<span class="card-sel-badge badge-slot2">2. TEPKEN</span>' : '<span class="card-state-pill">' + esc(stateClean) + '</span>');
+
+            return '<div class="beaker-card' + selCls + '" data-action="clickReagent" data-arg="' + esc(r.id) + '" title="' + esc(r.name) + '">' +
+              '<div class="card-top-row">' +
+                '<span class="card-cat-tag cat-' + r.category + '">' + catLabel + '</span>' +
+                selBadge +
+              '</div>' +
+              '<div class="card-reagent-tile">' +
+                '<div class="card-formula-hero">' + esc(r.f) + '</div>' +
+              '</div>' +
+              '<div class="card-name">' + esc(r.name) + '</div>' +
+            '</div>';
+          }).join('') +
         '</div>' +
 
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--mebi-border);">' +
@@ -411,7 +435,7 @@
       statusTitle = 'Maddeler Karıştırılıyor...';
       dotClass = 'dot-reacting';
     } else if (S.labStep === 'reacting') {
-      statusTitle = 'Karıştırma sonrasında sıcaklıkta ölçülebilir bir değişim olup olmadığını gözlemleyiniz...';
+      statusTitle = 'Maddeler Karıştırılıyor ve Tepkime Gerçekleşiyor...';
       dotClass = 'dot-reacting';
     } else if (S.labStep === 'observed') {
       statusTitle = 'Tepkime Tamamlandı - Gözlem ve Kanıt Analizi';
@@ -420,6 +444,173 @@
 
     var curDelta = (S.currentTemp - rx.tempInit).toFixed(1);
     var deltaSign = curDelta > 0 ? ('+' + curDelta) : curDelta;
+
+    // Deney Masası Sağ Kontrol ve Gözlem Dock'u (Frosted Glass Panel)
+    var dockHTML = '';
+    var isNoneSelected = (S.prediction.indexOf('none') > -1);
+
+    if (S.labStep === 'predict') {
+      dockHTML = '<div class="bench-dock" id="benchDock">' +
+        '<div class="dock-header">' +
+          '<span class="dock-badge">1. AŞAMA: TAHMİN</span>' +
+          '<h3 class="dock-title">Olası Değişimleri Belirle</h3>' +
+          '<p class="dock-subtext">Bu iki madde karıştırıldığında hangi gözlenebilir değişimlerin gerçekleşebileceğini tahmin ediniz:</p>' +
+        '</div>' +
+        '<div class="dock-obs-grid">' +
+          window.MebiData.OBS.map(function(o) {
+            var sel = S.prediction.indexOf(o.key) > -1;
+            var isPassive = (isNoneSelected && o.key !== 'none');
+            var cls = 'dock-obs-chip' + (sel ? ' is-selected' : '') + (isPassive ? ' is-dimmed' : '');
+            return '<button type="button" class="' + cls + '" data-action="toggleObs" data-arg="' + o.key + '">' +
+              '<span class="dock-chip-left">' +
+                '<span class="dock-chip-icon">' + window.MebiSVG.icon(o.key) + '</span>' +
+                '<span class="dock-chip-label">' + esc(o.label) + '</span>' +
+              '</span>' +
+              '<span class="dock-chip-check">' + (sel ? '✓' : '') + '</span>' +
+            '</button>';
+          }).join('') +
+        '</div>' +
+        '<div class="dock-actions">' +
+          '<button class="mebi-btn mebi-btn-primary dock-btn-full" data-action="savePrediction" ' + (S.prediction.length === 0 ? 'disabled' : '') + '>' +
+            '<span class="mebi-btn-badge">' + window.MebiSVG.icon('check') + '</span>' +
+            '<span>Tahminimi Onayla ve Düzeneğe Geç</span>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    } else if (S.labStep === 'ready') {
+      dockHTML = '<div class="bench-dock" id="benchDock">' +
+        '<div class="dock-header">' +
+          '<span class="dock-badge mebi-badge-cyan">2. AŞAMA: KARIŞTIRMA</span>' +
+          '<h3 class="dock-title">Beheri Dökün veya Sürükleyin</h3>' +
+          '<p class="dock-subtext">Kaydedilen olası değişim tahminleriniz listelenmiştir. Maddeleri karıştırmak için sağdaki beheri dökünüz:</p>' +
+        '</div>' +
+        '<div class="dock-obs-grid">' +
+          window.MebiData.OBS.map(function(o) {
+            var sel = S.prediction.indexOf(o.key) > -1;
+            var cls = 'dock-obs-chip is-locked' + (sel ? ' is-selected' : ' feedback-neutral');
+            return '<div class="' + cls + '">' +
+              '<span class="dock-chip-left">' +
+                '<span class="dock-chip-icon">' + window.MebiSVG.icon(o.key) + '</span>' +
+                '<span class="dock-chip-label">' + esc(o.label) + '</span>' +
+              '</span>' +
+              (sel
+                ? '<span class="dock-chip-status status-pred">Tahmininiz</span>'
+                : '<span class="dock-chip-status status-neutral">Seçilmedi</span>'
+              ) +
+            '</div>';
+          }).join('') +
+        '</div>' +
+        '<div class="dock-actions">' +
+          '<button class="mebi-btn mebi-btn-primary dock-btn-full" data-action="triggerPour">' +
+            '<span class="mebi-btn-badge">' + window.MebiSVG.icon('flaskIc') + '</span>' +
+            '<span>Beheri Dök</span>' +
+          '</button>' +
+          '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm dock-btn-full" data-action="redoPrediction">' +
+            '<span class="mebi-btn-badge">' + window.MebiSVG.icon('undo') + '</span>' +
+            '<span>Tahmini Değiştir</span>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    } else if (S.labStep === 'pouring' || S.labStep === 'reacting') {
+      dockHTML = '<div class="bench-dock" id="benchDock">' +
+        '<div class="dock-header">' +
+          '<span class="dock-badge mebi-badge-indigo">CANLI TEPKİME</span>' +
+          '<h3 class="dock-title">Maddeler Karıştırılıyor...</h3>' +
+          '<p class="dock-subtext">Kap içerisindeki renk, gaz, çökelti ve sıcaklık değişimlerini izleyiniz.</p>' +
+        '</div>' +
+        '<div class="dock-obs-grid">' +
+          window.MebiData.OBS.map(function(o) {
+            var sel = S.prediction.indexOf(o.key) > -1;
+            var cls = 'dock-obs-chip is-locked' + (sel ? ' is-selected' : ' feedback-neutral');
+            return '<div class="' + cls + '">' +
+              '<span class="dock-chip-left">' +
+                '<span class="dock-chip-icon">' + window.MebiSVG.icon(o.key) + '</span>' +
+                '<span class="dock-chip-label">' + esc(o.label) + '</span>' +
+              '</span>' +
+              (sel
+                ? '<span class="dock-chip-status status-pred">Tahmininiz</span>'
+                : '<span class="dock-chip-status status-neutral">Seçilmedi</span>'
+              ) +
+            '</div>';
+          }).join('') +
+        '</div>' +
+        '<div class="dock-live-box" style="margin-top:4px;">' +
+          '<span class="sensor-pulse-dot dot-reacting"></span>' +
+          '<span>Reaksiyon devam ediyor...</span>' +
+        '</div>' +
+      '</div>';
+    } else if (S.labStep === 'observed') {
+      var exact = sameSet(S.prediction, rx.obs);
+      var hasNone = rx.obs.indexOf('none') > -1;
+
+      var feedbackItemsHTML = window.MebiData.OBS.map(function(o) {
+        var isPred = S.prediction.indexOf(o.key) > -1;
+        var isReal = rx.obs.indexOf(o.key) > -1;
+
+        var cls = 'dock-obs-chip is-locked';
+        var badgeHTML = '';
+
+        if (isPred && isReal) {
+          cls += ' feedback-correct';
+          badgeHTML = '<span class="dock-chip-status status-correct">✓ Doğru Tahmin</span>';
+        } else if (isPred && !isReal) {
+          cls += ' feedback-wrong';
+          badgeHTML = '<span class="dock-chip-status status-wrong">✕ Gerçekleşmedi</span>';
+        } else if (!isPred && isReal) {
+          cls += ' feedback-missed';
+          badgeHTML = '<span class="dock-chip-status status-missed">! Gözden Kaçtı</span>';
+        } else {
+          cls += ' feedback-neutral';
+          badgeHTML = '<span class="dock-chip-status status-neutral">Gözlenmedi</span>';
+        }
+
+        return '<div class="' + cls + '">' +
+          '<span class="dock-chip-left">' +
+            '<span class="dock-chip-icon">' + window.MebiSVG.icon(o.key) + '</span>' +
+            '<span class="dock-chip-label">' + esc(o.label) + '</span>' +
+          '</span>' +
+          badgeHTML +
+        '</div>';
+      }).join('');
+
+      dockHTML = '<div class="bench-dock" id="benchDock">' +
+        '<div class="dock-header">' +
+          '<span class="dock-badge ' + (exact ? 'mebi-badge-success' : 'mebi-badge-indigo') + '">' +
+            (exact ? 'TAM İSABET • DOĞRU TAHMİN' : 'DENEY SONUÇLANDI') +
+          '</span>' +
+          '<h3 class="dock-title">' + (exact ? 'Tebrikler! Mükemmel Tahmin' : 'Tahmin & Sonuç Analizi') + '</h3>' +
+          '<p class="dock-subtext">' +
+            (exact
+              ? 'Tüm olası değişimleri eksiksiz ve doğru tahmin ettiniz.'
+              : 'Gerçekleşen kanıtlar ve tahminleriniz aşağıda eşleştirildi:'
+            ) +
+          '</p>' +
+        '</div>' +
+        '<div class="dock-obs-grid">' +
+          feedbackItemsHTML +
+        '</div>' +
+        (rx.hasTempRise
+          ? '<div class="dock-result-temp" style="font-size:11px;color:var(--mebi-danger);font-weight:700;display:flex;align-items:center;gap:6px;padding:4px 8px;border-radius:6px;background:rgba(239,68,68,0.12);">' +
+              window.MebiSVG.icon('temp') +
+              '<span>Ekzotermik (' + S.currentTemp.toFixed(1) + '°C - Sıcaklık Artışı)</span>' +
+            '</div>'
+          : '<div class="dock-result-temp" style="font-size:11px;color:var(--mebi-info);font-weight:700;display:flex;align-items:center;gap:6px;padding:4px 8px;border-radius:6px;background:rgba(139,92,246,0.12);">' +
+              window.MebiSVG.icon('temp') +
+              '<span>İzotermik (' + S.currentTemp.toFixed(1) + '°C - Sıcaklık Değişimi Yok)</span>' +
+            '</div>'
+        ) +
+        '<div class="dock-actions">' +
+          '<button class="mebi-btn mebi-btn-primary dock-btn-full" data-action="toCard">' +
+            '<span class="mebi-btn-badge">' + window.MebiSVG.icon('flaskOutline') + '</span>' +
+            '<span>Rapor ve Değerlendirmeye Geç →</span>' +
+          '</button>' +
+          '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm dock-btn-full" data-action="redoPrediction">' +
+            '<span class="mebi-btn-badge">' + window.MebiSVG.icon('undo') + '</span>' +
+            '<span>Tahmine Dön</span>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    }
 
     var html = topbarHTML(true) +
       '<div class="mebi-card">' +
@@ -440,252 +631,76 @@
 
         // Deney Tezgahı
         '<div class="lab-bench" id="labBenchContainer">' +
-          // Canlı Sensör ve Telemetri Çubuğu (Yönerge: "Sıcaklık Değişimi")
-          '<div class="lab-sensor-bar">' +
-            '<div class="sensor-status-chip">' +
-              '<span class="sensor-pulse-dot ' + dotClass + '"></span>' +
-              '<span>' + statusTitle + '</span>' +
-            '</div>' +
+          // Tezgah Çalışma Alanı: Solda Beherler, Sağda Gözlem Dock Paneli
+          '<div class="bench-stage">' +
+            '<div class="bench-items">' +
+              // Sabit Beher
+              '<div class="vessel-main-wrap" id="mainVessel">' +
+                vaporHTML +
+                '<div class="main-beaker-glass">' +
+                  // 1. Gerçek Borosilikat Beher Arka Camı ve Ağız Arka Çizgisi (z-index: 2)
+                  window.MebiSVG.renderRealisticMainBeakerBackSVG() +
 
-            '<div class="sensor-detectors-wrap">' +
-              '<div class="sensor-detector-pill' + (isReacting && rx.obs.indexOf('gas') > -1 ? ' is-active' : '') + '">' +
-                window.MebiSVG.icon('gas') + '<span>Gaz Çıkışı</span>' +
-              '</div>' +
-              '<div class="sensor-detector-pill' + (isReacting && rx.obs.indexOf('precipitate') > -1 ? ' is-active' : '') + '">' +
-                window.MebiSVG.icon('precipitate') + '<span>Çökelti</span>' +
-              '</div>' +
-              '<div class="sensor-detector-pill' + (isReacting && rx.obs.indexOf('color') > -1 ? ' is-active' : '') + '">' +
-                window.MebiSVG.icon('color') + '<span>Renk Değişimi</span>' +
-              '</div>' +
-              '<div class="sensor-detector-pill' + (isReacting && rx.obs.indexOf('temp') > -1 ? ' is-active' : '') + '">' +
-                window.MebiSVG.icon('temp') + '<span>Sıcaklık Değişimi</span>' +
-              '</div>' +
-            '</div>' +
-
-            '<div class="sensor-temp-block">' +
-              '<div class="sensor-temp-display" id="sensorTempDisplay">' +
-                window.MebiSVG.icon('temp') +
-                '<span>' + S.currentTemp.toFixed(1) + '°C</span>' +
-                '<span style="font-size:11px;opacity:0.85;margin-left:4px;">(ΔT: ' + deltaSign + '°C)</span>' +
-              '</div>' +
-              '<span class="sensor-temp-badge ' + (rx.hasTempRise ? 'badge-exothermic' : 'badge-isothermic') + '">' +
-                (rx.hasTempRise ? 'EKZOTERMİK' : 'İZOTERMİK') +
-              '</span>' +
-            '</div>' +
-          '</div>' +
-
-          // Laboratuvar Standı
-          '<div class="lab-stand-base"></div>' +
-          '<div class="lab-stand-rod"></div>' +
-          '<div class="lab-stand-clamp"></div>' +
-
-          '<div class="bench-items">' +
-            // Sabit Beher
-            '<div class="vessel-main-wrap" id="mainVessel">' +
-              vaporHTML +
-              '<div class="main-beaker-glass">' +
-                // Dijital Laboratuvar Termometresi (Paslanmaz Daldırma Probu)
-                '<div class="digital-thermo-wrap" id="digitalThermoWrap">' +
-                  '<div class="digital-thermo-head' + ((isReacting && rx.hasTempRise) ? ' is-heating' : '') + '" id="digitalThermoHead">' +
-                    '<div class="digital-head-top">' +
-                      '<span class="digital-brand-label">DİJİTAL TERMOMETRE</span>' +
-                      '<span class="digital-status-led" id="digitalStatusLed" title="Sensör Aktif"></span>' +
-                    '</div>' +
-                    '<div class="digital-lcd-display">' +
-                      '<span class="digital-temp-value" id="digitalTempValue">' + S.currentTemp.toFixed(1) + '</span>' +
-                      '<span class="digital-temp-unit">°C</span>' +
-                    '</div>' +
-                    '<div class="digital-head-bottom">' +
-                      '<span class="digital-sub-label">PASLANMAZ PROB</span>' +
-                      '<span class="digital-mode-tag">CANLI</span>' +
-                    '</div>' +
+                  // 2. Sıvı ve Reaksiyon Haznesi (z-index: 5)
+                  '<div class="main-beaker-interior">' +
+                    mainInteriorHTML +
                   '</div>' +
-                  '<div class="digital-probe-collar"></div>' +
-                  '<div class="digital-probe-stem">' +
-                    '<div class="digital-probe-ticks"></div>' +
+
+                  // 3. Dijital Laboratuvar Termometresi (Prob beherin içinde, Gösterge beherin biraz üstünde)
+                  '<div class="digital-thermo-wrap" id="digitalThermoWrap">' +
+                    '<div class="digital-thermo-head' + ((isReacting && rx.hasTempRise) ? ' is-heating' : '') + '" id="digitalThermoHead">' +
+                      '<div class="digital-head-top">' +
+                        '<span class="digital-brand-label">DİJİTAL TERMOMETRE</span>' +
+                        '<span class="digital-status-led" id="digitalStatusLed" title="Sensör Aktif"></span>' +
+                      '</div>' +
+                      '<div class="digital-lcd-display">' +
+                        '<span class="digital-temp-value" id="digitalTempValue">' + S.currentTemp.toFixed(1) + '</span>' +
+                        '<span class="digital-temp-unit">°C</span>' +
+                      '</div>' +
+                      '<div class="digital-head-bottom">' +
+                        '<span class="digital-sub-label">PASLANMAZ PROB</span>' +
+                        '<span class="digital-mode-tag">CANLI</span>' +
+                      '</div>' +
+                    '</div>' +
+                    '<div class="digital-probe-collar"></div>' +
+                    '<div class="digital-probe-stem">' +
+                      '<div class="digital-probe-ticks"></div>' +
+                    '</div>' +
+                    '<div class="digital-probe-tip"></div>' +
                   '</div>' +
-                  '<div class="digital-probe-tip"></div>' +
-                '</div>' +
 
-                // Sıvı ve Reaksiyon Haznesi
-                '<div class="main-beaker-interior">' +
-                  mainInteriorHTML +
+                  // 4. Gerçek Borosilikat Cam Beher Ön Modeli (Ön ağız kavisi, Boro 3.3 emaye skala, parlamalar - z-index: 8)
+                  window.MebiSVG.renderRealisticMainBeakerGlassSVG() +
                 '</div>' +
-
-                // Cam Beher SVG Çerçeve
-                '<svg viewBox="0 0 150 185" width="150" height="185" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:8;">' +
-                  '<g opacity="0.85" fill="var(--mebi-glass-grad)" font-family="sans-serif" font-size="7.5" font-weight="700" text-anchor="middle">' +
-                    '<line x1="45" y1="55" x2="85" y2="55" stroke="var(--mebi-glass-grad)" stroke-width="1.3"/><text x="65" y="52">-250-</text>' +
-                    '<line x1="48" y1="80" x2="82" y2="80" stroke="var(--mebi-glass-grad)" stroke-width="1.2"/><text x="65" y="77">-200-</text>' +
-                    '<line x1="48" y1="105" x2="82" y2="105" stroke="var(--mebi-glass-grad)" stroke-width="1.2"/><text x="65" y="102">-150-</text>' +
-                    '<line x1="48" y1="130" x2="82" y2="130" stroke="var(--mebi-glass-grad)" stroke-width="1.2"/><text x="65" y="127">-100-</text>' +
-                  '</g>' +
-                  '<line x1="22" y1="26" x2="22" y2="160" stroke="rgba(255,255,255,0.45)" stroke-width="1.8" stroke-linecap="round"/>' +
-                  '<path d="M 8 18 L 14 18 L 14 24 L 14 165 A 14 14 0 0 0 28 179 L 122 179 A 14 14 0 0 0 136 165 L 136 18 L 142 18" fill="none" stroke="var(--mebi-glass-stroke)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>' +
-                  '<path d="M 8 18 L 14 24" stroke="var(--mebi-glass-stroke-rim)" stroke-width="3.2" stroke-linecap="round"/>' +
-                  '<ellipse cx="75" cy="18" rx="61" ry="4.5" fill="none" stroke="var(--mebi-glass-stroke-rim)" stroke-width="2.4"/>' +
-                '</svg>' +
+                '<div class="reagent-tag">' +
+                  '<div class="reagent-formula">' + esc(r1.f) + '</div>' +
+                  '<div class="reagent-name">' + esc(r1.name) + '</div>' +
+                  '<div class="reagent-state">' + esc(r1.state) + '</div>' +
+                '</div>' +
               '</div>' +
-              '<div class="reagent-tag">' +
-                '<div class="reagent-formula">' + esc(r1.f) + '</div>' +
-                '<div class="reagent-name">' + esc(r1.name) + '</div>' +
-                '<div class="reagent-state">' + esc(r1.state) + '</div>' +
+
+              // Dökülecek Beher
+              '<div class="vessel-drag-wrap' + (S.labStep === 'pouring' ? ' pouring' : '') + '" id="dragReagentWrap">' +
+                '<div class="drag-beaker' + (S.labStep === 'pouring' ? ' pouring' : '') + '" id="dragBeaker">' +
+                  (S.labStep === 'ready' ? '<div class="hand-guide-pill">' + window.MebiSVG.icon('handIc') + 'Tutup Ağız Hizasına Sürükle</div>' : '') +
+                  (isR2Solid
+                    ? '<div class="drag-powder" style="height:' + (isPoured ? '0%' : '60%') + ';"></div>'
+                    : '<div class="drag-liquid" style="background:' + (r2.id === 'Cu(NO3)2' ? '#0284c7' : 'rgba(232, 244, 253, 0.55)') + ';height:' + (isPoured ? '0%' : '65%') + ';"></div>'
+                  ) +
+                  window.MebiSVG.renderRealisticDragBeakerGlassSVG() +
+                  '<div class="pour-stream' + (isR2Solid ? ' powder-stream' : '') + (S.labStep === 'pouring' ? ' active' : '') + '" id="pourStream"></div>' +
+                '</div>' +
+                '<div class="reagent-tag">' +
+                  '<div class="reagent-formula">' + esc(r2.f) + '</div>' +
+                  '<div class="reagent-name">' + esc(r2.name) + '</div>' +
+                  '<div class="reagent-state">' + esc(r2.state) + '</div>' +
+                '</div>' +
               '</div>' +
             '</div>' +
-
-            // Dökülecek Beher
-            '<div class="vessel-drag-wrap' + (S.labStep === 'pouring' ? ' pouring' : '') + '" id="dragReagent">' +
-              (S.labStep === 'ready' ? '<div class="hand-guide-pill">' + window.MebiSVG.icon('handIc') + 'Tutup Ağız Hizasına Sürükle</div>' : '') +
-              '<div class="drag-beaker" id="dragBeaker">' +
-                '<div class="drag-beaker-spout"></div>' +
-                (isR2Solid
-                  ? '<div class="drag-powder" style="height:' + (isPoured ? '0%' : '60%') + ';"></div>'
-                  : '<div class="drag-liquid" style="background:' + (r2.id === 'Cu(NO3)2' ? '#0284c7' : 'rgba(232, 244, 253, 0.55)') + ';height:' + (isPoured ? '0%' : '65%') + ';"></div>'
-                ) +
-                '<div class="pour-stream' + (isR2Solid ? ' powder-stream' : '') + (S.labStep === 'pouring' ? ' active' : '') + '" id="pourStream"></div>' +
-              '</div>' +
-              '<div class="reagent-tag">' +
-                '<div class="reagent-formula">' + esc(r2.f) + '</div>' +
-                '<div class="reagent-name">' + esc(r2.name) + '</div>' +
-                '<div class="reagent-state">' + esc(r2.state) + '</div>' +
-              '</div>' +
-              (S.labStep === 'ready'
-                ? '<button type="button" class="mebi-btn mebi-btn-primary beaker-side-pour-btn" data-action="triggerPour" title="Beheri Dök">' +
-                    '<span class="mebi-btn-badge">' + window.MebiSVG.icon('flaskIc') + '</span>' +
-                    '<span class="mebi-btn-text">Beheri Dök</span>' +
-                  '</button>'
-                : ''
-              ) +
-            '</div>' +
           '</div>' +
-          '<div class="lab-surface"></div>' +
+
+          dockHTML +
         '</div>';
-
-    // Aşama 1: Tahmin Yapma & Dökme (Yönergedeki Soru Metni: "Bu iki madde karıştırıldığında hangi gözlenebilir...")
-    if (S.labStep === 'predict' || S.labStep === 'ready') {
-      var isNoneSelected = (S.prediction.indexOf('none') > -1);
-
-      html += '<div style="margin-top:16px;">' +
-        '<div style="font-size:16px;font-weight:800;color:var(--mebi-text-main);">Bu iki madde karıştırıldığında hangi gözlenebilir değişimlerin gerçekleşebileceğini tahmin ediniz.</div>' +
-        '<p style="font-size:13px;color:var(--mebi-text-secondary);margin-top:6px;">Karıştırma sonrasında sıcaklıkta ölçülebilir bir değişim olup olmadığını gözlemleyiniz.</p>' +
-        '<p style="font-size:13px;color:var(--mebi-text-secondary);margin-top:4px;">Beklediğin olası kanıtları aşağıdaki seçeneklerden işaretleyebilirsin (veya belirgin değişim beklemiyorsan ilgili seçeneği seçebilirsin):</p>' +
-        '<div class="observation-grid">' +
-          window.MebiData.OBS.map(function(o) {
-            var sel = S.prediction.indexOf(o.key) > -1;
-            var isPassive = (isNoneSelected && o.key !== 'none');
-            var cls = 'observation-chip' + (sel ? ' is-selected' : '') + (isPassive ? ' is-dimmed' : '');
-
-            return '<button class="' + cls + '" data-action="toggleObs" data-arg="' + o.key + '">' +
-              window.MebiSVG.icon(o.key) +
-              '<span>' + o.label + '</span>' +
-            '</button>';
-          }).join('') +
-        '</div>' +
-
-        '<div style="display:flex;gap:12px;margin-top:18px;align-items:center;flex-wrap:wrap;">';
-          if (S.labStep === 'predict') {
-            html += '<button class="mebi-btn mebi-btn-primary" data-action="savePrediction" ' + (S.prediction.length === 0 ? 'disabled' : '') + '>' +
-              '<span class="mebi-btn-badge">' + window.MebiSVG.icon('check') + '</span>' +
-              '<span class="mebi-btn-text">Tahminimi Onayla ve Düzeneğe Geç</span>' +
-            '</button>' +
-            '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm" data-action="undoLast">' +
-              '<span class="mebi-btn-badge">' + window.MebiSVG.icon('undo') + '</span>' +
-              '<span class="mebi-btn-text">Geri Al</span>' +
-            '</button>';
-          } else {
-            html += '<button class="mebi-btn mebi-btn-primary" data-action="triggerPour">' +
-              '<span class="mebi-btn-badge">' + window.MebiSVG.icon('flaskIc') + '</span>' +
-              '<span class="mebi-btn-text">Beheri Dök</span>' +
-            '</button>' +
-            '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm" data-action="undoLast">' +
-              '<span class="mebi-btn-badge">' + window.MebiSVG.icon('undo') + '</span>' +
-              '<span class="mebi-btn-text">Geri Al (Tahmine Dön)</span>' +
-            '</button>';
-          }
-        html += '</div>' +
-      '</div>';
-    }
-
-    // Aşama 2: Tepkime Sürüyor
-    if (S.labStep === 'pouring' || S.labStep === 'reacting') {
-      html += '<div class="mebi-panel mebi-panel-info" style="margin-top:16px;">' +
-        '<div class="mebi-panel-icon">' + window.MebiSVG.icon('sparkles') + '</div>' +
-        '<div class="mebi-panel-content">' +
-          '<div class="mebi-panel-title">Maddeler Temas Etti ve Süreç Başladı!</div>' +
-          '<div class="mebi-panel-text">Karıştırma sonrasında sıcaklıkta ölçülebilir bir değişim olup olmadığını gözlemleyiniz.</div>' +
-        '</div>' +
-      '</div>';
-    }
-
-    // Aşama 3: Gözlem ve Tahmin Analiz Matrisi (Yönerge Metni Uygulandı)
-    if (S.labStep === 'observed') {
-      var exact = sameSet(S.prediction, rx.obs);
-
-      html += '<div class="obs-matrix-wrap">' +
-        '<div class="obs-matrix-header">' +
-          '<div>' +
-            '<div style="font-size:16px;font-weight:800;color:var(--mebi-text-main);">Laboratuvar Gözlem ve Tahmin Analiz Matrisi</div>' +
-            '<div style="font-size:13px;color:var(--mebi-text-secondary);margin-top:2px;">Önceden yaptığın tahmin ile laboratuvarda tespit edilen fiziksel kanıtların karşılaştırması:</div>' +
-          '</div>' +
-          '<div class="mebi-badge ' + (exact ? 'mebi-badge-success' : 'mebi-badge-indigo') + '">' +
-            (exact ? 'TAM İSABET' : 'ANALİZ TAMAMLANDI') +
-          '</div>' +
-        '</div>' +
-
-        '<div class="obs-matrix-grid">' +
-          window.MebiData.OBS.map(function(o) {
-            var isReal = rx.obs.indexOf(o.key) > -1;
-            var wasPicked = S.prediction.indexOf(o.key) > -1;
-
-            var resultBadge = '';
-            if (isReal && wasPicked) {
-              resultBadge = '<span class="obs-matrix-result-badge obs-result-hit">TAM İSABET ✓</span>';
-            } else if (!isReal && !wasPicked) {
-              resultBadge = '<span class="obs-matrix-result-badge obs-result-hit">DOĞRU DIŞLANDI ✓</span>';
-            } else if (!isReal && wasPicked) {
-              resultBadge = '<span class="obs-matrix-result-badge obs-result-miss">GERÇEKLEŞMEDİ ✕</span>';
-            } else if (isReal && !wasPicked) {
-              resultBadge = '<span class="obs-matrix-result-badge obs-result-over">FARK EDİLMEDİ !</span>';
-            }
-
-            return '<div class="obs-matrix-card">' +
-              '<div class="obs-matrix-card-top">' +
-                '<div class="obs-matrix-icon-box">' + window.MebiSVG.icon(o.key) + '</div>' +
-                '<div class="obs-matrix-title">' + o.label + '</div>' +
-              '</div>' +
-              '<div class="obs-matrix-status-row">' +
-                '<div class="obs-status-label"><span>Tahminin:</span> <strong>' + (wasPicked ? 'Bekledin' : 'Beklemedin') + '</strong></div>' +
-                '<div class="obs-status-label"><span>Laboratuvar:</span> <strong>' + (isReal ? 'Gerçekleşti' : 'Gerçekleşmedi') + '</strong></div>' +
-              '</div>' +
-              resultBadge +
-            '</div>';
-          }).join('') +
-        '</div>' +
-
-        // Yönergedeki kesin ifade: "Deney sırasında gözlenen değişimleri yukarıdaki kutulardan inceleyiniz. Yeşil onay işareti bulunan kutular..."
-        '<div class="mebi-panel mebi-panel-info" style="margin-top:16px;">' +
-          '<div class="mebi-panel-icon">' + window.MebiSVG.icon('info') + '</div>' +
-          '<div class="mebi-panel-content">' +
-            '<div class="mebi-panel-title">Gözlem Analizi Notu</div>' +
-            '<div class="mebi-panel-text">Deney sırasında gözlenen değişimleri yukarıdaki kutulardan inceleyiniz. Yeşil onay işareti bulunan kutular, kimyasal değişime ilişkin gözlenen makroskopik bulguları göstermektedir.</div>' +
-          '</div>' +
-        '</div>' +
-
-        '<div class="obs-matrix-reason-box">' +
-          '<b>Laboratuvar Kanıt Notu:</b> ' + esc(rx.macroProductsText) +
-        '</div>';
-
-      html += '<div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">' +
-        '<button class="mebi-btn mebi-btn-primary" data-action="toCard">' +
-          '<span class="mebi-btn-badge">' + window.MebiSVG.icon('flaskOutline') + '</span>' +
-          '<span>Laboratuvar Raporu ve Değerlendirmeye Geç</span>' +
-        '</button>' +
-        '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm" data-action="undoLast">' +
-          '<span class="mebi-btn-badge">' + window.MebiSVG.icon('undo') + '</span>' +
-          '<span>Tahmine Dön</span>' +
-        '</button>' +
-      '</div></div>';
-    }
 
     html += '</div>';
     return html;
@@ -1247,7 +1262,7 @@
 
   /* ----------------- 4. SÜRÜKLE VE BIRAK MOTORU (DRAG & DROP) ----------------- */
   function wireDragAndDrop() {
-    var dragEl = document.getElementById('dragReagent');
+    var dragEl = document.getElementById('dragBeaker');
     var mainVessel = document.getElementById('mainVessel');
     var bench = document.getElementById('labBenchContainer');
     if (!dragEl || !mainVessel || !bench || S.labStep !== 'ready') return;
@@ -1322,6 +1337,12 @@
     },
     goPool: function() {
       S.screen = 'pool';
+      S.selectedSlot1 = null;
+      S.selectedSlot2 = null;
+      S.activeReaction = null;
+      S.poured = false;
+      S.labStep = 'predict';
+      S.prediction = [];
       render();
     },
     goCollection: function() {
@@ -1451,6 +1472,15 @@
     savePrediction: function() {
       if (window.MebiAudio) window.MebiAudio.playClick();
       S.labStep = 'ready';
+      render();
+    },
+    redoPrediction: function() {
+      if (window.MebiAudio) window.MebiAudio.playClick();
+      S.labStep = 'predict';
+      S.poured = false;
+      if (S.activeReaction) {
+        S.currentTemp = S.activeReaction.tempInit;
+      }
       render();
     },
     triggerPour: function() {
@@ -1820,6 +1850,12 @@
       if (window.MebiAudio) window.MebiAudio.playClick();
       if (HISTORY.length > 0) {
         var prev = JSON.parse(HISTORY.pop());
+        if (prev.screen === 'pool') {
+          prev.selectedSlot1 = null;
+          prev.selectedSlot2 = null;
+          prev.activeReaction = null;
+          prev.prediction = [];
+        }
         S = prev;
         render();
       } else {
@@ -1832,6 +1868,10 @@
             S.labStep = 'predict';
           } else {
             S.screen = 'pool';
+            S.selectedSlot1 = null;
+            S.selectedSlot2 = null;
+            S.activeReaction = null;
+            S.prediction = [];
           }
         } else if (S.screen === 'card') {
           S.screen = 'lab';

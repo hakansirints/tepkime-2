@@ -106,8 +106,80 @@
 
 /* ----------------- 2. MADDE HAVUZU EKRANI ----------------- */
 .pool-intro {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
   text-align: center;
+  position: relative;
+  padding: 4px 12px;
+}
+
+.pool-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.pool-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 12px;
+  border-radius: var(--mebi-radius-full);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  background: var(--mebi-bg-subtle);
+  color: var(--mebi-text-secondary);
+  border: 1px solid var(--mebi-border);
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.pool-status-chip.status-partial {
+  background: var(--mebi-primary-light);
+  color: var(--mebi-primary);
+  border-color: var(--mebi-primary-border);
+}
+
+.pool-status-chip.status-ready {
+  background: var(--mebi-success-light);
+  color: var(--mebi-success-taban);
+  border-color: var(--mebi-success-border);
+}
+
+[data-theme="dark"] .pool-status-chip {
+  background: #27272a;
+  border-color: #3f3f46;
+  color: #a1a1aa;
+}
+[data-theme="dark"] .pool-status-chip.status-partial {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.4);
+}
+[data-theme="dark"] .pool-status-chip.status-ready {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.pool-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: var(--mebi-text-main);
+  margin-top: 4px;
+  margin-bottom: 6px;
+}
+
+.pool-subtitle {
+  color: var(--mebi-text-secondary);
+  font-size: 14px;
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.5;
 }
 
 .pool-controls-bar {
@@ -158,33 +230,48 @@
   color: #ffffff;
 }
 
-/* Reaktifler Izgarası (Beaker Grid - Referans Görsel Standardı: 4 Sütun x 3 Satır) */
+/* Reaktifler Izgarası (Kesin 2 Satır x 6 Sütun Standart Düzeni) */
 .reagents-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 28px;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-@media (max-width: 920px) {
+@media (max-width: 1024px) {
   .reagents-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
+    gap: 8px;
+    margin-bottom: 16px;
   }
 }
-@media (max-width: 620px) {
+
+/* Mobil tarayıcılarda iki satır kuralını garantileyen akıllı düzen */
+@media (max-width: 760px) {
   .reagents-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(118px, 1fr);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 6px;
+    gap: 8px;
+  }
+  .reagents-grid .beaker-card {
+    scroll-snap-align: start;
   }
 }
 
 .beaker-card {
-  background: #f1f5f9;
-  border: 1.5px solid #cbd5e1;
-  box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.06), 0 2px 0 #cbd5e1;
-  border-radius: var(--mebi-radius-lg);
-  padding: 16px 14px 14px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1.5px solid rgba(203, 213, 225, 0.80);
+  box-shadow: 0 3px 10px -2px rgba(15, 23, 42, 0.04), 0 2.5px 0 var(--mebi-base-card);
+  border-radius: var(--mebi-radius-md);
+  padding: 9px 8px 9px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -193,110 +280,264 @@
   position: relative;
   transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background-color 160ms ease;
   user-select: none;
+  min-height: 122px;
+  justify-content: space-between;
 }
 
 .beaker-card:hover {
-  transform: translateY(-4px);
-  background: #f8fafc;
-  box-shadow: 0 10px 24px -4px rgba(15, 23, 42, 0.12), 0 3px 0 #94a3b8;
-  border-color: #94a3b8;
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 8px 18px -4px rgba(15, 23, 42, 0.08), 0 3px 0 var(--mebi-border-hover);
+  border-color: var(--mebi-border-hover);
 }
 
 [data-theme="dark"] .beaker-card {
-  background: var(--mebi-bg-surface);
-  border-color: var(--mebi-border);
-  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.4);
+  background: rgba(34, 34, 40, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.4), 0 3px 0 var(--mebi-base-card);
 }
 
 [data-theme="dark"] .beaker-card:hover {
-  background: var(--mebi-bg-subtle);
+  background: rgba(48, 48, 56, 0.90);
   border-color: var(--mebi-border-hover);
-  box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.6), 0 4px 0 #2e2e33;
 }
 
 .beaker-card.selected-1 {
   background: var(--mebi-primary-light);
   border-color: var(--mebi-primary);
-  box-shadow: 0 0 0 2.5px var(--mebi-primary), 0 8px 24px -4px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 0 0 2.5px var(--mebi-primary), 0 8px 24px -4px rgba(37, 99, 235, 0.28), 0 4px 0 var(--mebi-primary-taban);
 }
 [data-theme="dark"] .beaker-card.selected-1 {
-  background: rgba(59, 130, 246, 0.2);
+  background: rgba(59, 130, 246, 0.18);
   border-color: #3b82f6;
-  box-shadow: 0 0 0 2.5px #3b82f6;
+  box-shadow: 0 0 0 2.5px #3b82f6, 0 8px 24px -4px rgba(59, 130, 246, 0.35), 0 4px 0 #1e3a8a;
 }
 
 .beaker-card.selected-2 {
   background: var(--mebi-success-light);
   border-color: var(--mebi-success);
-  box-shadow: 0 0 0 2.5px var(--mebi-success), 0 8px 24px -4px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 0 2.5px var(--mebi-success), 0 8px 24px -4px rgba(16, 185, 129, 0.28), 0 4px 0 var(--mebi-success-taban);
 }
 [data-theme="dark"] .beaker-card.selected-2 {
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.18);
   border-color: #10b981;
-  box-shadow: 0 0 0 2.5px #10b981;
+  box-shadow: 0 0 0 2.5px #10b981, 0 8px 24px -4px rgba(16, 185, 129, 0.35), 0 4px 0 #065f46;
 }
 
-.card-beaker-box {
-  width: 98px;
-  height: 114px;
+.card-top-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 8px;
-  background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
-  border-radius: 14px;
-  border: 1px solid rgba(203, 213, 225, 0.7);
-  box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.05), 0 1px 0 rgba(255, 255, 255, 0.9);
-  padding: 4px;
-  box-sizing: border-box;
+  justify-content: space-between;
+  width: 100%;
+  gap: 4px;
 }
 
-[data-theme="dark"] .card-beaker-box {
-  background: rgba(0, 0, 0, 0.25);
-  border-color: rgba(255, 255, 255, 0.06);
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
-}
-
-.card-beaker-box svg,
-.slot-beaker-box svg {
-  transition: transform 0.2s ease;
-}
-
-.beaker-card:hover .card-beaker-box svg {
-  transform: scale(1.03);
-}
-
-.card-formula {
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--mebi-text-main);
+.card-cat-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1.5px 6px;
+  border-radius: var(--mebi-radius-full);
   line-height: 1.25;
+  letter-spacing: 0.1px;
+}
+
+.card-cat-tag.cat-acid {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.card-cat-tag.cat-base {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.card-cat-tag.cat-salt {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+[data-theme="dark"] .card-cat-tag.cat-acid {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+[data-theme="dark"] .card-cat-tag.cat-base {
+  background: rgba(2, 132, 199, 0.2);
+  color: #7dd3fc;
+  border-color: rgba(2, 132, 199, 0.35);
+}
+
+[data-theme="dark"] .card-cat-tag.cat-salt {
+  background: rgba(16, 185, 129, 0.2);
+  color: #86efac;
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.card-state-pill {
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: var(--mebi-radius-full);
+  background: var(--mebi-bg-subtle);
+  color: var(--mebi-text-secondary);
+  border: 1px solid var(--mebi-border);
+  line-height: 1.25;
+}
+
+.card-sel-badge {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1.5px 5.5px;
+  border-radius: var(--mebi-radius-full);
+  letter-spacing: 0.2px;
+}
+.card-sel-badge.badge-slot1 {
+  background: var(--mebi-primary);
+  color: #ffffff;
+}
+.card-sel-badge.badge-slot2 {
+  background: var(--mebi-success);
+  color: #ffffff;
+}
+
+/* Kimyasal Reaktif Karo Alanı (2 satır uyumlu kompakt boyut) */
+.card-reagent-tile {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: var(--mebi-bg-subtle);
+  border: 1px solid var(--mebi-border);
+  border-radius: var(--mebi-radius-sm);
+  margin: 6px 0 5px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+[data-theme="dark"] .card-reagent-tile {
+  background: rgba(0, 0, 0, 0.22);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+.card-tile-watermark {
+  position: absolute;
+  opacity: 0.07;
+  width: 38px;
+  height: 38px;
+  pointer-events: none;
+}
+[data-theme="dark"] .card-tile-watermark {
+  opacity: 0.12;
+}
+
+.card-formula-hero {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15.5px;
+  font-weight: 800;
   letter-spacing: -0.2px;
+  color: var(--mebi-text-main);
+  position: relative;
+  z-index: 1;
 }
 
 .card-name {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--mebi-text-main);
+  margin-top: 1px;
+  line-height: 1.25;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Yatay mobil cihazlarda tek bakışta sığmayı sağlayan mikro optimizasyon */
+@media (max-height: 540px) {
+  .pool-intro {
+    margin-bottom: 10px;
+    padding: 2px 0;
+  }
+  .pool-badge-row {
+    margin-bottom: 4px;
+    gap: 6px;
+  }
+  .pool-title {
+    font-size: 19px;
+    margin-top: 1px;
+    margin-bottom: 2px;
+  }
+  .pool-subtitle {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+  .pool-controls-bar {
+    margin-bottom: 8px;
+    gap: 8px;
+  }
+  .beaker-card {
+    min-height: 110px;
+    padding: 7px 5px 6px;
+  }
+  .card-reagent-tile {
+    height: 40px;
+    margin: 4px 0 4px;
+  }
+  .card-formula-hero {
+    font-size: 14px;
+  }
+  .card-name {
+    font-size: 10.5px;
+  }
+  .staging-area {
+    margin-top: 8px;
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+  .slot-card {
+    min-height: 78px;
+    padding: 10px 14px;
+  }
+}
+
+/* Deneme Alanı (Staging Area - Üst Yerleşim) */
+.staging-header-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.staging-title {
   font-size: 13px;
-  font-weight: 600;
-  color: var(--mebi-text-secondary);
-  margin-top: 5px;
-  line-height: 1.35;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  color: var(--mebi-text-main);
 }
 
-.card-state {
+.staging-subtitle {
   font-size: 12px;
-  font-weight: 500;
   color: var(--mebi-text-muted);
-  margin-top: 3px;
 }
 
-/* Deneme Alanı (Staging Area) */
 .staging-area {
   display: grid;
   grid-template-columns: 1fr auto 1fr auto;
-  gap: 16px;
+  gap: 10px;
   align-items: center;
-  margin-top: 14px;
-  margin-bottom: 20px;
+  margin-top: 2px;
+  margin-bottom: 12px;
 }
 
 @media (max-width: 820px) {
@@ -309,36 +550,120 @@
 }
 
 .staging-plus {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--mebi-text-muted);
   text-align: center;
 }
 
 .slot-card {
-  background: var(--mebi-bg-sunken);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1.5px solid var(--mebi-border);
   box-shadow: var(--mebi-base-sunken-shadow);
   border-radius: var(--mebi-radius-lg);
-  padding: 16px 20px;
+  padding: 8px 14px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  min-height: 96px;
+  gap: 10px;
+  min-height: 54px;
   position: relative;
   transition: all var(--mebi-transition);
 }
 
 .slot-card.filled {
-  background: var(--mebi-bg-surface);
-  box-shadow: 0 5px 0 var(--mebi-base-card), var(--mebi-shadow-sm);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 4px 0 var(--mebi-base-card), var(--mebi-shadow-sm);
+}
+
+[data-theme="dark"] .slot-card {
+  background: rgba(20, 20, 23, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .slot-card.filled {
+  background: rgba(38, 38, 44, 0.86);
 }
 
 .slot-card.slot-1.filled {
-  box-shadow: 0 5px 0 #3b82f6, 0 0 16px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 4px 0 #3b82f6, 0 0 14px rgba(59, 130, 246, 0.2);
 }
 
 .slot-card.slot-2.filled {
-  box-shadow: 0 5px 0 #10b981, 0 0 16px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 4px 0 #10b981, 0 0 14px rgba(16, 185, 129, 0.2);
+}
+
+.slot-tile-badge {
+  width: 58px;
+  height: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--mebi-radius-md);
+  border: 1.5px solid var(--mebi-border);
+  background: var(--mebi-bg-subtle);
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+
+.slot-1-badge {
+  background: var(--mebi-primary-light);
+  border-color: var(--mebi-primary-border);
+  color: var(--mebi-primary);
+}
+
+.slot-2-badge {
+  background: var(--mebi-success-light);
+  border-color: var(--mebi-success-border);
+  color: var(--mebi-success-taban);
+}
+
+[data-theme="dark"] .slot-1-badge {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #93c5fd;
+}
+
+[data-theme="dark"] .slot-2-badge {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #6ee7b7;
+}
+
+.slot-order-tag {
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  opacity: 0.85;
+}
+
+.slot-formula-big {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 800;
+  margin-top: 1px;
+}
+
+.slot-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--mebi-bg-subtle);
+  border: 2px dashed var(--mebi-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mebi-text-muted);
+  flex-shrink: 0;
+}
+
+.slot-icon-box svg {
+  width: 20px;
+  height: 20px;
 }
 
 .slot-beaker-box {
@@ -349,20 +674,6 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-}
-
-.slot-card.filled .slot-beaker-box {
-  background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
-  border-radius: 12px;
-  border: 1px solid rgba(203, 213, 225, 0.7);
-  box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.05), 0 1px 0 rgba(255, 255, 255, 0.9);
-  padding: 3px;
-}
-
-[data-theme="dark"] .slot-card.filled .slot-beaker-box {
-  background: rgba(0, 0, 0, 0.25);
-  border-color: rgba(255, 255, 255, 0.06);
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .slot-text-box {
@@ -412,33 +723,44 @@
   color: #fca5a5;
 }
 
-/* ----------------- 3. DENEY TEZGAHI VE SİMÜLASYON ----------------- */
+/* ----------------- 3. DENEY TEZGAHI VE SİMÜLASYON (GERÇEK LABORATUVAR MASASI) ----------------- */
 .lab-bench {
-  background: radial-gradient(circle at 50% 20%, rgba(30, 64, 175, 0.12), transparent 70%),
-              radial-gradient(circle, var(--mebi-border) 1px, transparent 1px) 0 0 / 22px 22px,
-              var(--mebi-bg-subtle);
+  background-color: #0b0f19;
+  background-image: url('../image/deney-masa.jpg');
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
   border-radius: var(--mebi-radius-xl);
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1), 0 6px 0 var(--mebi-base-card);
-  padding: 20px 24px 22px;
-  margin: 18px 0;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.4), 0 8px 0 var(--mebi-base-card), 0 16px 36px rgba(15, 23, 42, 0.2);
+  padding: 0;
+  margin: 14px 0;
   position: relative;
-  min-height: 550px;
+  min-height: 460px;
   overflow: hidden;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  flex-direction: row;
+  align-items: stretch;
+  isolation: isolate;
+}
+
+.lab-bench::before {
+  display: none !important;
 }
 
 [data-theme="dark"] .lab-bench {
-  background: radial-gradient(circle at 50% 20%, rgba(30, 58, 138, 0.25), transparent 70%),
-              radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px) 0 0 / 22px 22px,
-              #141418;
-  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.7), 0 6px 0 #09090b;
+  box-shadow: inset 0 2px 14px rgba(0, 0, 0, 0.8), 0 8px 0 #09090b, 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .lab-bench::before {
+  display: none !important;
 }
 
 /* Canlı Sensör ve Telemetri Paneli (Sensor Bar) */
 .lab-sensor-bar {
   background: var(--mebi-bg-surface);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
   box-shadow: 0 4px 0 var(--mebi-base-card), var(--mebi-shadow-sm);
   border-radius: var(--mebi-radius-lg);
   padding: 10px 16px;
@@ -450,6 +772,10 @@
   position: relative;
   z-index: 10;
   flex-wrap: wrap;
+}
+
+[data-theme="dark"] .lab-sensor-bar {
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .sensor-status-chip {
@@ -571,74 +897,403 @@
   color: var(--mebi-text-secondary);
 }
 
-/* Laboratuvar Standı Çubuk ve Kelepçesi */
-.lab-stand-rod {
-  position: absolute;
-  left: 36px;
-  bottom: 50px;
-  width: 7px;
-  height: 340px;
-  background: linear-gradient(90deg, #94a3b8 0%, #cbd5e1 50%, #64748b 100%);
-  border-radius: 4px;
-  z-index: 1;
-  opacity: 0.65;
-}
 
-.lab-stand-base {
-  position: absolute;
-  left: 10px;
-  bottom: 48px;
-  width: 90px;
-  height: 10px;
-  background: linear-gradient(180deg, #64748b 0%, #334155 100%);
-  border-radius: 4px;
-  z-index: 1;
-  opacity: 0.65;
-}
-
-.lab-stand-clamp {
-  position: absolute;
-  left: 40px;
-  bottom: 245px;
-  width: 100px;
-  height: 6px;
-  background: linear-gradient(180deg, #94a3b8 0%, #475569 100%);
-  border-radius: 3px;
-  z-index: 2;
-  opacity: 0.55;
-}
-
+/* Yapay Stand ve Yüzey Çizimleri (Gerçek Masa Görseli Kullanıldığından Gizlendi) */
+.lab-stand-rod,
+.lab-stand-base,
+.lab-stand-clamp,
 .lab-surface {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 56px;
-  background: linear-gradient(180deg, rgba(226, 232, 240, 0.8) 0%, rgba(203, 213, 225, 0.95) 100%);
-  border-top: 2px solid #cbd5e1;
+  display: none !important;
 }
 
-[data-theme="dark"] .lab-surface {
-  background: linear-gradient(180deg, #1c1c22 0%, #0d0d10 100%);
-  border-top: 2px solid #2e2e36;
+.bench-stage {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 20px 24px 22px;
+  position: relative;
+  z-index: 5;
 }
 
 .bench-items {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-end;
-  gap: 80px;
-  min-height: 330px;
-  margin-top: 36px;
+  gap: 65px;
+  min-height: 290px;
   position: relative;
-  z-index: 2;
-  padding-bottom: 18px;
+  z-index: 5;
+  padding-bottom: 32px;
+  padding-left: 20px;
 }
 
-@media (max-width: 650px) {
-  .bench-items {
-    gap: 30px;
+@media (max-width: 768px) {
+  .lab-bench {
+    flex-direction: column !important;
+    min-height: auto;
   }
+  .bench-stage {
+    width: 100%;
+    padding: 16px 12px 10px;
+    align-items: center;
+    justify-content: center;
+  }
+  .bench-items {
+    justify-content: center;
+    padding-left: 0;
+    gap: 36px;
+    padding-bottom: 20px;
+  }
+  .bench-dock {
+    width: calc(100% - 10px) !important;
+    max-width: calc(100% - 10px) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.85);
+    border-radius: 0 0 calc(var(--mebi-radius-xl) - 5px) calc(var(--mebi-radius-xl) - 5px);
+    padding: 16px 14px 16px;
+    margin: 0 5px 5px 5px !important;
+  }
+  [data-theme="dark"] .bench-dock {
+    border-top: 1.5px solid rgba(255, 255, 255, 0.10);
+  }
+}
+
+/* Deney Masası Sağ Kontrol ve Gözlem Dock'u (Frosted Glass Dock Panel - Masanın Sağ Kenarından 5px Boşluklu) */
+.bench-dock {
+  width: 360px;
+  max-width: 45%;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  border-radius: 0 calc(var(--mebi-radius-xl) - 5px) calc(var(--mebi-radius-xl) - 5px) 0;
+  padding: 20px 18px 18px;
+  margin: 5px 5px 5px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  z-index: 10;
+  box-shadow: -6px 0 24px rgba(15, 23, 42, 0.14);
+  overflow-y: auto;
+  transition: all var(--mebi-transition);
+}
+
+[data-theme="dark"] .bench-dock {
+  background: rgba(18, 22, 32, 0.68);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: -6px 0 28px rgba(0, 0, 0, 0.55);
+}
+
+.dock-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dock-badge {
+  align-self: flex-start;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--mebi-primary-light);
+  color: var(--mebi-primary);
+  border: 1px solid var(--mebi-primary-border);
+}
+
+.dock-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--mebi-text-main);
+  margin: 0;
+}
+
+.dock-subtext {
+  font-size: 11px;
+  color: var(--mebi-text-secondary);
+  line-height: 1.35;
+  margin: 0;
+}
+
+.dock-obs-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dock-obs-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: var(--mebi-radius-md);
+  border: 1.5px solid rgba(226, 232, 240, 0.85);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--mebi-text-main);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 120ms ease;
+  user-select: none;
+}
+
+[data-theme="dark"] .dock-obs-chip {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.10);
+  color: var(--mebi-text-main);
+}
+
+.dock-obs-chip:hover {
+  border-color: var(--mebi-primary);
+  background: rgba(255, 255, 255, 0.90);
+}
+
+[data-theme="dark"] .dock-obs-chip:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.dock-obs-chip.is-selected {
+  background: var(--mebi-primary-light);
+  border-color: var(--mebi-primary);
+  color: var(--mebi-primary);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+[data-theme="dark"] .dock-obs-chip.is-selected {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: #60a5fa;
+  color: #93c5fd;
+}
+
+.dock-obs-chip.is-dimmed {
+  opacity: 0.40;
+  pointer-events: none;
+}
+
+.dock-obs-chip.is-locked {
+  cursor: default;
+}
+
+.dock-obs-chip.is-locked:hover {
+  transform: none;
+}
+
+/* Deney Sonrası Geri Bildirim Vurgu Stilleri */
+.dock-obs-chip.feedback-correct {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: #10b981 !important;
+  color: #065f46 !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25) !important;
+}
+
+[data-theme="dark"] .dock-obs-chip.feedback-correct {
+  background: rgba(16, 185, 129, 0.24) !important;
+  border-color: #34d399 !important;
+  color: #6ee7b7 !important;
+}
+
+.dock-obs-chip.feedback-wrong {
+  background: rgba(239, 68, 68, 0.13) !important;
+  border-color: #ef4444 !important;
+  color: #991b1b !important;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2) !important;
+}
+
+[data-theme="dark"] .dock-obs-chip.feedback-wrong {
+  background: rgba(239, 68, 68, 0.22) !important;
+  border-color: #f87171 !important;
+  color: #fca5a5 !important;
+}
+
+.dock-obs-chip.feedback-missed {
+  background: rgba(245, 158, 11, 0.14) !important;
+  border-color: #f59e0b !important;
+  color: #92400e !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2) !important;
+}
+
+[data-theme="dark"] .dock-obs-chip.feedback-missed {
+  background: rgba(245, 158, 11, 0.22) !important;
+  border-color: #fbbf24 !important;
+  color: #fde68a !important;
+}
+
+.dock-obs-chip.feedback-neutral {
+  background: rgba(255, 255, 255, 0.35) !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+  color: var(--mebi-text-secondary) !important;
+  opacity: 0.65;
+}
+
+[data-theme="dark"] .dock-obs-chip.feedback-neutral {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #94a3b8 !important;
+  opacity: 0.55;
+}
+
+/* Çip İçerisindeki Durum / Geri Bildirim Rozeti */
+.dock-chip-status {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-correct {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.status-wrong {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.status-missed {
+  background: #f59e0b;
+  color: #ffffff;
+}
+
+.status-neutral {
+  background: rgba(148, 163, 184, 0.22);
+  color: var(--mebi-text-secondary);
+}
+
+[data-theme="dark"] .status-neutral {
+  background: rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+}
+
+.status-pred {
+  background: var(--mebi-primary);
+  color: #ffffff;
+}
+
+.dock-chip-left {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.dock-chip-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: inherit;
+}
+
+.dock-chip-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.dock-chip-label {
+  font-size: 12px;
+  color: inherit;
+}
+
+.dock-chip-check {
+  font-weight: 900;
+  font-size: 12px;
+  color: var(--mebi-primary);
+  width: 14px;
+  text-align: right;
+}
+
+.dock-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.dock-btn-full {
+  width: 100%;
+  justify-content: center;
+  height: 38px;
+  font-size: 12.5px;
+  padding: 0 12px;
+}
+
+.dock-predictions-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 7px 9px;
+  border-radius: var(--mebi-radius-md);
+  background: var(--mebi-bg-subtle);
+}
+
+.dock-summary-label {
+  font-weight: 700;
+  color: var(--mebi-text-secondary);
+  font-size: 11px;
+}
+
+.dock-summary-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.dock-summary-pill {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--mebi-primary-light);
+  color: var(--mebi-primary);
+  border: 1px solid var(--mebi-primary-border);
+}
+
+.dock-live-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--mebi-radius-md);
+  background: var(--mebi-bg-subtle);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--mebi-text-main);
+  line-height: 1.4;
+}
+
+.dock-obs-result-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 4px 0;
+}
+
+.dock-result-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--mebi-text-main);
+  padding: 5px 8px;
+  border-radius: var(--mebi-radius-sm);
+  background: var(--mebi-bg-subtle);
+}
+
+.dock-result-check {
+  color: var(--mebi-success);
+  font-weight: 900;
 }
 
 /* Sabit Beher ve Daldırılmış Termometre */
@@ -651,22 +1306,22 @@
 }
 
 .main-beaker-glass {
-  width: 150px;
-  height: 185px;
+  width: 160px;
+  height: 200px;
   position: relative;
-  filter: drop-shadow(0 14px 28px var(--mebi-glass-shadow));
+  filter: drop-shadow(0 14px 26px var(--mebi-glass-shadow));
 }
 
-/* Mobil WebKit/Safari Taşma Önleyici Hassas Cam İç Haznesi */
+/* Gerçekçi Cam İç Haznesi (Sıvı ve Çökelti Duvarı) */
 .main-beaker-interior {
   position: absolute;
-  left: 15px;
-  top: 18px;
-  width: 120px;
-  height: 159px;
+  left: 26px;
+  top: 24px;
+  width: 112px;
+  height: 154px;
   border-radius: 0 0 14px 14px;
   overflow: hidden;
-  background: var(--mebi-glass-bg);
+  background: transparent;
   -webkit-mask-image: -webkit-radial-gradient(white, black);
   mask-image: radial-gradient(white, black);
   z-index: 5;
@@ -701,26 +1356,26 @@
 /* ----------------- DİJİTAL LABORATUVAR TERMOMETRESİ (DALDIRMA PROBU) ----------------- */
 .digital-thermo-wrap {
   position: absolute;
-  left: 22px;
-  top: -40px;
-  bottom: 14px;
+  left: 20px;
+  top: -68px;
+  bottom: 18px;
   width: 86px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 9;
   pointer-events: none;
   user-select: none;
+  z-index: auto;
 }
 
-/* Dijital Gösterge Başlığı (Modern Laboratuvar Cihazı Gövdesi) */
+/* Dijital Gösterge Başlığı (Modern Laboratuvar Cihazı Gövdesi - Beherin Üstünde) */
 .digital-thermo-head {
   width: 86px;
   background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
   border: 1.5px solid #334155;
   border-radius: 7px;
   padding: 4px 6px 3px;
-  box-shadow: 0 6px 16px -2px rgba(15, 23, 42, 0.4), 0 2px 4px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 20px -2px rgba(15, 23, 42, 0.45), 0 3px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.18);
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -849,25 +1504,26 @@
   font-size: 5px;
 }
 
-/* Prob Bağlantı Halkası / Boğaz */
+/* Prob Bağlantı Halkası / Boğaz (Göstergenin hemen altında) */
 .digital-probe-collar {
   width: 12px;
   height: 8px;
   background: linear-gradient(90deg, #475569 0%, #94a3b8 50%, #334155 100%);
   border-radius: 2px;
   margin-top: -1px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
-  z-index: 17;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  position: relative;
+  z-index: 18;
 }
 
-/* Paslanmaz Çelik Daldırma Çubuğu (Probe Stem) */
+/* Paslanmaz Çelik Daldırma Çubuğu (Probe Stem - Beherin İçinde, Ön Camın Arkasında) */
 .digital-probe-stem {
   width: 5px;
   flex: 1;
-  background: linear-gradient(90deg, #475569 0%, #cbd5e1 30%, #ffffff 50%, #94a3b8 75%, #334155 100%);
+  background: linear-gradient(90deg, #475569 0%, #cbd5e1 32%, #ffffff 50%, #94a3b8 72%, #334155 100%);
   position: relative;
-  box-shadow: 1px 0 4px rgba(0, 0, 0, 0.3);
-  z-index: 15;
+  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.25);
+  z-index: 6;
 }
 
 /* Prob Üzerindeki Ölçüm Derinliği Çizgileri */
@@ -880,14 +1536,15 @@
   background: repeating-linear-gradient(180deg, transparent, transparent 17px, rgba(51, 65, 85, 0.8) 17px, rgba(51, 65, 85, 0.8) 18px);
 }
 
-/* Algılayıcı Metal Uç (Sensor Tip) */
+/* Algılayıcı Metal Uç (Sensor Tip - Beherin Tabanında) */
 .digital-probe-tip {
   width: 5px;
   height: 10px;
   background: linear-gradient(90deg, #334155 0%, #cbd5e1 45%, #475569 100%);
   border-radius: 0 0 2.5px 2.5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  z-index: 15;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 6;
 }
 
 /* Geriye dönük uyumluluk sınıfları */
@@ -895,33 +1552,55 @@
   display: none !important;
 }
 
-/* Sürüklenen / Dökülen Beher */
+/* Sürüklenen / Dökülen Beher Taşıyıcı Alan (Masa Üzerinde Sabit) */
 .vessel-drag-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  cursor: grab;
-  touch-action: none;
   z-index: 20;
-  transition: transform 120ms ease;
   user-select: none;
 }
 
-.vessel-drag-wrap.dragging {
-  cursor: grabbing;
-  z-index: 99;
-  filter: drop-shadow(0 16px 30px rgba(0, 0, 0, 0.35));
+/* Sadece Beherin Kendisi Taşınır ve Dökülür (Madde Kartı Masada Sabit Kalır) */
+.drag-beaker {
+  width: 115px;
+  height: 150px;
+  position: relative;
+  background: transparent;
+  border: none;
+  overflow: visible;
+  filter: drop-shadow(0 12px 26px var(--mebi-glass-shadow));
+  transition: transform 0.2s ease;
+  cursor: grab;
+  touch-action: none;
+  z-index: 22;
 }
 
-.vessel-drag-wrap.pouring {
+.drag-beaker.dragging {
+  cursor: grabbing;
+  z-index: 99;
+  filter: drop-shadow(0 20px 36px rgba(0, 0, 0, 0.45));
+  transition: none !important;
+}
+
+.drag-beaker.dragging .hand-guide-pill {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.vessel-drag-wrap.pouring .drag-beaker,
+.drag-beaker.pouring {
   transform: translate(-105px, -135px) rotate(-55deg) !important;
   transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
+  z-index: 99;
 }
 
 .hand-guide-pill {
   position: absolute;
   top: -46px;
+  left: 50%;
+  transform: translateX(-50%);
   background: #fef3c7;
   border: 1.5px solid #f59e0b;
   color: #92400e;
@@ -936,6 +1615,7 @@
   white-space: nowrap;
   box-shadow: 0 3px 8px rgba(245, 158, 11, 0.25);
   animation: mebiPulse 1.8s infinite;
+  z-index: 30;
 }
 
 [data-theme="dark"] .hand-guide-pill {
@@ -944,59 +1624,29 @@
   color: #fde68a;
 }
 
-.drag-beaker {
-  width: 108px;
-  height: 142px;
-  background: var(--mebi-glass-bg);
-  border: 3px solid var(--mebi-glass-stroke);
-  border-top: none;
-  border-radius: 4px 4px 18px 18px;
-  position: relative;
-  overflow: hidden;
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
-  mask-image: radial-gradient(white, black);
-  backdrop-filter: blur(2px);
-  box-shadow: 0 12px 28px var(--mebi-glass-shadow),
-              inset 0 0 0 1px var(--mebi-glass-inner);
-}
-
-.drag-beaker::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--mebi-glass-stroke-rim);
-  border-radius: 2px;
-  z-index: 10;
-}
-
+.drag-beaker::before,
 .drag-beaker-spout {
-  position: absolute;
-  top: 0;
-  left: -7px;
-  width: 14px;
-  height: 10px;
-  background: var(--mebi-glass-stroke-rim);
-  clip-path: polygon(0 0, 100% 0, 100% 100%);
-  z-index: 11;
+  display: none !important;
 }
 
 .drag-liquid {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 12px;
+  left: 18px;
+  right: 17px;
   height: 65%;
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
   transition: height 1.2s ease;
+  box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.45), inset 0 -4px 8px rgba(0, 0, 0, 0.22);
+  z-index: 4;
 }
 
 .drag-powder {
   position: absolute;
-  bottom: 0;
-  left: 1px;
-  right: 1px;
+  bottom: 12px;
+  left: 18px;
+  right: 17px;
   height: 60%;
   background-color: #ffffff;
   background-image: 
@@ -1004,16 +1654,17 @@
     radial-gradient(circle, rgba(148, 163, 184, 0.45) 1.5px, transparent 1.6px),
     linear-gradient(180deg, #ffffff 0%, #f1f5f9 65%, #cbd5e1 100%);
   background-size: 100% 100%, 6px 6px, 100% 100%;
-  border-radius: 35% 35% 12px 12px / 14px 14px 12px 12px;
-  border-top: 2px solid rgba(203, 213, 225, 0.9);
+  border-radius: 35% 35% 10px 10px / 14px 14px 10px 10px;
+  border-top: 1.5px solid rgba(203, 213, 225, 0.95);
   transition: height 1.2s ease, opacity 0.8s ease;
   box-shadow: inset 0 3px 6px rgba(15, 23, 42, 0.12);
+  z-index: 4;
 }
 
 .pour-stream {
   position: absolute;
-  top: 4px;
-  left: -2px;
+  top: 10px;
+  left: 1px;
   width: 6px;
   height: 0;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), #38bdf8);
@@ -1156,23 +1807,35 @@
 .reagent-tag {
   margin-top: 10px;
   text-align: center;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 5px 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+  min-width: 110px;
 }
 
 .reagent-formula {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 800;
-  color: var(--mebi-text-main);
+  color: #ffffff;
+  letter-spacing: 0.3px;
 }
 
 .reagent-name {
-  font-size: 12px;
-  color: var(--mebi-text-secondary);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #cbd5e1;
   margin-top: 2px;
 }
 
 .reagent-state {
-  font-size: 11px;
-  color: var(--mebi-text-muted);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #38bdf8;
+  margin-top: 1px;
 }
 
 /* Tahmin & Gözlem Kartları (Observation Chips) */
@@ -2261,6 +2924,8 @@
 
 .particle-modal-card {
   background: var(--mebi-bg-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: var(--mebi-radius-lg);
   box-shadow: 0 10px 0 var(--mebi-base-modal), var(--mebi-shadow-xl);
   max-width: 720px;
@@ -2285,7 +2950,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  background: var(--mebi-bg-surface);
+  background: transparent;
 }
 
 .particle-modal-title-wrap {
@@ -2545,3 +3210,136 @@
   color: var(--mebi-text-secondary);
   margin-top: 4px;
 }
+
+/* ==========================================================================
+   MOBİL YATAY (LANDSCAPE) SIFIR KAYDIRMA (ZERO-SCROLL) OPTİMİZASYONU
+   ========================================================================== */
+@media (orientation: landscape) and (max-height: 520px) {
+  .mebi-topbar {
+    height: 42px;
+    padding: 0 14px;
+    margin-bottom: 8px;
+  }
+  .mebi-brand {
+    font-size: 13.5px;
+    gap: 7px;
+  }
+  .mebi-card {
+    padding: 10px 14px;
+  }
+  .lab-bench {
+    min-height: 290px;
+    padding: 0 !important;
+    margin: 6px 0;
+    flex-direction: row !important;
+    align-items: stretch !important;
+  }
+  .lab-sensor-bar {
+    padding: 4px 10px;
+    gap: 6px;
+    margin-bottom: 2px;
+  }
+  .sensor-status-chip {
+    font-size: 11px;
+    gap: 6px;
+  }
+  .sensor-detectors-wrap {
+    gap: 4px;
+  }
+  .sensor-detector-pill {
+    padding: 2px 7px;
+    font-size: 10px;
+  }
+  .sensor-temp-block {
+    gap: 6px;
+  }
+  .sensor-temp-display {
+    font-size: 12px;
+  }
+  .sensor-temp-badge {
+    font-size: 9.5px;
+    padding: 2px 6px;
+  }
+  .bench-stage {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: row !important;
+    align-items: flex-end !important;
+    padding: 8px 12px 10px;
+    gap: 12px;
+    margin-top: 0;
+  }
+  .bench-items {
+    min-height: 220px;
+    padding-bottom: 16px;
+    padding-left: 8px;
+    gap: 30px;
+    transform: scale(0.85);
+    transform-origin: left bottom;
+  }
+  .bench-dock {
+    width: 300px !important;
+    max-width: 44% !important;
+    padding: 10px 12px;
+    margin: 5px 5px 5px 0 !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.7) !important;
+    border-radius: 0 calc(var(--mebi-radius-xl) - 5px) calc(var(--mebi-radius-xl) - 5px) 0 !important;
+    gap: 6px;
+  }
+  [data-theme="dark"] .bench-dock {
+    border-color: rgba(255, 255, 255, 0.10) !important;
+  }
+  .dock-title {
+    font-size: 12px;
+  }
+  .dock-subtext {
+    display: none;
+  }
+  .dock-obs-chip {
+    padding: 4px 8px;
+    font-size: 10.5px;
+  }
+  .dock-chip-icon {
+    width: 15px;
+    height: 15px;
+  }
+  .dock-chip-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+  .dock-btn-full {
+    height: 32px;
+    font-size: 11.5px;
+  }
+  .staging-area {
+    margin-top: 2px;
+    margin-bottom: 6px;
+    gap: 6px;
+  }
+  .slot-card {
+    min-height: 46px;
+    padding: 4px 10px;
+    gap: 6px;
+  }
+  .slot-tile-badge {
+    width: 46px;
+    height: 36px;
+  }
+  .slot-formula-big {
+    font-size: 12px;
+  }
+  .slot-main-text {
+    font-size: 12px;
+  }
+  .slot-sub-text {
+    font-size: 10px;
+  }
+  .staging-start-btn {
+    height: 44px !important;
+    min-width: 130px !important;
+    font-size: 12.5px !important;
+    padding: 0 12px !important;
+  }
+}
+
