@@ -330,7 +330,107 @@
     }
   }
 
-  /* ----------------- 5. CİHAZI YATAY ÇEVİRİN (ORIENTATION LOCK) YÖNETİMİ ----------------- */
+  /* ----------------- 5. DEĞERLENDİRME GERİ BİLDİRİM BİLGİ KARTI MODALI ----------------- */
+  function openEvalModal(evalData, userSelections, rx) {
+    if (!evalData) return;
+    var overlay = document.getElementById('evalModalOverlay');
+    var headerEl = document.getElementById('evalModalHeader');
+    var badgeEl = document.getElementById('evalModalBadge');
+    var titleEl = document.getElementById('evalModalTitle');
+    var bodyEl = document.getElementById('evalModalBody');
+
+    if (!overlay || !bodyEl) return;
+
+    var status = evalData.status || 'wrong';
+    var isExact = (status === 'exact');
+    var isPartial = (status === 'partial');
+
+    // Header ve Rozet Konfigürasyonu
+    if (headerEl) {
+      headerEl.className = 'eval-modal-header ' + (isExact ? 'is-exact' : (isPartial ? 'is-partial' : 'is-wrong'));
+    }
+
+    if (badgeEl) {
+      if (isExact) {
+        badgeEl.className = 'eval-status-badge eval-badge-exact';
+        badgeEl.textContent = '✓ TAM DOĞRU DEĞERLENDİRME';
+      } else if (isPartial) {
+        badgeEl.className = 'eval-status-badge eval-badge-partial';
+        badgeEl.textContent = '! KISMİ DOĞRU TESPİTİ';
+      } else {
+        badgeEl.className = 'eval-status-badge eval-badge-wrong';
+        badgeEl.textContent = '! İNCELEME GEREKLİ';
+      }
+    }
+
+    if (titleEl) {
+      titleEl.textContent = evalData.title || (isExact ? 'Tebrikler! Doğru Tespit' : 'Tepkime Türü Analizi');
+    }
+
+    // Callout İkonu
+    var iconSvg = isExact
+      ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+      : (isPartial
+        ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+        : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+      );
+
+    var calloutClass = isExact ? 'eval-callout-exact' : (isPartial ? 'eval-callout-partial' : 'eval-callout-wrong');
+
+    // Seçimlerin Özeti (Kullanıcının işaretlediği şıklar)
+    var chipsHtml = '';
+    if (userSelections && userSelections.length > 0) {
+      chipsHtml = '<div class="eval-selections-bar">' +
+        '<span class="eval-selections-label">İşaretlediğiniz Seçenekler:</span>' +
+        '<div class="eval-chips-grid">';
+
+      for (var i = 0; i < userSelections.length; i++) {
+        var opt = userSelections[i];
+        var optLetter = opt.charAt(0);
+        var catKey = (optLetter === 'A' ? 'ppt' : (optLetter === 'B' ? 'acidbase' : (optLetter === 'C' ? 'redox' : (optLetter === 'D' ? 'complex' : 'none'))));
+        var isValid = (evalData.validCategories && evalData.validCategories.indexOf(catKey) > -1);
+
+        chipsHtml += '<span class="eval-chip ' + (isValid ? 'eval-chip-valid' : 'eval-chip-invalid') + '">' +
+          (isValid ? '✓ ' : '✕ ') + opt +
+        '</span>';
+      }
+      chipsHtml += '</div></div>';
+    }
+
+    // Johnstone Üçgeni Pedagojik İpucu
+    var pedagogyHtml = '<div class="eval-pedagogy-tip">' +
+      '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>' +
+      '<span><b>Johnstone Üçgeni:</b> Makroskobik ve sembolik analizi tamamladınız. Tepkimenin moleküler mekanizmasını görmek için alt-mikroskobik tanecik kamerasına geçebilirsiniz.</span>' +
+    '</div>';
+
+    bodyEl.innerHTML =
+      '<div class="eval-callout ' + calloutClass + '">' +
+        '<div class="eval-callout-icon">' + iconSvg + '</div>' +
+        '<div class="eval-callout-content">' +
+          '<div class="eval-callout-title">' + (evalData.title || 'Değerlendirme Açıklaması') + '</div>' +
+          '<div class="eval-callout-text">' + evalData.explanation + '</div>' +
+        '</div>' +
+      '</div>' +
+      chipsHtml +
+      pedagogyHtml;
+
+    overlay.classList.add('is-active');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    if (window.MebiAudio) window.MebiAudio.playClick();
+  }
+
+  function closeEvalModal() {
+    var overlay = document.getElementById('evalModalOverlay');
+    if (overlay) {
+      overlay.classList.remove('is-active');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (window.MebiAudio) window.MebiAudio.playClick();
+    }
+  }
+
+  /* ----------------- 6. CİHAZI YATAY ÇEVİRİN (ORIENTATION LOCK) YÖNETİMİ ----------------- */
   var isOrientationDismissed = false;
 
   function openOrientationOverlay() {
@@ -353,6 +453,17 @@
       document.body.classList.remove('mebi-landscape-required');
       document.body.style.overflow = '';
       if (window.MebiAudio) window.MebiAudio.playClick();
+
+      // Cihaz yataya çevrildiğinde rehber henüz açılmadıysa popup kartı aç
+      var hideWelcome = false;
+      try {
+        hideWelcome = (localStorage.getItem('mebi_hide_welcome_modal') === 'true');
+      } catch (e) {}
+      if (!isWelcomeOpened && !hideWelcome) {
+        setTimeout(function() {
+          openWelcomeModal();
+        }, 220);
+      }
     }
   }
 
@@ -373,11 +484,62 @@
       document.body.style.overflow = '';
       if (!isPortrait) {
         isOrientationDismissed = false;
+
+        var hideWelcome = false;
+        try {
+          hideWelcome = (localStorage.getItem('mebi_hide_welcome_modal') === 'true');
+        } catch (e) {}
+        if (!isWelcomeOpened && !hideWelcome) {
+          setTimeout(function() {
+            openWelcomeModal();
+          }, 300);
+        }
       }
     }
   }
 
-  /* ----------------- 6. İLK YÜKLEME ----------------- */
+  /* ----------------- 6.5. ÖĞRENCİ BAŞLANGIÇ REHBERİ POP-UP KARTI ----------------- */
+  var isWelcomeOpened = false;
+
+  function openWelcomeModal() {
+    var overlay = document.getElementById('welcomeModalOverlay');
+    var chk = document.getElementById('chkDoNotShowWelcome');
+    if (!overlay) return;
+
+    if (chk) {
+      try {
+        chk.checked = (localStorage.getItem('mebi_hide_welcome_modal') === 'true');
+      } catch (e) {
+        chk.checked = false;
+      }
+    }
+
+    isWelcomeOpened = true;
+    overlay.classList.add('is-active');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    if (window.MebiAudio) window.MebiAudio.playClick();
+  }
+
+  function closeWelcomeModal() {
+    var overlay = document.getElementById('welcomeModalOverlay');
+    var chk = document.getElementById('chkDoNotShowWelcome');
+    if (overlay) {
+      overlay.classList.remove('is-active');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+
+      if (chk) {
+        try {
+          localStorage.setItem('mebi_hide_welcome_modal', chk.checked ? 'true' : 'false');
+        } catch (e) {}
+      }
+
+      if (window.MebiAudio) window.MebiAudio.playClick();
+    }
+  }
+
+  /* ----------------- 7. İLK YÜKLEME ----------------- */
   document.addEventListener('DOMContentLoaded', function() {
     applyTheme(getSavedTheme());
 
@@ -385,6 +547,40 @@
     var closeBtn = document.getElementById('btnCloseDrawer');
     if (overlay) overlay.addEventListener('click', closeDrawer);
     if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+
+    // Öğrenci Başlangıç Rehberi Pop-up Kartı butonları
+    var closeWelcomeBtn = document.getElementById('btnCloseWelcomeModal');
+    var dismissWelcomeBtn = document.getElementById('btnDismissWelcomeModal');
+    var startWelcomeBtn = document.getElementById('btnStartFromWelcome');
+    var welcomeOverlay = document.getElementById('welcomeModalOverlay');
+    var chkWelcome = document.getElementById('chkDoNotShowWelcome');
+
+    if (closeWelcomeBtn) closeWelcomeBtn.addEventListener('click', closeWelcomeModal);
+    if (dismissWelcomeBtn) dismissWelcomeBtn.addEventListener('click', closeWelcomeModal);
+    if (startWelcomeBtn) {
+      startWelcomeBtn.addEventListener('click', function() {
+        closeWelcomeModal();
+        if (window.TepkimeArenasi && window.TepkimeArenasi.dispatch) {
+          window.TepkimeArenasi.dispatch('goPool');
+        }
+      });
+    }
+
+    if (chkWelcome) {
+      chkWelcome.addEventListener('change', function() {
+        try {
+          localStorage.setItem('mebi_hide_welcome_modal', chkWelcome.checked ? 'true' : 'false');
+        } catch (e) {}
+      });
+    }
+
+    if (welcomeOverlay) {
+      welcomeOverlay.addEventListener('click', function(e) {
+        if (e.target === welcomeOverlay) {
+          closeWelcomeModal();
+        }
+      });
+    }
 
     // 3B Tanecik Büyütme Modalı butonları
     var closeParticleBtn = document.getElementById('btnCloseParticleModal');
@@ -397,6 +593,30 @@
       particleOverlay.addEventListener('click', function(e) {
         if (e.target === particleOverlay) {
           closeParticleModal();
+        }
+      });
+    }
+
+    // Değerlendirme Bilgi Kartı Modalı butonları
+    var closeEvalBtn = document.getElementById('btnCloseEvalModal');
+    var dismissEvalBtn = document.getElementById('btnDismissEvalModal');
+    var proceedMicroBtn = document.getElementById('btnProceedMicroFromModal');
+    var evalOverlay = document.getElementById('evalModalOverlay');
+
+    if (closeEvalBtn) closeEvalBtn.addEventListener('click', closeEvalModal);
+    if (dismissEvalBtn) dismissEvalBtn.addEventListener('click', closeEvalModal);
+    if (proceedMicroBtn) {
+      proceedMicroBtn.addEventListener('click', function() {
+        closeEvalModal();
+        if (window.TepkimeArenasi && window.TepkimeArenasi.dispatch) {
+          window.TepkimeArenasi.dispatch('saveCard');
+        }
+      });
+    }
+    if (evalOverlay) {
+      evalOverlay.addEventListener('click', function(e) {
+        if (e.target === evalOverlay) {
+          closeEvalModal();
         }
       });
     }
@@ -420,6 +640,14 @@
     // ESC tuşu ile kapatma
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
+        if (welcomeOverlay && welcomeOverlay.classList.contains('is-active')) {
+          closeWelcomeModal();
+          return;
+        }
+        if (evalOverlay && evalOverlay.classList.contains('is-active')) {
+          closeEvalModal();
+          return;
+        }
         if (particleOverlay && particleOverlay.classList.contains('is-active')) {
           closeParticleModal();
           return;
@@ -435,6 +663,21 @@
     checkOrientation();
     window.addEventListener('resize', checkOrientation);
     window.addEventListener('orientationchange', checkOrientation);
+
+    // Öğrenci Arenayı açtığında otomatik gösterim kontrolü
+    var hideWelcome = false;
+    try {
+      hideWelcome = (localStorage.getItem('mebi_hide_welcome_modal') === 'true');
+    } catch (e) {}
+
+    var isPortrait = (window.innerHeight > window.innerWidth) || (window.matchMedia && window.matchMedia('(orientation: portrait)').matches);
+    var isMobileOrTablet = (window.innerWidth <= 900) || (window.innerHeight <= 600 && window.innerWidth <= 1024);
+
+    if (!hideWelcome && (!isPortrait || !isMobileOrTablet)) {
+      setTimeout(function() {
+        openWelcomeModal();
+      }, 350);
+    }
   });
 
   // Global erişim
@@ -445,8 +688,12 @@
     showToast: showMebiToast,
     openDrawer: openDrawer,
     closeDrawer: closeDrawer,
+    openWelcomeModal: openWelcomeModal,
+    closeWelcomeModal: closeWelcomeModal,
     openParticleModal: openParticleModal,
     closeParticleModal: closeParticleModal,
+    openEvalModal: openEvalModal,
+    closeEvalModal: closeEvalModal,
     openOrientation: openOrientationOverlay,
     closeOrientation: closeOrientationOverlay,
     checkOrientation: checkOrientation

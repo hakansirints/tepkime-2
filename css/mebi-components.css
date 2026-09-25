@@ -9,16 +9,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  height: 48px;
-  min-width: 140px;
-  padding: 0 22px;
+  gap: 8px;
+  height: 42px;
+  min-width: auto;
+  padding: 0 18px;
   border-radius: var(--mebi-radius-full);
   border: 0;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 800;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
   cursor: pointer;
   position: relative;
@@ -29,20 +29,21 @@
 }
 
 .mebi-btn:active:not(:disabled) {
-  transform: translateY(4px);
+  transform: translateY(1px);
 }
 
 .mebi-btn-sm {
-  height: 38px;
-  min-width: 100px;
-  padding: 0 16px;
-  font-size: 12.5px;
+  height: 34px;
+  min-width: auto;
+  padding: 0 14px;
+  font-size: 12px;
+  gap: 6px;
 }
 
 .mebi-btn-icon {
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
   padding: 0;
   border-radius: 50%;
   display: inline-flex;
@@ -55,7 +56,7 @@
 }
 
 .mebi-btn-icon:active:not(:disabled) {
-  transform: translateY(3px);
+  transform: translateY(1px);
 }
 
 .mebi-btn-badge {
@@ -76,12 +77,12 @@
   height: 18px;
 }
 
-/* Buton Renk Varyantları */
+/* Buton Renk Varyantları (İnceltilmiş 2px Katı Taban) */
 /* Birincil (Primary - Mavi) */
 .mebi-btn-primary {
   background: #2563eb;
   color: #ffffff;
-  box-shadow: 0 5px 0 #1d4ed8;
+  box-shadow: 0 2px 0 #1d4ed8;
 }
 .mebi-btn-primary:active:not(:disabled) {
   box-shadow: 0 1px 0 #1d4ed8;
@@ -91,7 +92,7 @@
 .mebi-btn-success {
   background: #10b981;
   color: #ffffff;
-  box-shadow: 0 5px 0 #059669;
+  box-shadow: 0 2px 0 #059669;
 }
 .mebi-btn-success:active:not(:disabled) {
   box-shadow: 0 1px 0 #059669;
@@ -101,7 +102,7 @@
 .mebi-btn-danger {
   background: #ef4444;
   color: #ffffff;
-  box-shadow: 0 5px 0 #b91c1c;
+  box-shadow: 0 2px 0 #b91c1c;
 }
 .mebi-btn-danger:active:not(:disabled) {
   box-shadow: 0 1px 0 #b91c1c;
@@ -111,7 +112,7 @@
 .mebi-btn-warning {
   background: #f59e0b;
   color: #ffffff;
-  box-shadow: 0 5px 0 #b45309;
+  box-shadow: 0 2px 0 #b45309;
 }
 .mebi-btn-warning:active:not(:disabled) {
   box-shadow: 0 1px 0 #b45309;
@@ -121,7 +122,7 @@
 .mebi-btn-cyan {
   background: #06b6d4;
   color: #ffffff;
-  box-shadow: 0 5px 0 #0284c7;
+  box-shadow: 0 2px 0 #0284c7;
 }
 .mebi-btn-cyan:active:not(:disabled) {
   box-shadow: 0 1px 0 #0284c7;
@@ -131,7 +132,7 @@
 .mebi-btn-indigo {
   background: #6366f1;
   color: #ffffff;
-  box-shadow: 0 5px 0 #4338ca;
+  box-shadow: 0 2px 0 #4338ca;
 }
 .mebi-btn-indigo:active:not(:disabled) {
   box-shadow: 0 1px 0 #4338ca;
@@ -140,29 +141,32 @@
 .mebi-btn-purple {
   background: #8b5cf6;
   color: #ffffff;
-  box-shadow: 0 5px 0 #6d28d9;
+  box-shadow: 0 2px 0 #6d28d9;
 }
 .mebi-btn-purple:active:not(:disabled) {
   box-shadow: 0 1px 0 #6d28d9;
 }
 
-/* İkincil Buton (Secondary - Nötr Gri) */
+/* İkincil Buton (Secondary - Konsept 1 Sıcak Fildişi/Taş Uyumlu) */
 .mebi-btn-secondary {
-  background: #e2e8f0;
-  color: #1e293b;
-  box-shadow: 0 5px 0 #cbd5e1;
+  background: #e9e4da;
+  color: #3f3930;
+  border: 1px solid #dfd8cc;
+  box-shadow: 0 2px 0 #d0c9bd;
 }
 .mebi-btn-secondary .mebi-btn-badge {
-  color: #1e293b;
+  color: #3f3930;
 }
 .mebi-btn-secondary:active:not(:disabled) {
-  box-shadow: 0 1px 0 #cbd5e1;
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 #d0c9bd;
 }
 
 [data-theme="dark"] .mebi-btn-secondary {
   background: #27272b;
   color: #f4f4f5;
-  box-shadow: 0 5px 0 #141416;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 0 #141416;
 }
 [data-theme="dark"] .mebi-btn-secondary .mebi-btn-badge {
   color: #f4f4f5;
@@ -192,7 +196,7 @@
 .mebi-btn.is-disabled {
   background: #e2e8f0 !important;
   color: #94a3b8 !important;
-  box-shadow: 0 4px 0 #cbd5e1 !important;
+  box-shadow: 0 2px 0 #cbd5e1 !important;
   cursor: not-allowed !important;
   opacity: 0.7;
   transform: none !important;
@@ -206,37 +210,50 @@
 [data-theme="dark"] .mebi-btn.is-disabled {
   background: #222226 !important;
   color: #71717a !important;
-  box-shadow: 0 4px 0 #141416 !important;
+  box-shadow: 0 2px 0 #141416 !important;
 }
 
 /* --------------------------------------------------------------------------
-   2. 3D KARTLAR (Cards - Sıfır Kenarlık & 6px Katı Taban)
+   2. 3D KARTLAR (Cards - Konsept 1: Sıcak Fildişi & Milimetrik Deney Günlüğü)
    -------------------------------------------------------------------------- */
 .mebi-card {
-  background-color: rgba(255, 255, 255, 0.82);
-  background-image:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.10) 100%);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1.5px solid rgba(255, 255, 255, 0.90);
+  background-color: var(--mebi-bg-surface);
+  background-image: var(--mebi-dot-pattern);
+  background-size: 16px 16px;
+  border: 1.5px solid var(--mebi-border);
   border-radius: var(--mebi-radius-lg);
   padding: 24px;
-  box-shadow: 0 6px 0 var(--mebi-base-card), var(--mebi-shadow-md);
+  box-shadow: 0 4px 0 var(--mebi-base-card), 0 12px 28px -4px rgba(120, 113, 108, 0.09);
   transition: box-shadow var(--mebi-transition), background-color var(--mebi-transition);
   position: relative;
 }
 
 [data-theme="dark"] .mebi-card {
-  background-color: rgba(26, 26, 32, 0.84);
-  background-image:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  background-color: #222226;
+  background-image: var(--mebi-dot-pattern);
+  background-size: 16px 16px;
+  border: 1.5px solid var(--mebi-border);
+  box-shadow: 0 4px 0 #121214, var(--mebi-shadow-md);
 }
 
 .mebi-card-hoverable:hover {
-  box-shadow: 0 6px 0 var(--mebi-base-card-hover), var(--mebi-shadow-lg);
+  box-shadow: 0 4px 0 var(--mebi-base-card-hover), var(--mebi-shadow-lg);
+}
+
+/* Konsept 1 İç Kutu / Denklem / Gözlem Alt Kartı (Subcard) */
+.mebi-subcard,
+.subcard-concept-1 {
+  background-color: var(--mebi-bg-subcard);
+  border: 1px solid var(--mebi-border-subcard);
+  box-shadow: 0 2px 0 var(--mebi-base-card);
+  border-radius: var(--mebi-radius-md);
+}
+
+[data-theme="dark"] .mebi-subcard,
+[data-theme="dark"] .subcard-concept-1 {
+  background-color: var(--mebi-bg-subcard);
+  border: 1px solid var(--mebi-border-subcard);
+  box-shadow: 0 2px 0 #121214;
 }
 
 .mebi-card-header {
@@ -346,26 +363,25 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  height: 64px;
-  padding: 0 20px;
-  background-color: rgba(255, 255, 255, 0.84);
-  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.10) 100%);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1.5px solid rgba(255, 255, 255, 0.90);
-  box-shadow: 0 4px 0 var(--mebi-base-card), var(--mebi-shadow-sm);
+  gap: 12px;
+  height: 56px;
+  padding: 0 16px;
+  background-color: var(--mebi-bg-surface);
+  background-image: var(--mebi-dot-pattern);
+  background-size: 16px 16px;
+  border: 1.5px solid var(--mebi-border);
+  box-shadow: 0 3px 0 var(--mebi-base-card), var(--mebi-shadow-sm);
   border-radius: var(--mebi-radius-lg);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   transition: background-color var(--mebi-transition), box-shadow var(--mebi-transition);
 }
 
 [data-theme="dark"] .mebi-topbar {
-  background-color: rgba(34, 34, 38, 0.85);
-  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  background-color: #222226;
+  background-image: var(--mebi-dot-pattern);
+  background-size: 16px 16px;
+  border: 1.5px solid var(--mebi-border);
+  box-shadow: 0 3px 0 #121214;
 }
 
 .mebi-brand {
@@ -524,7 +540,7 @@
   height: 36px;
   border-radius: 50%;
   background: var(--mebi-bg-surface);
-  box-shadow: 0 4px 0 var(--mebi-base-card), var(--mebi-shadow-sm);
+  box-shadow: 0 2px 0 var(--mebi-base-card), var(--mebi-shadow-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -537,13 +553,13 @@
 .mebi-step-item.is-active .mebi-step-node {
   background: var(--mebi-primary);
   color: #ffffff;
-  box-shadow: 0 4px 0 var(--mebi-primary-taban), 0 0 16px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 2px 0 var(--mebi-primary-taban), 0 0 12px rgba(37, 99, 235, 0.3);
 }
 
 .mebi-step-item.is-done .mebi-step-node {
   background: var(--mebi-success);
   color: #ffffff;
-  box-shadow: 0 4px 0 var(--mebi-success-taban);
+  box-shadow: 0 2px 0 var(--mebi-success-taban);
 }
 
 .mebi-step-label {
@@ -599,13 +615,13 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 14px 18px;
+  padding: 12px 16px;
   border-radius: var(--mebi-radius-md);
-  border: 0;
+  border: 1.5px solid var(--mebi-border);
   background: var(--mebi-bg-subtle);
   color: var(--mebi-text-main);
-  box-shadow: 0 4px 0 var(--mebi-border-hover);
-  font-size: 14.5px;
+  box-shadow: 0 2px 0 var(--mebi-border-hover);
+  font-size: 14px;
   font-weight: 700;
   text-align: left;
   cursor: pointer;
@@ -615,17 +631,17 @@
 
 .mebi-quiz-choice:hover:not(:disabled) {
   background: var(--mebi-border);
-  box-shadow: 0 4px 0 #94a3b8;
+  box-shadow: 0 2px 0 #94a3b8;
 }
 
 [data-theme="dark"] .mebi-quiz-choice:hover:not(:disabled) {
   background: #323238;
-  box-shadow: 0 4px 0 #18181b;
+  box-shadow: 0 2px 0 #18181b;
 }
 
 .mebi-quiz-choice:active:not(:disabled) {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 var(--mebi-border-hover);
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 var(--mebi-border-hover);
 }
 
 .mebi-quiz-letter {
@@ -644,7 +660,8 @@
 
 .mebi-quiz-choice.is-selected {
   background: #cbd5e1;
-  box-shadow: 0 4px 0 #94a3b8;
+  border-color: #94a3b8;
+  box-shadow: 0 2px 0 #94a3b8;
   color: #0f172a;
 }
 
@@ -655,7 +672,8 @@
 
 [data-theme="dark"] .mebi-quiz-choice.is-selected {
   background: #3f3f46;
-  box-shadow: 0 4px 0 #27272a;
+  border-color: #52525b;
+  box-shadow: 0 2px 0 #27272a;
   color: #ffffff;
 }
 
@@ -915,11 +933,11 @@
   bottom: 0;
   width: 380px;
   max-width: 90vw;
-  background: var(--mebi-bg-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-left: 1.5px solid rgba(255, 255, 255, 0.85);
-  box-shadow: -8px 0 0 var(--mebi-base-card), var(--mebi-shadow-lg);
+  background-color: var(--mebi-bg-surface);
+  background-image: var(--mebi-dot-pattern);
+  background-size: 16px 16px;
+  border-left: 1.5px solid var(--mebi-border);
+  box-shadow: -6px 0 0 var(--mebi-base-card), var(--mebi-shadow-lg);
   z-index: 550;
   transform: translateX(100%);
   transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -928,7 +946,11 @@
 }
 
 [data-theme="dark"] .mebi-drawer {
-  border-left-color: rgba(255, 255, 255, 0.08);
+  background-color: #222226;
+  background-image: var(--mebi-dot-pattern);
+  background-size: 16px 16px;
+  border-left-color: var(--mebi-border);
+  box-shadow: -6px 0 0 #121214, var(--mebi-shadow-lg);
 }
 
 .mebi-drawer.is-active {
@@ -1004,16 +1026,16 @@
 
 .mebi-orientation-card {
   position: relative;
-  background: var(--mebi-bg-surface);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  background-color: var(--mebi-bg-surface);
+  background-image: var(--mebi-dot-pattern);
+  background-size: 16px 16px;
+  border: 1.5px solid var(--mebi-border);
   border-radius: var(--mebi-radius-xl, 24px);
   width: 500px;
   max-width: 100%;
   padding: 38px 28px 28px;
   text-align: center;
-  box-shadow: 0 10px 0 #cbd5e1, 0 30px 65px -10px rgba(15, 23, 42, 0.28);
+  box-shadow: 0 6px 0 var(--mebi-base-modal), 0 30px 65px -10px rgba(15, 23, 42, 0.28);
   transform: scale(0.92) translateY(12px);
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
               box-shadow 0.25s ease;
@@ -1021,9 +1043,11 @@
 }
 
 [data-theme="dark"] .mebi-orientation-card {
-  background: rgba(24, 24, 27, 0.85);
-  border: 1.5px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 0 #09090b, 0 35px 75px -10px rgba(0, 0, 0, 0.95);
+  background-color: #222226;
+  background-image: var(--mebi-dot-pattern);
+  background-size: 16px 16px;
+  border: 1.5px solid var(--mebi-border);
+  box-shadow: 0 6px 0 #09090b, 0 35px 75px -10px rgba(0, 0, 0, 0.95);
 }
 
 .mebi-orientation-overlay.is-active .mebi-orientation-card,
@@ -1043,7 +1067,7 @@ body.mebi-landscape-required .mebi-orientation-overlay .mebi-orientation-card {
   border: 0;
   background: #e2e8f0;
   color: #475569;
-  box-shadow: 0 3px 0 #cbd5e1;
+  box-shadow: 0 2px 0 #cbd5e1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1054,29 +1078,29 @@ body.mebi-landscape-required .mebi-orientation-overlay .mebi-orientation-card {
 
 .mebi-orientation-close-btn:hover {
   background: #cbd5e1;
-  box-shadow: 0 3px 0 #94a3b8;
+  box-shadow: 0 2px 0 #94a3b8;
   color: #0f172a;
 }
 
 .mebi-orientation-close-btn:active {
-  transform: translateY(2px);
+  transform: translateY(1px);
   box-shadow: 0 1px 0 #cbd5e1;
 }
 
 [data-theme="dark"] .mebi-orientation-close-btn {
   background: #27272b;
   color: #a1a1aa;
-  box-shadow: 0 3px 0 #141416;
+  box-shadow: 0 2px 0 #141416;
 }
 
 [data-theme="dark"] .mebi-orientation-close-btn:hover {
   background: #323238;
   color: #f4f4f5;
-  box-shadow: 0 3px 0 #1c1c20;
+  box-shadow: 0 2px 0 #1c1c20;
 }
 
 [data-theme="dark"] .mebi-orientation-close-btn:active {
-  transform: translateY(2px);
+  transform: translateY(1px);
   box-shadow: 0 1px 0 #141416;
 }
 

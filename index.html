@@ -12,9 +12,9 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- MEBİ Tasarım Sistemi ve Proje CSS Dosyaları -->
-  <link rel="stylesheet" href="css/mebi-theme.css">
-  <link rel="stylesheet" href="css/mebi-components.css">
-  <link rel="stylesheet" href="css/arena.css">
+  <link rel="stylesheet" href="css/mebi-theme.css?v=4.7">
+  <link rel="stylesheet" href="css/mebi-components.css?v=4.7">
+  <link rel="stylesheet" href="css/arena.css?v=4.7">
 </head>
 <body class="mebi-landscape-required">
 
@@ -121,12 +121,192 @@
     </div>
   </div>
 
+  <!-- MEBİ Değerlendirme Geri Bildirim Bilgi Kartı Modalı (Evaluation Feedback Info Card Modal) -->
+  <div id="evalModalOverlay" class="mebi-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="evalModalTitle" aria-hidden="true">
+    <div class="eval-modal-card" id="evalModalCard">
+      <div class="eval-modal-header" id="evalModalHeader">
+        <div class="eval-modal-title-wrap">
+          <span class="eval-status-badge" id="evalModalBadge">Değerlendirme Sonucu</span>
+          <h3 class="eval-modal-title" id="evalModalTitle">Tepkime Türü Tespiti</h3>
+        </div>
+        <button type="button" class="eval-modal-close-btn" id="btnCloseEvalModal" title="Kapat" aria-label="Kapat">✕</button>
+      </div>
+      <div class="eval-modal-body" id="evalModalBody">
+        <!-- Dinamik Bilgi Kartı İçeriği -->
+      </div>
+      <div class="eval-modal-footer">
+        <button type="button" class="mebi-btn mebi-btn-secondary mebi-btn-sm" id="btnDismissEvalModal">
+          <span>Soruyu İncele / Kapat</span>
+        </button>
+        <button type="button" class="mebi-btn mebi-btn-primary mebi-btn-sm" id="btnProceedMicroFromModal">
+          <span class="mebi-btn-badge">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+          </span>
+          <span>Tanecik Kamerasına Geç (Alt-Mikroskobik Boyut) ➔</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEBİ Öğrenci Başlangıç Rehberi Pop-up Kartı (Welcome & Onboarding Guide Modal) -->
+  <div id="welcomeModalOverlay" class="mebi-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="welcomeModalTitle" aria-hidden="true">
+    <div class="welcome-modal-card" id="welcomeModalCard">
+      <!-- Modal Üst Başlık (Header) -->
+      <div class="welcome-modal-header">
+        <div class="welcome-modal-title-wrap">
+          <div class="welcome-modal-icon-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+          </div>
+          <div>
+            <div class="welcome-modal-badge-row">
+              <span class="mebi-badge mebi-badge-cyan">LABORATUVAR REHBERİ</span>
+              <span class="welcome-modal-step-count">5 Adımda Deney Akışı</span>
+            </div>
+            <h3 class="welcome-modal-title" id="welcomeModalTitle">Tepkime Arenası'na Hoş Geldin!</h3>
+          </div>
+        </div>
+        <button type="button" class="welcome-modal-close-btn" id="btnCloseWelcomeModal" title="Kapat" aria-label="Rehberi Kapat">✕</button>
+      </div>
+
+      <!-- Modal Gövdesi (Body) -->
+      <div class="welcome-modal-body" id="welcomeModalBody">
+        <!-- Giriş ve Amaç Kartı -->
+        <div class="welcome-intro-box">
+          <span class="welcome-intro-icon">💡</span>
+          <div class="welcome-intro-text">
+            Bu simülasyonda 12 farklı kimyasal maddeyi seçip karıştırarak kimyasal tepkime belirtilerini (gaz çıkışı, çökelti oluşumu, renk ve sıcaklık değişimi) gözlemleyecek ve moleküler dünyayı 3B tanecik kamerasıyla keşfedeceksin. İşte izlemen gereken adımlar:
+          </div>
+        </div>
+
+        <!-- 5 Adımlı Yönerge Akış Kartları -->
+        <div class="welcome-steps-grid">
+          <!-- 1. Adım -->
+          <div class="welcome-step-item">
+            <div class="welcome-step-indicator step-1">
+              <span>1</span>
+            </div>
+            <div class="welcome-step-details">
+              <div class="welcome-step-heading">
+                <span class="welcome-step-emoji">🧪</span>
+                <h4 class="welcome-step-name">1. Maddeleri Seç</h4>
+              </div>
+              <p class="welcome-step-desc">
+                Madde havuzundaki 12 kimyasal madde arasından reaksiyona sokmak istediğin iki tanesini seçerek <b>1. ve 2. deneme yuvasına</b> yerleştir.
+              </p>
+            </div>
+          </div>
+
+          <!-- 2. Adım -->
+          <div class="welcome-step-item">
+            <div class="welcome-step-indicator step-2">
+              <span>2</span>
+            </div>
+            <div class="welcome-step-details">
+              <div class="welcome-step-heading">
+                <span class="welcome-step-emoji">🎯</span>
+                <h4 class="welcome-step-name">2. Değişimi Tahmin Et</h4>
+              </div>
+              <p class="welcome-step-desc">
+                Maddeler karıştırılmadan önce; <b>gaz çıkışı</b>, <b>çökelti (katı) oluşumu</b>, <b>renk</b> veya <b>sıcaklık değişimi</b> olup olmayacağını tahmin et.
+              </p>
+            </div>
+          </div>
+
+          <!-- 3. Adım -->
+          <div class="welcome-step-item">
+            <div class="welcome-step-indicator step-3">
+              <span>3</span>
+            </div>
+            <div class="welcome-step-details">
+              <div class="welcome-step-heading">
+                <span class="welcome-step-emoji">🫗</span>
+                <h4 class="welcome-step-name">3. Beheri Dök ve Karıştır</h4>
+              </div>
+              <p class="welcome-step-desc">
+                Sağdaki beheri tutup <b>soldaki beherin ağzına sürükle</b> veya <b>"Beheri Dök"</b> düğmesine tıklayarak maddeleri birleştir.
+              </p>
+            </div>
+          </div>
+
+          <!-- 4. Adım -->
+          <div class="welcome-step-item">
+            <div class="welcome-step-indicator step-4">
+              <span>4</span>
+            </div>
+            <div class="welcome-step-details">
+              <div class="welcome-step-heading">
+                <span class="welcome-step-emoji">🌡️</span>
+                <h4 class="welcome-step-name">4. Sıcaklığı ve Belirtileri İzle</h4>
+              </div>
+              <p class="welcome-step-desc">
+                Dijital termometreden <b>sıcaklık değişimini</b> ve beherdeki olayları takip et. Deney raporunu doldurup <b>tepkime türünü</b> belirle.
+              </p>
+            </div>
+          </div>
+
+          <!-- 5. Adım -->
+          <div class="welcome-step-item">
+            <div class="welcome-step-indicator step-5">
+              <span>5</span>
+            </div>
+            <div class="welcome-step-details">
+              <div class="welcome-step-heading">
+                <span class="welcome-step-emoji">🔬</span>
+                <h4 class="welcome-step-name">5. Tanecik Kamerasını Keşfet</h4>
+              </div>
+              <p class="welcome-step-desc">
+                <b>"TEPKENLER"</b> ve <b>"ÜRÜNLER"</b> sekmelerinde iyonların su kılıflarını (solvasyon), kristal örgü kafeslerini ve gaz dağılımını 3B incele.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Johnstone Pedagoji Bilgi Kutusu -->
+        <div class="welcome-pedagogy-card">
+          <div class="welcome-pedagogy-badge">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <span>Johnstone Kimya Üçgeni</span>
+          </div>
+          <div class="welcome-pedagogy-desc">
+            Bu simülasyonda kimyasal olayları 3 temel boyutta öğreneceksin: <b>1. Makroskobik</b> (deney masası & sıcaklık), <b>2. Sembolik</b> (denklemler & formüller) ve <b>3. Alt-mikroskobik</b> (3B atom ve tanecik kamerası).
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Alt Çubuk (Footer) -->
+      <div class="welcome-modal-footer">
+        <label class="welcome-modal-dont-show">
+          <input type="checkbox" id="chkDoNotShowWelcome">
+          <span>Bir sonraki açılışta bu kartı otomatik gösterme</span>
+        </label>
+        <div class="welcome-modal-buttons">
+          <button type="button" class="mebi-btn mebi-btn-secondary mebi-btn-sm" id="btnDismissWelcomeModal">
+            <span>Rehberi Kapat</span>
+          </button>
+          <button type="button" class="mebi-btn mebi-btn-primary mebi-btn-sm" id="btnStartFromWelcome">
+            <span class="mebi-btn-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </span>
+            <span>Arenaya Gir ve Deneye Başla ➔</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Modüler JavaScript Dosyaları -->
-  <script src="js/audio.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/svg-models.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/audio.js?v=4.7"></script>
+  <script src="js/data.js?v=4.7"></script>
+  <script src="js/svg-models.js?v=4.7"></script>
+  <script src="js/ui.js?v=4.7"></script>
+  <script src="js/app.js?v=4.7"></script>
 
 </body>
 </html>

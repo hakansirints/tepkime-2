@@ -47,30 +47,32 @@
   --mebi-info-border: #ddd6fe;
   --mebi-info-taban: #6d28d9;
 
-  /* 4. Yüzey, Arka Plan ve Kenarlıklar (Aydınlık Mod - Yarı Saydam Cam Morfolojisi) */
-  --mebi-bg-body: #f8fafc;
-  --mebi-bg-surface: rgba(255, 255, 255, 0.84);
-  --mebi-bg-surface-solid: #ffffff;
-  --mebi-bg-subtle: rgba(241, 245, 249, 0.84);
-  --mebi-bg-sunken: rgba(238, 242, 246, 0.78);
-  --mebi-bg-elevated: rgba(255, 255, 255, 0.92);
+  /* 4. Yüzey, Arka Plan ve Kenarlıklar (Konsept 1: Sıcak Fildişi & Lab Günlüğü) */
+  --mebi-bg-body: #ede8df;
+  --mebi-bg-surface: #fbf9f4;
+  --mebi-bg-surface-solid: #fbf9f4;
+  --mebi-bg-subtle: #f3eee4;
+  --mebi-bg-sunken: #e9e3d7;
+  --mebi-bg-elevated: #ffffff;
+  --mebi-bg-subcard: rgba(255, 255, 255, 0.75);
 
-  --mebi-border: #e2e8f0;
-  --mebi-border-hover: #cbd5e1;
-  --mebi-border-focus: #3b82f6;
+  --mebi-border: #e4ded3;
+  --mebi-border-hover: #cfc7ba;
+  --mebi-border-subcard: #e2ddd3;
+  --mebi-border-focus: #2563eb;
 
   /* 5. Tipografi Renkleri (Aydınlık Mod) */
-  --mebi-text-main: #0f172a;
-  --mebi-text-secondary: #475569;
-  --mebi-text-muted: #94a3b8;
+  --mebi-text-main: #1c1917;
+  --mebi-text-secondary: #57534e;
+  --mebi-text-muted: #78716c;
   --mebi-text-white: #ffffff;
 
-  /* 6. 3D Derinlik Taban Renkleri (Aydınlık) */
-  --mebi-base-card: #e2e8f0;
-  --mebi-base-card-hover: #cbd5e1;
-  --mebi-base-modal: #cbd5e1;
-  --mebi-base-secondary-btn: #cbd5e1;
-  --mebi-base-sunken-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.12), inset 0 1px 2px rgba(15, 23, 42, 0.14), inset 0 -1px 1px rgba(255, 255, 255, 0.85);
+  /* 6. Derinlik Taban Renkleri (Sıcak Fildişi 3D Taban) */
+  --mebi-base-card: #dcd6ca;
+  --mebi-base-card-hover: #cfc7ba;
+  --mebi-base-modal: #cfc7ba;
+  --mebi-base-secondary-btn: #d0c9bd;
+  --mebi-base-sunken-shadow: inset 0 2px 4px rgba(120, 113, 108, 0.10), inset 0 1px 2px rgba(120, 113, 108, 0.12), inset 0 -1px 1px rgba(255, 255, 255, 0.85);
 
   /* 7. Yuvarlatmalar */
   --mebi-radius-xs: 4px;
@@ -81,10 +83,10 @@
   --mebi-radius-full: 9999px;
 
   /* 8. Gölgeler */
-  --mebi-shadow-sm: 0 2px 4px -1px rgba(15, 23, 42, 0.06);
-  --mebi-shadow-md: 0 6px 16px -2px rgba(15, 23, 42, 0.08);
-  --mebi-shadow-lg: 0 14px 28px -4px rgba(15, 23, 42, 0.12);
-  --mebi-shadow-modal: 0 10px 0 #cbd5e1, 0 25px 60px -10px rgba(15, 23, 42, 0.28);
+  --mebi-shadow-sm: 0 2px 4px -1px rgba(120, 113, 108, 0.06);
+  --mebi-shadow-md: 0 6px 16px -2px rgba(120, 113, 108, 0.08);
+  --mebi-shadow-lg: 0 12px 28px -4px rgba(120, 113, 108, 0.09);
+  --mebi-shadow-modal: 0 6px 0 #dcd6ca, 0 20px 50px -10px rgba(120, 113, 108, 0.22);
 
   /* 9. Geçişler ve Hız */
   --mebi-ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -98,33 +100,29 @@
   --mebi-scrollbar-thumb-active: #64748b;
 
   /* 11. Cam Laboratuvar Malzemeleri (Beher & Cam Eşya Konturları) */
-  --mebi-glass-stroke: #475569;         /* Slate-600: Açık modda belirgin cam çerçeve konturu */
-  --mebi-glass-stroke-rim: #334155;     /* Slate-700: Beher ağzı ve dökme gagası */
-  --mebi-glass-inner: #94a3b8;          /* Slate-400: İç cam katmanı ve yansıma */
-  --mebi-glass-grad: #334155;           /* Slate-700: Beyaz madde üstünde de net okunan dereceler */
+  --mebi-glass-stroke: #475569;
+  /* Slate-600: Açık modda belirgin cam çerçeve konturu */
+  --mebi-glass-stroke-rim: #334155;
+  /* Slate-700: Beher ağzı ve dökme gagası */
+  --mebi-glass-inner: #94a3b8;
+  /* Slate-400: İç cam katmanı ve yansıma */
+  --mebi-glass-grad: #334155;
+  /* Slate-700: Beyaz madde üstünde de net okunan dereceler */
   --mebi-glass-shadow: rgba(15, 23, 42, 0.16);
   --mebi-glass-bg: rgba(248, 250, 252, 0.35);
 
-  /* 12. Moleküler Heksagon / Benzen Ağı Deseni (Hexagonal Chemical Lattice) */
-  --mebi-benzene-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='93.53' viewBox='0 0 54 93.53'%3E%3Cg fill='none' stroke='%232563eb' stroke-width='1.2' opacity='0.20'%3E%3Cpath d='M27 0 L54 15.588 L54 46.765 L27 62.353 L0 46.765 L0 15.588 Z M27 93.53 L54 77.942 L54 46.765 M27 93.53 L0 77.942 L0 46.765'/%3E%3Ccircle cx='27' cy='31.176' r='10.5' stroke-width='0.9' stroke-dasharray='3 2.5'/%3E%3Ccircle cx='0' cy='77.942' r='10.5' stroke-width='0.9' stroke-dasharray='3 2.5'/%3E%3Ccircle cx='54' cy='77.942' r='10.5' stroke-width='0.9' stroke-dasharray='3 2.5'/%3E%3C/g%3E%3C/svg%3E");
+  /* 12. Milimetrik Defter Izgarası & Dot-Grid (Konsept 1: Fildişi Deney Günlüğü) */
+  --mebi-dot-pattern: radial-gradient(circle, rgba(148, 163, 184, 0.22) 1.1px, transparent 1.1px);
+  --mebi-benzene-pattern: var(--mebi-dot-pattern);
+  --mebi-chemistry-blueprint: var(--mebi-dot-pattern);
 
-  /* 13. Yumuşak Laboratuvar Ortam Işıltısı (Ambient Glow / Mesh Gradient) */
-  --mebi-ambient-blue-core: rgba(37, 99, 235, 0.15);      /* Sol üst: MEBİ kurumsal mavisi çekirdek */
-  --mebi-ambient-blue-soft: rgba(59, 130, 246, 0.08);      /* MEBİ mavisi buğulu geçiş */
-  --mebi-ambient-blue-haze: rgba(147, 197, 253, 0.025);    /* Geniş buğu */
+  /* 13. Genel Sayfa Arkaplanı: 2 Numaralı Teknik Lab Cam Eşya Krokileri (preview_backgrounds.html Seçenek 2) */
+  --mebi-lab-sketches-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg fill='none' stroke='%2357534e' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round' opacity='0.14'%3E%3Cpath d='M24 16 L24 24 L14 42 A 2 2 0 0 0 16 45 L36 45 A 2 2 0 0 0 38 42 L28 24 L28 16'/%3E%3Cline x1='22' y1='16' x2='30' y2='16'/%3E%3Cline x1='19' y1='34' x2='33' y2='34' stroke-dasharray='2,2'/%3E%3Cline x1='21' y1='28' x2='31' y2='28' stroke-dasharray='2,2'/%3E%3Ccircle cx='105' cy='28' r='3.2' fill='%2357534e'/%3E%3Cellipse cx='105' cy='28' rx='15' ry='5.5' transform='rotate(30 105 28)'/%3E%3Cellipse cx='105' cy='28' rx='15' ry='5.5' transform='rotate(-30 105 28)'/%3E%3Cpath d='M16 80 L16 102 A 3 3 0 0 0 19 105 L33 105 A 3 3 0 0 0 36 102 L36 80'/%3E%3Cpath d='M13 80 L17 80'/%3E%3Cline x1='21' y1='88' x2='27' y2='88'/%3E%3Cline x1='21' y1='94' x2='29' y2='94'/%3E%3Cpath d='M92 92 L112 112 A 4.5 4.5 0 0 1 106 118 L86 98'/%3E%3Cpolygon points='65,12 76,18 76,32 65,38 54,32 54,18'/%3E%3Ccircle cx='65' cy='25' r='5.5'/%3E%3C/g%3E%3C/svg%3E");
 
-  --mebi-ambient-react-core: rgba(13, 148, 136, 0.14);     /* Sağ alt: Kimyasal deney/reaksiyon ışıltısı */
-  --mebi-ambient-react-soft: rgba(6, 182, 212, 0.075);     /* Camgöbeği buğulu yayılma */
-  --mebi-ambient-react-haze: rgba(20, 184, 166, 0.02);     /* Geniş buğu */
-
-  /* Geriye dönük uyumluluk */
-  --mebi-ambient-glow-1: var(--mebi-ambient-blue-core);
-  --mebi-ambient-glow-2: var(--mebi-ambient-react-core);
-
-  /* Çok katmanlı buğulu ortam aydınlatması (Laboratory Ambient Mesh) */
-  --mebi-mesh-gradient:
-    radial-gradient(ellipse 75% 65% at 0% 0%, var(--mebi-ambient-blue-core) 0%, var(--mebi-ambient-blue-soft) 38%, var(--mebi-ambient-blue-haze) 68%, transparent 85%),
-    radial-gradient(ellipse 75% 70% at 100% 100%, var(--mebi-ambient-react-core) 0%, var(--mebi-ambient-react-soft) 38%, var(--mebi-ambient-react-haze) 68%, transparent 85%);
+  --mebi-ambient-mesh: 
+    radial-gradient(ellipse 70% 60% at 5% 8%, rgba(37, 99, 235, 0.055) 0%, transparent 75%),
+    radial-gradient(ellipse 70% 65% at 95% 92%, rgba(217, 119, 6, 0.045) 0%, transparent 75%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(13, 148, 136, 0.025) 0%, transparent 80%);
 }
 
 /* ==========================================================================
@@ -133,14 +131,16 @@
    ========================================================================== */
 [data-theme="dark"] {
   --mebi-bg-body: #161619;
-  --mebi-bg-surface: rgba(34, 34, 38, 0.85);
+  --mebi-bg-surface: #222226;
   --mebi-bg-surface-solid: #222226;
-  --mebi-bg-subtle: rgba(43, 43, 48, 0.82);
-  --mebi-bg-sunken: rgba(20, 20, 23, 0.78);
-  --mebi-bg-elevated: rgba(38, 38, 44, 0.90);
+  --mebi-bg-subtle: #2b2b30;
+  --mebi-bg-sunken: #18181b;
+  --mebi-bg-elevated: #2c2c33;
+  --mebi-bg-subcard: rgba(28, 28, 32, 0.85);
 
   --mebi-border: #38383e;
   --mebi-border-hover: #4e4e56;
+  --mebi-border-subcard: #38383e;
   --mebi-border-focus: #71717a;
 
   --mebi-text-main: #f4f4f5;
@@ -171,24 +171,38 @@
   --mebi-scrollbar-thumb-active: #71717a;
 
   /* Cam Laboratuvar Malzemeleri (Koyu Mod) */
-  --mebi-glass-stroke: #94a3b8;         /* Slate-400: Koyu zemin üstünde parlak cam konturu */
-  --mebi-glass-stroke-rim: #cbd5e1;     /* Slate-300: Beher ağzı ve gaga */
+  --mebi-glass-stroke: #94a3b8;
+  /* Slate-400: Koyu zemin üstünde parlak cam konturu */
+  --mebi-glass-stroke-rim: #cbd5e1;
+  /* Slate-300: Beher ağzı ve gaga */
   --mebi-glass-inner: rgba(255, 255, 255, 0.4);
-  --mebi-glass-grad: #cbd5e1;           /* Koyu zeminde ve sıvıda net okunan dereceler */
+  --mebi-glass-grad: #cbd5e1;
+  /* Koyu zeminde ve sıvıda net okunan dereceler */
   --mebi-glass-shadow: rgba(0, 0, 0, 0.65);
   --mebi-glass-bg: rgba(255, 255, 255, 0.05);
 
-  /* 12. Moleküler Heksagon / Benzen Ağı Deseni (Koyu Mod) */
-  --mebi-benzene-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='93.53' viewBox='0 0 54 93.53'%3E%3Cg fill='none' stroke='%2338bdf8' stroke-width='1.2' opacity='0.16'%3E%3Cpath d='M27 0 L54 15.588 L54 46.765 L27 62.353 L0 46.765 L0 15.588 Z M27 93.53 L54 77.942 L54 46.765 M27 93.53 L0 77.942 L0 46.765'/%3E%3Ccircle cx='27' cy='31.176' r='10.5' stroke-width='0.9' stroke-dasharray='3 2.5'/%3E%3Ccircle cx='0' cy='77.942' r='10.5' stroke-width='0.9' stroke-dasharray='3 2.5'/%3E%3Ccircle cx='54' cy='77.942' r='10.5' stroke-width='0.9' stroke-dasharray='3 2.5'/%3E%3C/g%3E%3C/svg%3E");
+  /* 12. Milimetrik Defter Izgarası & Dot-Grid (Koyu Mod) */
+  --mebi-dot-pattern: radial-gradient(circle, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
 
-  /* 13. Yumuşak Laboratuvar Ortam Işıltısı (Karanlık Mod) */
-  --mebi-ambient-blue-core: rgba(30, 64, 175, 0.32);     /* Koyu mod MEBİ mavisi aura */
-  --mebi-ambient-blue-soft: rgba(37, 99, 235, 0.18);     /* Buğulu geçiş */
-  --mebi-ambient-blue-haze: rgba(59, 130, 246, 0.05);    /* Dış hare */
+  --mebi-benzene-pattern: var(--mebi-dot-pattern);
+  --mebi-chemistry-blueprint: var(--mebi-dot-pattern);
 
-  --mebi-ambient-react-core: rgba(13, 148, 136, 0.25);    /* Koyu mod reaksiyon neon parıltısı */
-  --mebi-ambient-react-soft: rgba(6, 182, 212, 0.15);     /* Camgöbeği ışıltı */
-  --mebi-ambient-react-haze: rgba(20, 184, 166, 0.04);    /* Dış hare */
+  /* 13. Genel Sayfa Arkaplanı: 2 Numaralı Teknik Lab Cam Eşya Krokileri (Karanlık Mod) */
+  --mebi-lab-sketches-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round' opacity='0.10'%3E%3Cpath d='M24 16 L24 24 L14 42 A 2 2 0 0 0 16 45 L36 45 A 2 2 0 0 0 38 42 L28 24 L28 16'/%3E%3Cline x1='22' y1='16' x2='30' y2='16'/%3E%3Cline x1='19' y1='34' x2='33' y2='34' stroke-dasharray='2,2'/%3E%3Cline x1='21' y1='28' x2='31' y2='28' stroke-dasharray='2,2'/%3E%3Ccircle cx='105' cy='28' r='3.2' fill='%23ffffff'/%3E%3Cellipse cx='105' cy='28' rx='15' ry='5.5' transform='rotate(30 105 28)'/%3E%3Cellipse cx='105' cy='28' rx='15' ry='5.5' transform='rotate(-30 105 28)'/%3E%3Cpath d='M16 80 L16 102 A 3 3 0 0 0 19 105 L33 105 A 3 3 0 0 0 36 102 L36 80'/%3E%3Cpath d='M13 80 L17 80'/%3E%3Cline x1='21' y1='88' x2='27' y2='88'/%3E%3Cline x1='21' y1='94' x2='29' y2='94'/%3E%3Cpath d='M92 92 L112 112 A 4.5 4.5 0 0 1 106 118 L86 98'/%3E%3Cpolygon points='65,12 76,18 76,32 65,38 54,32 54,18'/%3E%3Ccircle cx='65' cy='25' r='5.5'/%3E%3C/g%3E%3C/svg%3E");
+
+  --mebi-ambient-mesh: 
+    radial-gradient(ellipse 70% 60% at 5% 8%, rgba(59, 130, 246, 0.16) 0%, transparent 75%),
+    radial-gradient(ellipse 70% 65% at 95% 92%, rgba(245, 158, 11, 0.10) 0%, transparent 75%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(20, 184, 166, 0.08) 0%, transparent 80%);
+
+  /* 14. Yumuşak Laboratuvar Ortam Işıltısı (Karanlık Mod) */
+  --mebi-ambient-blue-core: rgba(30, 64, 175, 0.32);
+  --mebi-ambient-blue-soft: rgba(37, 99, 235, 0.18);
+  --mebi-ambient-blue-haze: rgba(59, 130, 246, 0.05);
+
+  --mebi-ambient-react-core: rgba(13, 148, 136, 0.25);
+  --mebi-ambient-react-soft: rgba(6, 182, 212, 0.15);
+  --mebi-ambient-react-haze: rgba(20, 184, 166, 0.04);
 
   --mebi-ambient-glow-1: var(--mebi-ambient-blue-core);
   --mebi-ambient-glow-2: var(--mebi-ambient-react-core);
@@ -201,31 +215,35 @@
 /* ==========================================================================
    TEMEL SIFIRLAMA VE ERİŞİLEBİLİRLİK
    ========================================================================== */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html, body {
+html,
+body {
   min-height: 100vh;
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   font-size: 15px;
   line-height: 1.6;
   background-color: var(--mebi-bg-body);
-  background-image:
-    var(--mebi-mesh-gradient),
-    var(--mebi-benzene-pattern);
-  background-size: 100% 100%, 100% 100%, 54px 93.53px;
-  background-attachment: fixed, fixed, fixed;
-  background-repeat: no-repeat, no-repeat, repeat;
+  background-image: var(--mebi-lab-sketches-pattern);
+  background-repeat: repeat;
+  background-position: center top;
+  background-size: 140px 140px;
   color: var(--mebi-text-main);
   transition: var(--mebi-theme-transition);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-input, button, textarea, select {
+input,
+button,
+textarea,
+select {
   font-family: inherit;
   font-size: inherit;
 }
@@ -244,7 +262,8 @@ a {
   transition: color var(--mebi-transition);
 }
 
-img, svg {
+img,
+svg {
   vertical-align: middle;
 }
 
@@ -289,20 +308,43 @@ img, svg {
 }
 
 @keyframes mebiSpin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes mebiPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.75; transform: scale(1.04); }
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.75;
+    transform: scale(1.04);
+  }
 }
 
 @keyframes mebiShimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 @keyframes mebiFadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
