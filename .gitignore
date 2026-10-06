@@ -5,3 +5,15 @@ ornek.html
 # İşletim sistemi kalıntıları
 Thumbs.db
 .DS_Store
+
+# Geçici araçlar ve test scriptleri
+node_modules/
+package.json
+package-lock.json
+*.log
+temp_edge_profile/
+capture_*.js
+take_*.js
+serve_*.js
+test_*.js
+

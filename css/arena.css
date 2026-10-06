@@ -4874,3 +4874,23 @@ body.mebi-mobile-landscape #app[data-screen="micro"] .particle-3d-host::after { 
 }
 .lab-3d-active #app .digital-thermo-head { width:140px !important; }
 .lab-3d-active #app .digital-thermo-wrap { width:140px !important; }
+
+/* Responsive styling for full 3D particles modeling cards */
+#app[data-screen="micro"] .camera-particles-row {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) !important;
+  gap: 14px !important;
+  margin-bottom: 14px !important;
+}
+@media (max-width: 760px) {
+  #app[data-screen="micro"] .camera-particles-row {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+}
+@media (max-height: 650px) and (orientation: landscape) {
+  #app[data-screen="micro"] .camera-particles-row {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+    gap: 8px !important;
+  }
+}

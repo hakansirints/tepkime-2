@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+window.THREE = THREE;
 
 const CPK = {
   H: 0xffffff, C: 0x909090, N: 0x3050f8, O: 0xff0d0d, Na: 0xab5cf2,
@@ -226,7 +227,7 @@ function normalizeFormula(formula) {
   return String(formula || '')
     .replace(/[₀-₉]/g, digit => subscriptMap[digit])
     .replace(/<[^>]*>/g, '')
-    .replace(/\((?:k|s|aq|g|l|çöz|gaz)\)$/i, '')
+    .replace(/\((?:k|s|aq|g|l|çöz|gaz|suda|katı|sıvı)\)$/i, '')
     .replace(/[\[\]]/g, '')
     .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻]/g, '')
     .replace(/[+−\-]\d*$/g, '')
@@ -308,16 +309,15 @@ function productDescriptor(key, state, host) {
     return { formula:reagent.id, symbols: REAGENT_ELEMENTS[reagent.id] || ['H','O'], mode: reagent.solid ? 'crystal' : 'solution' };
   }
   const type = host.dataset.particleType || '';
+  const mode = host.dataset.particleMode || 'solution';
   const typeSymbols = (type.match(/[A-Z][a-z]?/g) || []).filter(symbol => Object.prototype.hasOwnProperty.call(CPK, symbol));
-  const hasPrecipitate = !!(rx && rx.obs && rx.obs.includes('precipitate'));
-  const hasGas = !!(rx && rx.obs && rx.obs.includes('gas'));
   if (type === 'O2') return { formula:'O2', symbols:['O'], mode:'gas' };
   if (type === 'CO2') return { formula:'CO2', symbols:['O','C'], mode:'gas' };
   if (type === 'Cl2') return { formula:'Cl2', symbols:['Cl'], mode:'gas' };
-  if (key === 'p1' && hasPrecipitate) return { formula:type, symbols:typeSymbols.length ? typeSymbols : [...(REAGENT_ELEMENTS[r1.id] || []), ...(REAGENT_ELEMENTS[r2.id] || [])].slice(0,4), mode:'crystal' };
-  if (key === 'p2' && hasPrecipitate && hasGas) return { formula:type, symbols:typeSymbols.length ? typeSymbols : (REAGENT_ELEMENTS[r1.id] || ['O']).slice(-2), mode:'gas' };
-  if (key === 'p1' && hasGas) return { formula:type, symbols:typeSymbols.length ? typeSymbols : (REAGENT_ELEMENTS[r1.id] || ['O']).slice(-2), mode:'gas' };
-  return { formula:type, symbols:typeSymbols.length ? typeSymbols : [...(REAGENT_ELEMENTS[r1.id] || []), ...(REAGENT_ELEMENTS[r2.id] || [])].slice(0,5), mode:'solution' };
+  if (type === 'H2O') return { formula:'H2O', symbols:['H','O'], mode:'solution' };
+  if (mode === 'crystal' || key === 'p_ppt') return { formula:type, symbols:typeSymbols.length ? typeSymbols : ['Pb','I'], mode:'crystal' };
+  if (mode === 'gas' || key === 'p_gas') return { formula:type, symbols:typeSymbols.length ? typeSymbols : ['O'], mode:'gas' };
+  return { formula:type, symbols:typeSymbols.length ? typeSymbols : [...(REAGENT_ELEMENTS[r1?.id] || []), ...(REAGENT_ELEMENTS[r2?.id] || [])].slice(0,5), mode:'solution' };
 }
 
 function buildModel(descriptor) {
@@ -338,7 +338,7 @@ function setSelected(viewer, root) {
 
 function mount(host, key, state, modal = false) {
   if (!host || !state) return null;
-  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true, preserveDrawingBuffer:true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.shadowMap.enabled = true;
@@ -365,9 +365,10 @@ function mount(host, key, state, modal = false) {
   function resize() {
     const width = Math.max(1, host.clientWidth || (modal ? 720 : 360));
     const height = Math.max(1, host.clientHeight || (modal ? 360 : 190));
-    renderer.setSize(width, height, false);
+    renderer.setSize(width, height);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+    renderer.render(scene, camera);
   }
   function selectAt(event) {
     const rect = renderer.domElement.getBoundingClientRect();
@@ -418,6 +419,7 @@ function mount(host, key, state, modal = false) {
   viewer.observer = new ResizeObserver(resize);
   viewer.observer.observe(host);
   resize();
+  renderer.render(scene, camera);
   viewers.add(viewer);
   startAnimation();
   return viewer;
@@ -476,6 +478,7 @@ function sync(state) {
   document.querySelectorAll('.particle-3d-host[data-particle-view]').forEach(host => {
     if (!host.querySelector('canvas')) mount(host, host.dataset.particleView, state, false);
   });
+  viewers.forEach(v => v.renderer.render(v.scene, v.camera));
 }
 
 function mountModal(host, key, state) {
@@ -488,5 +491,5 @@ function disposeModal() {
   modalViewer = null;
 }
 
-window.ParticleScene = { sync, disposeCards, mountModal, disposeModal };
+window.ParticleScene = { sync, disposeCards, mountModal, disposeModal, viewers };
 if (window.TepkimeArenasi) sync(window.TepkimeArenasi.state);

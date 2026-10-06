@@ -1238,111 +1238,145 @@
             '</div>' +
           '</div>';
         } else {
+          // Modelleme Aşamasında Oluşan BÜTÜN Ürünler, Moleküller ve İyonlar Eksiksiz Listelenir
+          var prodCards = [];
           var hasPpt = (rx.obs && rx.obs.indexOf('precipitate') > -1);
-          var hasGas = (rx.obs && rx.obs.indexOf('gas') > -1);
+          var hasGas = (rx.obs && rx.obs.indexOf('gas') > -1) || /CO2|O2|Cl2/i.test(rx.products || '');
+          var hasWater = /H2O|H₂O/i.test(rx.products || '');
           var isComplex = (rx.typeCategories && rx.typeCategories.indexOf('complex') > -1) || (rx.typeCategory === 'complex');
-          var isHclNaoh = (r1.id === 'HCl' && r2.id === 'NaOH') || (r1.id === 'NaOH' && r2.id === 'HCl');
-          var isO2Gas = (r1.id === 'H2O2' || r2.id === 'H2O2');
+          var isO2Gas = (r1.id === 'H2O2' || r2.id === 'H2O2') && !(r1.id === 'HCl' || r2.id === 'HCl');
           var isCl2Gas = (r1.id === 'H2O2' && r2.id === 'HCl') || (r1.id === 'HCl' && r2.id === 'H2O2');
 
-          var p1Title = '', p1Formula = '', p1ChemicalName = '', p1Badge = '', p1Type = '', p1Caption = '', p1Ionic = '';
-          var p2Title = '', p2Formula = '', p2ChemicalName = '', p2Badge = '', p2Type = '', p2Caption = '', p2Ionic = '';
-
+          // 1. Katı Çökelti (Varsa)
           if (hasPpt) {
-            p1Badge = '<span class="particle-state-badge badge-solid">Katı Çökelti</span>';
-            p1Title = esc(rx.mainProductSymbol || 'Katı Çökelti');
-            p1Type = rx.mainProductSymbol || 'precipitate';
-            p1Formula = rx.mainProductSymbol || 'Katı çökelti';
-            p1ChemicalName = 'Oluşan katı çökelti';
-            p1Caption = 'Suda çözünmeyen katı kristal kafesi beherin dibine çöker.';
-            p1Ionic = getProductIonicNotation('p1', rx, r1, r2, false);
+            var rawSym = String(rx.mainProductSymbol || '').replace(/\(k\)$/i, '').trim();
+            if (/Ag\(k\)/i.test(rx.mainProductSymbol)) rawSym = 'Ag';
+            else if (/CuI/i.test(rx.mainProductSymbol)) rawSym = 'CuI';
+            else if (/Cu2CO3/i.test(rx.mainProductSymbol)) rawSym = 'Cu2CO3(OH)2';
+            else if (!rawSym) rawSym = 'Katı Çökelti';
 
-            if (hasGas) {
-              p2Badge = '<span class="particle-state-badge badge-gas">Açığa Çıkan Gaz</span>';
-              p2Title = isO2Gas ? 'O₂ (Oksijen Gazı)' : 'CO₂ (Karbondioksit Gazı)';
-              p2Type = isO2Gas ? 'O2' : 'CO2';
-              p2Formula = isO2Gas ? 'O₂' : 'CO₂';
-              p2ChemicalName = isO2Gas ? 'Oksijen gazı' : 'Karbondioksit gazı';
-              p2Caption = 'Tepkime sonucu oluşan serbest gaz molekülleri çözeltiden ayrılır.';
-              p2Ionic = getProductIonicNotation('p2', rx, r1, r2, false);
-            } else {
-              p2Badge = '<span class="particle-state-badge badge-aqueous">Sulu Çözelti</span>';
-              p2Title = esc(rx.spectators || 'Seyirci İyonlar');
-              p2Type = rx.spectators || 'spectators';
-              p2Formula = rx.spectators || 'Seyirci iyonlar';
-              p2ChemicalName = 'Suda çözünmüş seyirci iyonlar';
-              p2Caption = 'Çökelmeye katılmayan iyonlar çözeltide birbirinden bağımsız hareket eder.';
-              p2Ionic = getProductIonicNotation('p2', rx, r1, r2, false);
-            }
-          } else if (hasGas) {
-            p1Badge = '<span class="particle-state-badge badge-gas">Açığa Çıkan Gaz</span>';
-            p1Title = isO2Gas ? 'O₂ (Oksijen Gazı)' : (isCl2Gas ? 'Cl₂ (Klor Gazı)' : 'CO₂ (Karbondioksit Gazı)');
-            p1Type = isO2Gas ? 'O2' : (isCl2Gas ? 'Cl2' : 'CO2');
-            p1Formula = isO2Gas ? 'O₂' : (isCl2Gas ? 'Cl₂' : 'CO₂');
-            p1ChemicalName = isO2Gas ? 'Oksijen gazı' : (isCl2Gas ? 'Klor gazı' : 'Karbondioksit gazı');
-            p1Caption = 'Sıvıdan atmosfere yükselen kinetik serbest gaz molekülleri.';
-            p1Ionic = getProductIonicNotation('p1', rx, r1, r2, false);
+            var pptName = 'Katı kristal çökelti';
+            if (rawSym === 'PbI2') pptName = 'Kurşun(II) iyodür';
+            else if (rawSym === 'AgCl') pptName = 'Gümüş klorür';
+            else if (rawSym === 'CaCO3') pptName = 'Kalsiyum karbonat';
+            else if (rawSym === 'PbCO3') pptName = 'Kurşun(II) karbonat';
+            else if (rawSym === 'BaSO4') pptName = 'Baryum sülfat';
+            else if (rawSym === 'AgI') pptName = 'Gümüş iyodür';
+            else if (rawSym === 'CuI') pptName = 'Bakır(I) iyodür';
+            else if (rawSym === 'PbCl2') pptName = 'Kurşun(II) klorür';
+            else if (rawSym === 'Pb(OH)2') pptName = 'Kurşun(II) hidroksit';
+            else if (rawSym === 'Ca(OH)2') pptName = 'Kalsiyum hidroksit';
+            else if (rawSym === 'Ag2O') pptName = 'Gümüş(I) oksit';
+            else if (rawSym === 'Cu(OH)2') pptName = 'Bakır(II) hidroksit';
+            else if (rawSym === 'Ag2CO3') pptName = 'Gümüş karbonat';
+            else if (/Cu2CO3/i.test(rawSym)) pptName = 'Malahit (Bakır karbonat)';
 
-            p2Badge = '<span class="particle-state-badge badge-aqueous">Sulu Çözelti</span>';
-            p2Title = esc(rx.spectators || 'Çözünmüş İyonlar ve Su');
-            p2Type = rx.spectators || 'spectators';
-            p2Formula = rx.spectators || 'Çözünmüş iyonlar';
-            p2ChemicalName = 'Suda çözünmüş iyonlar';
-            p2Caption = 'Tuz iyonları çözeltide birbirinden bağımsız hareket eder.';
-            p2Ionic = getProductIonicNotation('p2', rx, r1, r2, false);
-          } else if (isComplex) {
-            p1Badge = '<span class="particle-state-badge badge-complex">Koordinasyon Kompleksi</span>';
-            p1Title = esc(rx.mainProductSymbol || '[Cu(NH₃)₄]²⁺');
-            p1Type = rx.mainProductSymbol || 'Cu(NH3)4';
-            p1Formula = rx.mainProductSymbol || '[Cu(NH₃)₄]²⁺';
-            p1ChemicalName = 'Koordinasyon kompleksi';
-            p1Caption = 'Merkez katyona ligandların koordine kovalent bağlarla bağlanması.';
-            p1Ionic = getProductIonicNotation('p1', rx, r1, r2, false);
-
-            p2Badge = '<span class="particle-state-badge badge-aqueous">Sulu Çözelti</span>';
-            p2Title = esc(rx.spectators || 'NO₃⁻ Seyirci İyonları');
-            p2Type = rx.spectators || 'spectators';
-            p2Formula = rx.spectators || 'NO₃⁻';
-            p2ChemicalName = 'Seyirci iyonlar';
-            p2Caption = 'Nitrat iyonları çözeltide birbirinden bağımsız hareket eder.';
-            p2Ionic = getProductIonicNotation('p2', rx, r1, r2, false);
-          } else {
-            p1Badge = '<span class="particle-state-badge badge-aqueous">Nötrleşme Suyu</span>';
-            p1Title = 'H₂O (Su Molekülleri)';
-            p1Type = 'H2O';
-            p1Formula = 'H₂O';
-            p1ChemicalName = 'Su';
-            p1Caption = 'Asit ve bazın nötrleşmesiyle oluşan kararlı kovalent H₂O molekülleri.';
-            p1Ionic = getProductIonicNotation('p1', rx, r1, r2, false);
-
-            p2Badge = '<span class="particle-state-badge badge-aqueous">Çözünmüş Tuz</span>';
-            p2Title = isHclNaoh ? 'Na⁺ ve Cl⁻ (Tuz Çözeltisi)' : esc(rx.spectators || 'Çözünmüş İyonlar');
-            p2Type = isHclNaoh ? 'Na + Cl' : (rx.spectators || 'spectators');
-            p2Formula = isHclNaoh ? 'Na⁺ + Cl⁻' : (rx.spectators || 'Çözünmüş iyonlar');
-            p2ChemicalName = 'Suda çözünmüş tuz iyonları';
-            p2Caption = 'Tuz iyonları çözeltide birbirinden bağımsız hareket eder.';
-            p2Ionic = getProductIonicNotation('p2', rx, r1, r2, false);
+            prodCards.push({
+              viewId: 'p_ppt',
+              type: rawSym,
+              mode: 'crystal',
+              badge: '<span class="particle-state-badge badge-solid">Katı Çökelti</span>',
+              title: esc(rawSym) + ' (Çökelti)',
+              formula: esc(rawSym),
+              chemicalName: pptName,
+              caption: 'Suda çözünmeyen katı kristal kafesi beherin dibine çöker.',
+              ionic: getProductIonicNotation('p1', rx, r1, r2, false)
+            });
           }
 
-          html += '<div class="particle-subcard">' +
-            '<div class="particle-subcard-title">' +
-              '<div class="particle-title-left">' + p1Badge + ' <span>' + p1Title + '</span></div>' +
-            '</div>' +
-            '<div class="particle-subcard-body particle-3d-host" data-particle-view="p1" data-particle-type="' + esc(p1Type) + '" aria-label="Birinci ürün üç boyutlu tanecik modeli"></div>' + particleIdentityHTML(esc(p1Formula), formulaSymbols(p1Formula, list1.concat(list2)), esc(p1ChemicalName), esc(p1Ionic)) +
-            '<div class="particle-caption">' +
-              '<div>' + p1Caption + '</div>' +
-            '</div>' +
-          '</div>' +
+          // 2. Açığa Çıkan Gaz (Varsa)
+          if (hasGas) {
+            var gasType = isO2Gas ? 'O2' : (isCl2Gas ? 'Cl2' : 'CO2');
+            var gasForm = isO2Gas ? 'O₂' : (isCl2Gas ? 'Cl₂' : 'CO₂');
+            var gasName = isO2Gas ? 'Oksijen gazı' : (isCl2Gas ? 'Klor gazı' : 'Karbondioksit gazı');
+            prodCards.push({
+              viewId: 'p_gas',
+              type: gasType,
+              mode: 'gas',
+              badge: '<span class="particle-state-badge badge-gas">Açığa Çıkan Gaz</span>',
+              title: gasForm + ' (' + gasName + ')',
+              formula: gasForm,
+              chemicalName: gasName,
+              caption: 'Tepkime sonucu oluşan serbest gaz molekülleri çözeltiden ayrılır.',
+              ionic: gasForm + ' (Moleküler Gaz)'
+            });
+          }
 
-          '<div class="particle-subcard">' +
-            '<div class="particle-subcard-title">' +
-              '<div class="particle-title-left">' + p2Badge + ' <span>' + p2Title + '</span></div>' +
-            '</div>' +
-            '<div class="particle-subcard-body particle-3d-host" data-particle-view="p2" data-particle-type="' + esc(p2Type) + '" aria-label="İkinci ürün üç boyutlu tanecik modeli"></div>' + particleIdentityHTML(esc(p2Formula), formulaSymbols(p2Formula, list1.concat(list2)), esc(p2ChemicalName), esc(p2Ionic)) +
-            '<div class="particle-caption">' +
-              '<div>' + p2Caption + '</div>' +
-            '</div>' +
-          '</div>';
+          // 3. Koordinasyon Kompleksi (Varsa)
+          if (isComplex) {
+            var compForm = rx.mainProductSymbol || '[Cu(NH₃)₄]²⁺';
+            prodCards.push({
+              viewId: 'p_complex',
+              type: compForm,
+              mode: 'solution',
+              badge: '<span class="particle-state-badge badge-complex">Koordinasyon Kompleksi</span>',
+              title: esc(compForm),
+              formula: esc(compForm),
+              chemicalName: 'Koordinasyon kompleksi',
+              caption: 'Merkez katyona ligandların koordine kovalent bağlarla bağlanmasıyla oluşan kompleks.',
+              ionic: esc(compForm) + ' (Kompleks İyon)'
+            });
+          }
+
+          // 4. Oluşan / Nötrleşme Suyu (H2O) (Varsa)
+          if (hasWater) {
+            prodCards.push({
+              viewId: 'p_water',
+              type: 'H2O',
+              mode: 'solution',
+              badge: '<span class="particle-state-badge badge-aqueous">Tepkime Suyu</span>',
+              title: 'H₂O (Su Molekülleri)',
+              formula: 'H₂O',
+              chemicalName: 'Su',
+              caption: 'Tepkime sürecinde oluşan kararlı kovalent H₂O molekülleri.',
+              ionic: 'H⁺ + OH⁻ → H₂O (Kovalent Molekül)'
+            });
+          }
+
+          // 5. Sulu Çözeltideki Seyirci / Çözünmüş İyonlar (Varsa)
+          var spec = rx.spectators;
+          if (spec && spec !== 'Yok' && !/Fiziksel/.test(spec)) {
+            var cleanSpecType = spec.replace(/\(suda\)/gi, '').replace(/\s+ve\s+/gi, ', ').replace(/[+−\-⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻]/g, '').trim();
+            var cleanSpecTitle = spec.replace(/\(suda\)/gi, '').trim();
+            prodCards.push({
+              viewId: 'p_ions',
+              type: cleanSpecType,
+              mode: 'solution',
+              badge: '<span class="particle-state-badge badge-aqueous">Sulu Çözelti</span>',
+              title: esc(cleanSpecTitle) + ' (Çözeltideki İyonlar)',
+              formula: esc(cleanSpecTitle),
+              chemicalName: 'Suda çözünmüş seyirci iyonlar',
+              caption: 'Çökelmeye veya gaza katılmayan serbest iyonlar çözeltide bağımsız solvatize hareket eder.',
+              ionic: esc(cleanSpecTitle) + ' (Serbest İyonlar)'
+            });
+          } else if (!hasPpt && !hasGas && !isComplex && !hasWater) {
+            prodCards.push({
+              viewId: 'p_default',
+              type: rx.mainProductSymbol || 'NaCl',
+              mode: 'solution',
+              badge: '<span class="particle-state-badge badge-aqueous">Çözünmüş Ürün</span>',
+              title: esc(rx.mainProductSymbol || 'Çözünmüş Ürün'),
+              formula: esc(rx.mainProductSymbol || 'Ürün'),
+              chemicalName: 'Çözeltideki tanecikler',
+              caption: 'Çözeltide serbest hareket eden tanecikler.',
+              ionic: 'Çözeltide Serbest İyonlar'
+            });
+          }
+
+          // Her bir ürün kartı için 3B görselleştirici ve kimyasal bilgi kartı üret
+          for (var p = 0; p < prodCards.length; p++) {
+            var card = prodCards[p];
+            html += '<div class="particle-subcard">' +
+              '<div class="particle-subcard-title">' +
+                '<div class="particle-title-left">' + card.badge + ' <span>' + card.title + '</span></div>' +
+              '</div>' +
+              '<div class="particle-subcard-body particle-3d-host" data-particle-view="' + card.viewId + '" data-particle-type="' + esc(card.type) + '" data-particle-mode="' + card.mode + '" aria-label="' + card.title + ' üç boyutlu tanecik modeli"></div>' +
+              particleIdentityHTML(card.formula, formulaSymbols(card.formula, list1.concat(list2)), esc(card.chemicalName), card.ionic) +
+              '<div class="particle-caption">' +
+                '<div>' + card.caption + '</div>' +
+              '</div>' +
+            '</div>';
+          }
         }
 
         html += '</div>' +

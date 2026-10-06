@@ -299,28 +299,32 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
     return { group, radius, height, liquid, liquidBaseY, surface, powder, sediment, grains, level: 0.4 };
   }
 
-  const probeX = main.group.position.x - 0.035;
-  cylinder(0.0045, 0.585, materials.metal, scene, probeX, tableY + 0.36, main.group.position.z - 0.03);
-  const sensor = new THREE.Group();
-  sensor.position.set(-1.08, tableY, 0.44);
-  sensor.scale.setScalar(0.36);
-  scene.add(sensor);
-  box(0.78, 0.42, 0.46, materials.white, sensor, 0, 0.23, 0);
-  box(0.64, 0.23, 0.025, materials.dark, sensor, 0, 0.27, 0.241);
+  // Modern Dijital Daldırma Termometresi (Beherin kenarına monte, 2. görsel ile birebir uyumlu)
+  const probeX = main.group.position.x - 0.082;
+  const probeZ = main.group.position.z - 0.035;
+  // 1. Metalik Daldırma Probu (Paslanmaz çelik çubuk - beherin içine uzanır)
+  cylinder(0.0055, 0.46, materials.metal, scene, probeX, tableY + 0.24, probeZ);
+  mesh(new THREE.SphereGeometry(0.0055, 10, 8), materials.metal, scene, probeX, tableY + 0.012, probeZ);
+  // 2. Yaka Boğaz Halkası (Collar Ring - Beherin üst ağız hizasında)
+  const collarRing = mesh(new THREE.TorusGeometry(0.016, 0.005, 8, 24), materials.dark, scene, probeX, tableY + 0.455, probeZ);
+  collarRing.rotation.x = Math.PI / 2;
+  // 3. Dijital Termometre Gövdesi (Beher kenarında ileriye bakan koyu gövde)
+  const thermoHead = new THREE.Group();
+  thermoHead.position.set(probeX, tableY + 0.555, probeZ);
+  scene.add(thermoHead);
+  box(0.24, 0.15, 0.035, materials.dark, thermoHead, 0, 0, 0);
+  // Yüksek Çözünürlüklü Dijital LCD Ekran
   const displayCanvas = document.createElement('canvas');
-  displayCanvas.width = 512; displayCanvas.height = 192;
+  displayCanvas.width = 512; displayCanvas.height = 320;
   const displayTexture = new THREE.CanvasTexture(displayCanvas);
   displayTexture.colorSpace = THREE.SRGBColorSpace;
-  mesh(new THREE.PlaneGeometry(0.6, 0.2), new THREE.MeshBasicMaterial({ map: displayTexture }), sensor, 0, 0.27, 0.26);
-  for (let i = 0; i < 3; i++) {
-    const button = cylinder(0.035, 0.02, i === 0 ? standard('#219d85') : materials.dark, sensor, -0.18 + i * 0.18, 0.08, 0.243);
-    button.rotation.x = Math.PI / 2;
-  }
-  const wire = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-0.98, tableY + 0.06, 0.43), new THREE.Vector3(-0.78, tableY + 0.015, 0.4),
-    new THREE.Vector3(-0.5, tableY + 0.018, 0.43), new THREE.Vector3(probeX, tableY + 0.6525, 0.45)
-  ]);
-  mesh(new THREE.TubeGeometry(wire, 40, 0.0045, 8, false), materials.black);
+  displayTexture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+  mesh(new THREE.PlaneGeometry(0.21, 0.125), new THREE.MeshBasicMaterial({ map: displayTexture }), thermoHead, 0, 0.004, 0.0185);
+  // Alt çerçevedeki iki cyan montaj noktası/v Второй (2. görsel)
+  const screw1 = cylinder(0.008, 0.005, standard('#38bdf8'), thermoHead, -0.075, -0.055, 0.0185);
+  screw1.rotation.x = Math.PI / 2;
+  const screw2 = cylinder(0.008, 0.005, standard('#38bdf8'), thermoHead, 0.075, -0.055, 0.0185);
+  screw2.rotation.x = Math.PI / 2;
 
   const stream = new THREE.Group();
   stream.visible = false;
@@ -398,12 +402,37 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   function setTemperature(value) {
-    if (temperature === value && displayTexture.userData.drawn) return;
     temperature = value;
     const ctx = displayCanvas.getContext('2d');
-    ctx.fillStyle = '#d9efdf'; ctx.fillRect(0, 0, 512, 192);
-    ctx.fillStyle = '#214938'; ctx.textAlign = 'center';
-    ctx.font = 'bold 82px monospace'; ctx.fillText(value.toFixed(1) + ' °C', 256, 118);
+    const isHeating = state && state.activeReaction && state.activeReaction.hasTempRise && value > 22.5;
+    const accentColor = isHeating ? '#f59e0b' : '#38bdf8';
+    const numColor = isHeating ? '#fbbf24' : '#22d3ee';
+    // Koyu LCD arka planı
+    ctx.fillStyle = isHeating ? '#1a0f02' : '#0a1017';
+    ctx.fillRect(0, 0, 512, 320);
+    // İnce iç çerçeve
+    ctx.strokeStyle = isHeating ? '#78350f' : '#1e293b';
+    ctx.lineWidth = 6;
+    ctx.strokeRect(6, 6, 500, 308);
+    // Üst şerit: DIGITAL TEMP ve REC ●
+    ctx.fillStyle = accentColor;
+    ctx.font = 'bold 24px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('DIGITAL TEMP', 24, 46);
+    ctx.textAlign = 'right';
+    ctx.fillText('REC ●', 488, 46);
+    // Orta alan: Büyük ve parlak dijital sıcaklık değeri
+    ctx.fillStyle = numColor;
+    ctx.font = 'bold 98px monospace';
+    ctx.textAlign = 'center';
+    ctx.shadowColor = numColor;
+    ctx.shadowBlur = 14;
+    ctx.fillText(value.toFixed(1) + ' °C', 256, 178);
+    ctx.shadowBlur = 0;
+    // Alt şerit: MEBİ KİMYALAB - PROBE-T1
+    ctx.fillStyle = isHeating ? '#d97706' : '#0284c7';
+    ctx.font = 'bold 22px monospace';
+    ctx.fillText('MEBİ KİMYALAB - PROBE-T1', 256, 275);
     displayTexture.needsUpdate = true;
     displayTexture.userData.drawn = true;
   }
@@ -514,7 +543,7 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
     overlay = document.querySelector('.bench-stage');
     mainLabel = document.getElementById('mainVessel');
     secondaryLabel = document.getElementById('dragReagentWrap');
-    thermo = document.getElementById('digitalThermoWrap');
+    thermo = document.getElementById('digitalThermoWrap'); if (thermo) thermo.style.display = 'none';
     dragButton = null;
     handGuide = null;
     pourTarget = null;
@@ -694,7 +723,7 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
     if (secondaryLabel) secondaryLabel.style.width = labelWidth + 'px';
     place(mainLabel, main.group.position.clone().add(new THREE.Vector3(0, 0.025, 0.22)), -2);
     place(secondaryLabel, secondaryHome.clone().add(new THREE.Vector3(0, 0.025, 0.22)), -2);
-    place(thermo, sensor.position.clone().add(new THREE.Vector3(0, 0.19, 0)), -9);
+    // 3D dijital termometre artık beherin kenarına doğrudan 3B olarak monte edilmiştir.
     if (dragButton) {
       const top = screenPoint(secondary.group.position.clone().add(new THREE.Vector3(0, secondary.height * beakerScale, 0)));
       const base = screenPoint(secondary.group.position);
