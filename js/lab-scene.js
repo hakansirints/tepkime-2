@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+window.THREE = THREE;
+globalThis.THREE = THREE;
 import { OrbitControls } from './vendor/three/OrbitControls.js';
 
 const host = document.getElementById('labWorld');

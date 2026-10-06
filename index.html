@@ -20,6 +20,11 @@
   <script type="importmap">
     { "imports": { "three": "./js/vendor/three/three.module.js" } }
   </script>
+  <script type="module">
+    import * as THREE from 'three';
+    window.THREE = THREE;
+    globalThis.THREE = THREE;
+  </script>
 </head>
 <body class="mebi-landscape-required">
   <div id="labWorld" aria-hidden="true"></div>

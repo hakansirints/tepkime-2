@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 window.THREE = THREE;
+globalThis.THREE = THREE;
 
 const CPK = {
   H: 0xffffff, C: 0x909090, N: 0x3050f8, O: 0xff0d0d, Na: 0xab5cf2,
