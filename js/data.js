@@ -285,13 +285,13 @@
       tempInit: 22.0, tempFinal: 23.5, hasTempRise: false,
       macroReactantsText: 'Karakteristik berrak mavi bakır(II) nitrat çözeltisi ile beyaz bikarbonat tozu masadadır.',
       macroProductsText: 'Karışım anında yoğun köpürerek CO₂ gazı çıkarır ve beher tabanında mavi-yeşil renkli katı tortu birikir.',
-      microReactantsNote: 'Açık mavi Cu²⁺ hidrat katyonları sulu ortamda bikarbonat anyonlarıyla karşılaşır.',
+      microReactantsNote: 'Açık mavi Cu²⁺ iyonları sulu ortamda bikarbonat anyonlarıyla karşılaşır.',
       microProductsNote: 'Cu²⁺ iyonları bazik karbonat (malahit) kafesini örerek çökerken, karbonik asit CO₂ gazına dönüşür.'
     },
 
     // 7. H2O2 + KI
     'H2O2|KI': {
-      title: 'Fil Dişi Macunu: Katalitik Bozunma ve Oksijen Gazı',
+      title: 'Katalitik Bozunma ve Oksijen Gazı',
       canonical: 'C — Yükseltgenme–indirgenme (redoks) tepkimesi',
       typeCategories: ["redox"],
       pedagogicalNote: "İyodür iyonlarının katalizörlüğünde hidrojen peroksit elektron aktarımıyla O₂ gazı ve suya bozunur.",
@@ -299,13 +299,13 @@
       eq: '2H₂O₂(suda) —[I⁻]→ 2H₂O(sıvı) + O₂(gaz)↑ + Isı',
       netIonic: '2H₂O₂(suda) → 2H₂O(sıvı) + O₂(gaz)↑ (I⁻ homojen katalizör, I₂ ara ürünü)',
       spectators: 'K⁺(suda)',
-      products: 'H₂O(sıvı) + O₂(gaz, yoğun köpük) + I₂(sarı-kahverengi çözelti) + Isı',
+      products: 'H₂O(sıvı) + O₂(gaz kabarcıkları) + I₂(sarı-kahverengi çözelti) + Isı',
       mainProductSymbol: 'O₂ + H₂O + I₂',
       obs: ['gas', 'color', 'temp'],
       toColor: '#b45309',
       tempInit: 22.0, tempFinal: 54.5, hasTempRise: true,
       macroReactantsText: 'İki adet tamamen renksiz ve berrak sulu çözelti (peroksit ve iyodür) hazır bekler.',
-      macroProductsText: 'İyodür damladığı anda çözelti sarı-kahverengi renge bürünür, fışkıran O₂ gazı ile köpürür ve sıcaklık 54.5°C\'ye yükselir.',
+      macroProductsText: 'İyodür damladığı anda çözelti sarı-kahverengi renge bürünür, O₂ gaz kabarcıkları çıkarır ve sıcaklık 54.5°C\'ye yükselir.',
       microReactantsNote: 'H₂O₂ moleküllerindeki peroksi bağı I⁻ iyonlarının katalitik saldırısına uğrar.',
       microProductsNote: 'Redoks basamaklarında O-O bağları kırılarak kararlı kovalent O₂ gazı ve su açığa çıkar; geçici I₂ çözeltiye renk verir.'
     },
@@ -388,7 +388,7 @@
       tempInit: 22.0, tempFinal: 28.0, hasTempRise: true,
       macroReactantsText: 'Mavi bakır çözeltisi ile renksiz peroksit çözeltisi hazırlanmıştır.',
       macroProductsText: 'Maddeler birleştiğinde mavi renk korunur, ancak çözelti içerisinden O₂ gaz kabarcıkları yükselir ve sıcaklık artar.',
-      microReactantsNote: 'Mavi renk veren solvatize Cu²⁺ hidrat iyonları H₂O₂ molekülleriyle redoks döngüsüne girer.',
+      microReactantsNote: 'Mavi renk veren Cu²⁺ iyonları H₂O₂ molekülleriyle redoks döngüsüne girer.',
       microProductsNote: 'Cu²⁺ iyonları kimyasal olarak harcanmadan O-O bağlarının kırılarak O₂ gazına dönüşmesini katalizler.'
     },
 
@@ -621,7 +621,7 @@
       tempInit: 22.0, tempFinal: 22.5, hasTempRise: false,
       macroReactantsText: 'Mavi bakır çözeltisi ile beyaz katı kireçtaşı tozu bulunur.',
       macroProductsText: 'Zamanla katı yüzeyinde mavi-yeşil bazik bakır karbonat tabakası oluşur ve hafif kabarcıklar görülür.',
-      microReactantsNote: 'Cu²⁺ hidrat iyonları katı kireçtaşı yüzeyindeki karbonat anyonları ile etkileşir.',
+      microReactantsNote: 'Cu²⁺ iyonları katı kireçtaşı yüzeyindeki karbonat anyonları ile etkileşir.',
       microProductsNote: 'Katı yüzeyinde malahit (mavi-yeşil) kafesi örülür.'
     },
 
@@ -830,7 +830,7 @@
       tempInit: 22.0, tempFinal: 23.5, hasTempRise: false,
       macroReactantsText: 'Açık mavi renkli bakır(II) nitrat çözeltisi ile renksiz kostik bazı bulunur.',
       macroProductsText: 'Maddeler birleştiğinde açık mavi berrak sıvı derhal jel kıvamında koyu mavi bir katı çökeltiye dönüşür.',
-      microReactantsNote: 'Sulu ortamda Cu²⁺ hidrat iyonları ile bazdan gelen serbest OH⁻ iyonları dağılmıştır.',
+      microReactantsNote: 'Sulu ortamda Cu²⁺ iyonları ile bazdan gelen serbest OH⁻ iyonları dağılmıştır.',
       microProductsNote: 'Cu²⁺ iyonları OH⁻ iyonlarıyla koordine olarak suda çözünmeyen polimerik ağ yapılı Cu(OH)₂ katısını kurar.'
     },
 
@@ -915,7 +915,7 @@
       tempInit: 22.0, tempFinal: 23.0, hasTempRise: false,
       macroReactantsText: 'Berrak mavi bakır(II) nitrat çözeltisi ile beyaz sodyum karbonat tozu masadadır.',
       macroProductsText: 'Karışım anında mavi-yeşil renkli katı çökelti oluşturur ve hafif CO₂ gaz kabarcıkları açığa çıkar.',
-      microReactantsNote: 'Cu²⁺ hidrat iyonları ile karbonat ve su molekülleri temas eder.',
+      microReactantsNote: 'Cu²⁺ iyonları ile karbonat ve su molekülleri temas eder.',
       microProductsNote: 'Cu²⁺ iyonları bazik karbonat yapısını kurarak çökerken, karbonatın bir kısmı CO₂ gazına dönüşür.'
     }
   };
@@ -942,14 +942,16 @@
 
     var r1 = getReagent(r1Id);
     var r2 = getReagent(r2Id);
+    var dry = r1 && r2 && r1.solid && r2.solid;
+    var hasSolid = (r1 && r1.solid) || (r2 && r2.solid);
     return {
       title: 'Fiziksel Karışım (Kimyasal Tepkime Yok)',
       canonical: 'E — Bu koşullarda belirgin bir tepkime gözlenmez',
       typeCategory: 'none',
       typeCategories: ['none'],
-      pedagogicalNote: 'Karıştırılan maddeler arasında herhangi bir çökelti, gaz çıkışı, renk veya sıcaklık farkı oluşmamıştır; tanecikler su içinde serbest solvatize kalarak yalnızca fiziksel temas gerçekleşmiştir.',
+      pedagogicalNote: dry ? 'İki kuru katı fiziksel olarak karışır. Sulu ortam bulunmadığı için tanecikler solvatize değildir; başlangıçtaki katı yeni oluşan çökelti sayılmaz.' : 'Bu senaryo koşullarında belirgin kimyasal değişim gözlenmez. Çözünme veya mevcut katının dağılması, yeni çökelti oluşmasıyla aynı şey değildir.',
       eq: (r1 ? r1.f : 'Madde 1') + ' + ' + (r2 ? r2.f : 'Madde 2') + ' → Fiziksel Karışım (Belirgin Tepkime Yok)',
-      netIonic: 'Tepkime gerçekleşmez; iyonlar ve moleküller çözelti ortamında bağımsız serbest kalır.',
+      netIonic: dry ? 'Bu kuru katı karışımı için net iyon denklemi yazılmaz.' : 'Bu koşullarda belirgin tepkime gözlenmez; net iyon denklemi yazılmaz.',
       spectators: 'Tüm tanecikler bağımsızdır (Fiziksel Karışım)',
       products: 'Fiziksel Karışım: ' + (r1 ? r1.f : '') + ' ve ' + (r2 ? r2.f : '') + ' serbest tanecikleri',
       mainProductSymbol: 'Fiziksel Karışım',
@@ -958,9 +960,9 @@
       tempFinal: 22.0,
       hasTempRise: false,
       macroReactantsText: (r1 ? r1.name : '1. Madde') + ' ile ' + (r2 ? r2.name : '2. Madde') + ' deney masasında ayrı ayrı hazır bulunur.',
-      macroProductsText: 'Maddeler karıştırıldığında herhangi bir renk değişimi, gaz kabarcığı, çökelti tortusu veya sıcaklık farkı gözlenmez. Maddeler birbiri içinde çözünmüş veya dağılmış olarak kalır.',
-      microReactantsNote: 'Her iki reaktifin tanecikleri su molekülleri tarafından sarılmış (solvatize) bağımsız haldedir.',
-      microProductsNote: 'Fiziksel Karışım Modeli: Maddeler arasında yeni bir kimyasal bağ kurulmamıştır. ' + (r1 ? r1.name : '') + ' ve ' + (r2 ? r2.name : '') + ' tanecikleri su molekülleri arasında bağımsız ve serbest olarak solvatize halde kalmaya devam eder.'
+      macroProductsText: dry ? 'Beyaz katı tanecikler kuru bir karışım oluşturur. Beherde sıvı, gaz kabarcığı veya yeni çökelti oluşmaz.' : (hasSolid ? 'Başlangıçtaki katı çözünür veya sulu ortamda dağılır. Bu senaryoda gaz çıkışı, yeni çökelti veya belirgin sıcaklık değişimi gözlenmez.' : 'Çözeltiler karışır; gaz, yeni çökelti veya belirgin sıcaklık değişimi gözlenmez. Başlangıçtaki madde rengi karışımda korunabilir.'),
+      microReactantsNote: dry ? 'Her iki maddenin tanecikleri ayrı katı yapılarda bulunur; su molekülleri yoktur.' : (hasSolid ? 'Katı madde başlangıçta kendi yapısını korur; çözeltideki tanecikler sulu ortamda bulunur.' : 'Sulu çözeltilerdeki iyonlar veya moleküller su molekülleriyle etkileşir.'),
+      microProductsNote: dry ? 'Fiziksel Karışım Modeli: Kuru katı tanecikler yan yana bulunur; su kılıfı veya yeni ürün gösterilmez.' : 'Fiziksel Karışım Modeli: Yeni kimyasal ürün oluşumu gösterilmez. Başlangıç maddeleri çözünmüş veya katı fazda bulunabilir; her taneciğin çözündüğü varsayılmaz.'
     };
   }
 
@@ -1122,6 +1124,14 @@
     };
   }
 
+
+  Object.keys(REACTION_PAIRS).forEach(function(key) {
+    var rx = REACTION_PAIRS[key];
+    rx.scenarioNote = 'Gösterilen sıcaklıklar mevcut eğitim senaryosunun değerleridir; miktar ve derişimden hesaplanmaz.';
+  });
+  REACTION_PAIRS['H2O2|KI'].scenarioNote += ' İyodür katalizi modellenir. Deterjan eklenmediği için gaz kabarcıkları gösterilir; kalıcı sabun köpüğü oluşturulmaz. İyot rengi koşula bağlıdır.';
+  REACTION_PAIRS['Cu(NO3)2|NH3'].scenarioNote += ' Koyu mavi kompleks görünümü için fazla amonyak koşulu varsayılır.';
+  REACTION_PAIRS['Cu(NO3)2|HCl'].scenarioNote += ' Kompleksleşme görünümü yüksek klorür derişimi koşuluna bağlıdır.';
 
   // Global erişim
   window.MebiData = {

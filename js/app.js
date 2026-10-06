@@ -10,6 +10,12 @@
   /* ----------------- 1. UYGULAMA DURUMU (APPLICATION STATE) ----------------- */
   var S = {
     screen: 'menu',
+    isFilling: false,
+    reagentPanelCollapsed: false,
+    labSettingsOpen: false,
+    labView: 'wide',
+    labLighting: 'light',
+    tableColor: '#466455',
     searchQuery: '',
     categoryFilter: 'all',
     selectedSlot1: null,
@@ -29,7 +35,43 @@
     collection: []
   };
 
+  try {
+    S.labLighting = localStorage.getItem('three-faces-laboratory-lighting') || 'light';
+    S.tableColor = localStorage.getItem('three-faces-table-color') || '#466455';
+  } catch (e) {}
+
   var HISTORY = [];
+  var fillToken = 0;
+  function enterPredictionScreen() {
+    if (!S.selectedSlot1 || !S.selectedSlot2) return false;
+    S.activeReaction = window.MebiData.getReaction(S.selectedSlot1, S.selectedSlot2);
+    S.prediction = [];
+    S.labStep = 'predict';
+    S.poured = false;
+    S.currentTemp = S.activeReaction.tempInit;
+    S.manualTypeInput = '';
+    S.manualTypeSelections = [];
+    S.typeEvaluation = null;
+    S.typeChecked = false;
+    S.typeCorrect = false;
+    S.cameraTab = 'reactants';
+    S.reportTab = 'analysis';
+    S.screen = 'lab';
+    S.labView = 'closeup';
+    S.reagentPanelCollapsed = true;
+    return true;
+  }
+  function finishSelection() {
+    S.isFilling = !!(S.selectedSlot1 || S.selectedSlot2);
+    var token = ++fillToken;
+    render(false);
+    setTimeout(function() {
+      if (token !== fillToken) return;
+      S.isFilling = false;
+      if (S.screen === 'pool' && S.selectedSlot1 && S.selectedSlot2) enterPredictionScreen();
+      render(false);
+    }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 30 : 800);
+  }
 
   // Koleksiyonu yerel depolamadan yükle
   try {
@@ -65,7 +107,7 @@
   }
 
   /* ----------------- 2. TOPBAR VE STEPPER HTML ----------------- */
-  function topbarHTML(showNav) {
+  function topbarHTML(showNav, stage) {
     var totalDiscovered = S.collection.length;
     var totalReactions = 36; // Aktif kimyasal tepkime sayısı
     var pct = Math.min(100, Math.round((totalDiscovered / totalReactions) * 100));
@@ -73,8 +115,23 @@
     var isAudio = window.MebiAudio ? window.MebiAudio.isEnabled() : true;
     var isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
     var curTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    var showLabSettings = true;
+    var settingsHTML = showLabSettings ? '<div class="lab-settings-wrap">' +
+      '<button class="mebi-btn-icon mebi-btn-secondary lab-settings-trigger" data-action="toggleLabSettings" aria-expanded="' + S.labSettingsOpen + '" aria-controls="labSettingsPanel" title="Laboratuvar ayarları" aria-label="Laboratuvar ayarları">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6m8 4v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>' +
+      '</button>' +
+      '<section id="labSettingsPanel" class="lab-settings-panel" aria-label="Laboratuvar ayarları"' + (S.labSettingsOpen ? '' : ' hidden') + '>' +
+        '<div class="lab-settings-heading"><strong>Laboratuvar ayarları</strong><button type="button" data-action="closeLabSettings" aria-label="Ayarları kapat">×</button></div>' +
+        '<div class="lab-settings-section"><span class="lab-settings-label">Kamera görünümü</span><div class="lab-settings-views" role="group" aria-label="Kamera bakış açısı">' +
+          [['desk','Masa'],['closeup','Yakın'],['wide','Oda']].map(function(view) { return '<button type="button" data-action="setLabView" data-arg="' + view[0] + '" aria-pressed="' + (S.labView === view[0]) + '">' + view[1] + '</button>'; }).join('') +
+        '</div><button type="button" class="lab-settings-reset" data-action="setLabView" data-arg="desk">↺ Kamerayı sıfırla</button></div>' +
+        '<div class="lab-settings-section"><span class="lab-settings-label">Aydınlatma</span><button type="button" class="lab-settings-light" data-action="toggleLabLighting" aria-pressed="' + (S.labLighting === 'dark') + '">' + (S.labLighting === 'dark' ? '☾ Laboratuvar: Karanlık' : '☀ Laboratuvar: Aydınlık') + '</button></div>' +
+        '<div class="lab-settings-section"><span class="lab-settings-label">Masa rengi</span><div class="lab-settings-colors" role="group" aria-label="Masa rengi">' +
+          [['#466455','Yeşil'],['#3d4547','Antrasit'],['#fff2d7','Açık']].map(function(color) { return '<button type="button" data-action="setTableColor" data-arg="' + color[0] + '" aria-pressed="' + (S.tableColor.toLowerCase() === color[0]) + '"><span style="--swatch:' + color[0] + '"></span>' + color[1] + '</button>'; }).join('') +
+        '</div></div>' +
+      '</section></div>' : '';
 
-    var html = '<div class="mebi-topbar">' +
+    var html = '<div class="mebi-top-shell' + (stage ? ' has-stage' : '') + '"><div class="mebi-topbar">' +
       '<div class="mebi-brand" data-action="goMenu">' +
         '<div class="mebi-brand-icon">' + window.MebiSVG.icon('shield') + '</div>' +
         '<span>TEPKİME ARENASI</span>' +
@@ -95,6 +152,7 @@
         '<button class="mebi-btn-icon mebi-btn-secondary" data-action="toggleAudio" title="' + (isAudio ? 'Sesi Kapat' : 'Sesi Aç') + '">' +
           window.MebiSVG.icon(isAudio ? 'volumeOn' : 'volumeOff') +
         '</button>' +
+        settingsHTML +
 
         // Tam Ekran Butonu
         '<button class="mebi-btn-icon mebi-btn-secondary" data-action="toggleFullscreen" title="' + (isFs ? 'Tam Ekrandan Çık' : 'Tam Ekran Modu') + '">' +
@@ -119,7 +177,7 @@
           '<span>Rehber</span>' +
         '</button>' +
       '</div>' +
-    '</div>';
+    '</div>' + (stage ? stepperHTML(stage) : '') + '</div>';
 
     return html;
   }
@@ -162,7 +220,7 @@
 
   // EKRAN 1: AÇILIŞ MENÜSÜ
   function screenMenu() {
-    return topbarHTML(false) +
+    return topbarHTML(true, 'predict') +
       '<div class="mebi-card arena-menu-card">' +
         '<div class="arena-hero-badge">' +
           '<span class="mebi-badge mebi-badge-cyan">ETKİLEŞİMLİ KİMYA SİMÜLASYONU</span>' +
@@ -211,142 +269,62 @@
   }
 
   // EKRAN 2: MADDE HAVUZU (POOL)
-  function screenPool() {
-    var r1 = S.selectedSlot1 ? window.MebiData.getReagent(S.selectedSlot1) : null;
-    var r2 = S.selectedSlot2 ? window.MebiData.getReagent(S.selectedSlot2) : null;
-    var canStart = (r1 && r2);
-
+  function reagentPanelHTML() {
+    var locked = S.screen !== 'pool';
+    var selectionComplete = !!(S.selectedSlot1 && S.selectedSlot2);
+    var compactSelection = selectionComplete && S.reagentPanelCollapsed;
     var q = window.MebiData.foldTR(S.searchQuery);
-    var filteredReagents = window.MebiData.REAGENTS.filter(function(r) {
-      if (S.categoryFilter !== 'all' && r.category !== S.categoryFilter) return false;
-      if (q) {
-        var n = window.MebiData.foldTR(r.name + ' ' + r.f + ' ' + r.state);
-        if (n.indexOf(q) === -1) return false;
-      }
-      return true;
-    });
-
-    var html = topbarHTML(true) +
-      '<div class="mebi-card">' +
-        '<div class="pool-intro">' +
-          '<div class="pool-badge-row">' +
-            '<span class="mebi-badge mebi-badge-primary">1. AŞAMA: REAKTİF SEÇİMİ</span>' +
-            '<span class="pool-status-chip ' + (canStart ? 'status-ready' : ((r1 || r2) ? 'status-partial' : '')) + '">' +
-              (canStart ? '✓ 2 Reaktif Seçildi (Hazır)' : ((r1 || r2) ? '1/2 Reaktif Seçildi' : 'Reaktif Bekleniyor (0/2)')) +
-            '</span>' +
-          '</div>' +
-          '<h2 class="pool-title">Madde Havuzundan Deney Seçimi Yap</h2>' +
-          '<p class="pool-subtitle">Tepkimeye sokmak istediğiniz iki reaktifi aşağıdaki havuzdan seçerek Tepken Bölmesine yerleştiriniz.</p>' +
-        '</div>' +
-
-        // Tepken Bölmesi (ÜST TARAFTA - Deney İçin Seçilen Maddeler)
-        '<div class="staging-header-row">' +
-          '<span class="staging-title">TEPKEN BÖLMESİ</span>' +
-          '<span class="staging-subtitle">(Deney İçin Seçilen Maddeler)</span>' +
-        '</div>' +
-
-        '<div class="staging-area">' +
-          // Yuva 1
-          '<div class="slot-card slot-1' + (r1 ? ' filled' : '') + '">' +
-            (r1 ? '<button class="btn-remove-slot" data-action="clearSlot" data-arg="1" title="Kaldır">✕</button>' : '') +
-            (r1
-              ? '<div class="slot-tile-badge slot-1-badge">' +
-                  '<span class="slot-order-tag">1. TEPKEN</span>' +
-                  '<span class="slot-formula-big">' + esc(r1.f) + '</span>' +
-                '</div>'
-              : '<div class="slot-icon-box">' + window.MebiSVG.icon('flaskOutline') + '</div>'
-            ) +
-            '<div class="slot-text-box">' +
-              (r1
-                ? '<div class="slot-main-text" style="color:var(--mebi-primary);">' + esc(r1.name) + '</div><div class="slot-sub-text">' + esc(r1.category === 'acid' ? 'Asit' : (r1.category === 'base' ? 'Baz' : 'Tuz')) + ' • ' + esc(r1.state) + '</div>'
-                : '<div class="slot-main-text">1. Tepkeni Seç</div><div class="slot-sub-text">Aşağıdaki havuzdan bir maddeye tıkla</div>'
-              ) +
-            '</div>' +
-          '</div>' +
-
-          '<div class="staging-plus">+</div>' +
-
-          // Yuva 2
-          '<div class="slot-card slot-2' + (r2 ? ' filled' : '') + '">' +
-            (r2 ? '<button class="btn-remove-slot" data-action="clearSlot" data-arg="2" title="Kaldır">✕</button>' : '') +
-            (r2
-              ? '<div class="slot-tile-badge slot-2-badge">' +
-                  '<span class="slot-order-tag">2. TEPKEN</span>' +
-                  '<span class="slot-formula-big">' + esc(r2.f) + '</span>' +
-                '</div>'
-              : '<div class="slot-icon-box">' + window.MebiSVG.icon('flaskOutline') + '</div>'
-            ) +
-            '<div class="slot-text-box">' +
-              (r2
-                ? '<div class="slot-main-text" style="color:var(--mebi-success);">' + esc(r2.name) + '</div><div class="slot-sub-text">' + esc(r2.category === 'acid' ? 'Asit' : (r2.category === 'base' ? 'Baz' : 'Tuz')) + ' • ' + esc(r2.state) + '</div>'
-                : '<div class="slot-main-text">2. Tepkeni Seç</div><div class="slot-sub-text">Aşağıdaki havuzdan ikinci maddeye tıkla</div>'
-              ) +
-            '</div>' +
-          '</div>' +
-
-          // Deneye Başla Butonu
-          '<button class="mebi-btn mebi-btn-primary staging-start-btn" data-action="startExperiment" style="height:52px;min-width:160px;font-size:14px;padding:0 18px;" ' + (canStart ? '' : 'disabled') + '>' +
-            '<span class="mebi-btn-badge">' + window.MebiSVG.icon('flaskIc') + '</span>' +
-            '<span>Deney Masasına Geç</span>' +
-          '</button>' +
-        '</div>' +
-
-        // Arama ve Filtre Kontrolleri
-        '<div class="pool-controls-bar">' +
-          '<div class="mebi-search-box">' +
-            window.MebiSVG.icon('search') +
-            '<input type="text" id="poolSearchInput" class="mebi-search-input" placeholder="Formül veya kimyasal ada göre filtrele..." value="' + esc(S.searchQuery) + '">' +
-          '</div>' +
-
-          '<div class="pool-filters">' +
-            '<button class="mebi-filter-chip ' + (S.categoryFilter === 'all' ? 'is-active' : '') + '" data-action="setFilter" data-arg="all">Tümü (12)</button>' +
-            '<button class="mebi-filter-chip ' + (S.categoryFilter === 'acid' ? 'is-active' : '') + '" data-action="setFilter" data-arg="acid">Asitler</button>' +
-            '<button class="mebi-filter-chip ' + (S.categoryFilter === 'base' ? 'is-active' : '') + '" data-action="setFilter" data-arg="base">Bazlar</button>' +
-            '<button class="mebi-filter-chip ' + (S.categoryFilter === 'salt' ? 'is-active' : '') + '" data-action="setFilter" data-arg="salt">Tuzlar</button>' +
-          '</div>' +
-        '</div>' +
-
-        // Madde Havuzu (ALT TARAFTA - 2 Satır x 6 Sütun, Beher filigransız)
-        '<div class="reagents-grid">' +
-          filteredReagents.map(function(r) {
-            var isSel1 = (S.selectedSlot1 === r.id);
-            var isSel2 = (S.selectedSlot2 === r.id);
-            var selCls = isSel1 ? ' selected-1' : (isSel2 ? ' selected-2' : '');
-            var catLabel = r.category === 'acid' ? 'Asit' : (r.category === 'base' ? 'Baz' : 'Tuz');
-            var stateClean = r.state ? r.state.replace(/[()]/g, '') : '';
-            var selBadge = isSel1
-              ? '<span class="card-sel-badge badge-slot1">1. TEPKEN</span>'
-              : (isSel2 ? '<span class="card-sel-badge badge-slot2">2. TEPKEN</span>' : '<span class="card-state-pill">' + esc(stateClean) + '</span>');
-
-            return '<div class="beaker-card' + selCls + '" data-action="clickReagent" data-arg="' + esc(r.id) + '" title="' + esc(r.name) + '">' +
-              '<div class="card-top-row">' +
-                '<span class="card-cat-tag cat-' + r.category + '">' + catLabel + '</span>' +
-                selBadge +
-              '</div>' +
-              '<div class="card-reagent-tile">' +
-                '<div class="card-formula-hero">' + esc(r.f) + '</div>' +
-              '</div>' +
-              '<div class="card-name">' + esc(r.name) + '</div>' +
-            '</div>';
-          }).join('') +
-        '</div>' +
-
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--mebi-border);">' +
-          '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm" data-action="goMenu">' +
-            '<span class="mebi-btn-badge">' + window.MebiSVG.icon('undo') + '</span>' +
-            '<span>Ana Menüye Dön</span>' +
-          '</button>' +
-          '<button class="mebi-btn mebi-btn-ghost mebi-btn-sm" data-action="resetPool">' +
-            '<span class="mebi-btn-badge">' + window.MebiSVG.icon('reset') + '</span>' +
-            '<span>Seçimi Temizle</span>' +
-          '</button>' +
-        '</div>' +
-      '</div>';
-
-    return html;
+    var cards = window.MebiData.REAGENTS.filter(function(r) {
+      if (compactSelection && r.id !== S.selectedSlot1 && r.id !== S.selectedSlot2) return false;
+      return (S.categoryFilter === 'all' || r.category === S.categoryFilter) &&
+        (compactSelection || !q || window.MebiData.foldTR(r.name + ' ' + r.f).indexOf(q) !== -1);
+    }).map(function(r) {
+      var slot = S.selectedSlot1 === r.id ? 1 : (S.selectedSlot2 === r.id ? 2 : 0);
+      return '<button type="button" class="lab-reagent-card chem-' + esc(r.category) + (slot ? ' is-selected' : '') + (r.solid ? ' is-solid' : ' is-liquid') +
+        '" data-action="clickReagent" data-arg="' + esc(r.id) + '" aria-pressed="' + !!slot + '" ' + (locked ? 'disabled' : '') + '>' +
+        '<span class="lab-card-copy"><strong>' + esc(r.f) + '</strong><span>' + esc(r.name) + '</span>' +
+        '<small>' + (r.solid ? 'Beyaz katı toz' : (r.id === 'Cu(NO3)2' ? 'Mavi sulu çözelti' : 'Renksiz sulu çözelti')) + '</small></span>' +
+        (slot ? '<span class="lab-slot-badge">' + slot + '</span>' : '') + '</button>';
+    }).join('');
+    return '<aside class="lab-reagent-panel' + (S.reagentPanelCollapsed ? ' is-collapsed' : '') + (compactSelection ? ' has-selection-summary' : '') + ((!S.selectedSlot1 || !S.selectedSlot2) ? ' needs-selection' : '') + '" aria-label="Madde kartları">' +
+      '<div class="lab-panel-heading"><button type="button" class="lab-panel-toggle" data-action="toggleReagentPanel" aria-controls="reagentPanelContent" aria-expanded="' + !S.reagentPanelCollapsed + '"><span>Maddelerini seç</span><span class="panel-chevron" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="m5.5 12.5 4.5-4.5 4.5 4.5"/></svg></span></button>' +
+      '<p class="lab-panel-hint">' + (locked ? 'Deney hazırlanmış durumda. Yeni deney için tepkenleri değiştir.' : 'İlk kart 1. behere, ikinci kart 2. behere doldurulur.') + '</p></div>' +
+      '<div id="reagentPanelContent" class="lab-panel-content"' + (S.reagentPanelCollapsed && !compactSelection ? ' hidden' : '') + '>' +
+      (compactSelection ? '<div class="lab-selection-summary-label">Seçilen maddeler</div>' : '<input id="poolSearchInput" class="lab-card-search" aria-label="Madde ara" placeholder="Ad veya formül ara" value="' + esc(S.searchQuery) + '" ' + (locked ? 'disabled' : '') + '>' +
+      '<div class="lab-card-filters" aria-label="Madde kategorisi">' +
+      [['all','Tümü'],['acid','Asit'],['base','Baz'],['salt','Tuz']].map(function(f) {
+        return '<button type="button" data-action="setFilter" data-arg="' + f[0] + '" aria-pressed="' + (S.categoryFilter === f[0]) + '">' + f[1] + '</button>';
+      }).join('') + '</div>') + '<div class="lab-reagent-list">' + (cards || '<p>Bu aramada madde bulunamadı.</p>') + '</div>' +
+      (compactSelection && locked ? '<div class="lab-panel-footer lab-change-reactants"><button type="button" class="mebi-btn mebi-btn-secondary mebi-btn-sm new-experiment-btn" data-action="changeReactants">' + window.MebiSVG.icon('undo') + '<span>Tepkenleri Değiştir</span></button></div>' : '') +
+      (compactSelection ? '' : '<div class="lab-panel-footer"><span>' + ((S.selectedSlot1 ? 1 : 0) + (S.selectedSlot2 ? 1 : 0)) + ' / 2 madde seçildi</span>' +
+      '<button type="button" class="mebi-btn mebi-btn-secondary mebi-btn-sm" data-action="resetPool">Seçimi temizle</button></div>') + '</div></aside>';
   }
 
-  // EKRAN 3: DENEY TEZGAHI (LAB EXPERIMENT)
+  function labSettingsHTML() { return ''; }
+
+  function selectionLabelHTML(id, slot, elementId) {
+    var r = window.MebiData.getReagent(id);
+    return '<div class="' + (slot === 1 ? 'vessel-main-wrap' : 'vessel-drag-wrap') + '" id="' + elementId + '">' +
+      '<div class="selection-vessel">' + window.MebiSVG.renderBeakerSVG(r, !r) + '</div>' +
+      '<div class="reagent-tag lab-nameplate' + (r ? ' has-reagent ' + (r.solid ? 'is-solid' : 'is-liquid') : '') + '"><div class="reagent-formula">' + slot + '. BEHER' + (r ? ' · ' + esc(r.f) : '') + '</div>' +
+      '<div class="reagent-name">' + (r ? esc(r.name) : 'Madde seçimini bekliyor') + '</div>' +
+      '<div class="reagent-state">' + (r ? esc(r.state) : 'Boş beher') + '</div></div></div>';
+  }
+
+  function screenPool() {
+    var ready = S.selectedSlot1 && S.selectedSlot2 && !S.isFilling;
+    return topbarHTML(true, 'predict') + '<div class="mebi-card lab-workspace">' + reagentPanelHTML() +
+      '<div class="lab-bench" id="labBenchContainer"><div class="bench-stage">' +
+      selectionLabelHTML(S.selectedSlot1, 1, 'mainVessel') + selectionLabelHTML(S.selectedSlot2, 2, 'dragReagentWrap') + '</div>' +
+      '<aside class="bench-dock" id="benchDock"><div class="dock-header"><span class="dock-badge">DENEYE HAZIRLIK</span>' +
+      '<h3 class="dock-title">Karttan behere</h3><p class="dock-subtext">Soldaki kartlardan iki farklı madde seç. Katılar toz, sulu çözeltiler sıvı olarak beherlere aktarılır.</p></div>' +
+      '<div class="lab-selection-status" role="status" aria-live="polite">' + (S.isFilling ? 'Madde behere dolduruluyor…' : (ready ? 'İki beher hazır. Değişimleri tahmin edebilirsin.' : 'İki madde seçerek deneyi hazırla.')) + '</div>' +
+      '</aside>' +
+      '<div class="lab-camera-tools" role="toolbar" aria-label="Laboratuvar görünümü"><button type="button" class="mebi-btn mebi-btn-secondary mebi-btn-sm" data-lab-view="reset" ' + ((!S.selectedSlot1 || !S.selectedSlot2) ? 'disabled' : '') + '>Beherler</button>' +
+      '<button type="button" class="mebi-btn mebi-btn-secondary mebi-btn-sm" data-lab-view="general">Oda</button></div>' +
+      labSettingsHTML() + '</div></div>';
+  }
+
   function screenLab() {
     var r1 = window.MebiData.getReagent(S.selectedSlot1);
     var r2 = window.MebiData.getReagent(S.selectedSlot2);
@@ -358,10 +336,10 @@
     var isR2Solid = (r2 && r2.solid);
 
     // Sıvı Rengi (Gerçek Görünüm)
-    var liquidColor = 'rgba(230, 242, 252, 0.45)';
+    var liquidColor = 'rgba(255, 255, 255, 0.16)';
     if (isReacting && rx.toColor) {
       liquidColor = rx.toColor;
-    } else if (r1.id === 'Cu(NO3)2') {
+    } else if (r1.id === 'Cu(NO3)2' || (isPoured && r2.id === 'Cu(NO3)2')) {
       liquidColor = '#0284c7';
     }
 
@@ -480,7 +458,7 @@
         '<div class="dock-actions">' +
           '<button class="mebi-btn mebi-btn-primary dock-btn-full" data-action="savePrediction" ' + (S.prediction.length === 0 ? 'disabled' : '') + '>' +
             '<span class="mebi-btn-badge">' + window.MebiSVG.icon('check') + '</span>' +
-            '<span>Tahminimi Onayla ve Düzeneğe Geç</span>' +
+            '<span>Tahminimi Onayla</span>' +
           '</button>' +
         '</div>' +
       '</div>';
@@ -603,13 +581,13 @@
             '</div>'
           : '<div class="dock-result-temp" style="font-size:11px;color:var(--mebi-info);font-weight:700;display:flex;align-items:center;gap:6px;padding:4px 8px;border-radius:6px;background:rgba(139,92,246,0.12);">' +
               window.MebiSVG.icon('temp') +
-              '<span>İzotermik (' + S.currentTemp.toFixed(1) + '°C - Sıcaklık Değişimi Yok)</span>' +
+              '<span>' + S.currentTemp.toFixed(1) + '°C · ΔT: ' + (S.currentTemp - rx.tempInit).toFixed(1) + '°C</span>' +
             '</div>'
         ) +
         '<div class="dock-actions">' +
           '<button class="mebi-btn mebi-btn-primary dock-btn-full" data-action="toCard">' +
             '<span class="mebi-btn-badge">' + window.MebiSVG.icon('flaskOutline') + '</span>' +
-            '<span>Rapor ve Değerlendirmeye Geç →</span>' +
+            '<span>Rapor Aşamasına Geç →</span>' +
           '</button>' +
           '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm dock-btn-full" data-action="redoPrediction">' +
             '<span class="mebi-btn-badge">' + window.MebiSVG.icon('undo') + '</span>' +
@@ -619,20 +597,14 @@
       '</div>';
     }
 
-    var html = topbarHTML(true) +
-      '<div class="mebi-card">' +
-        stepperHTML(S.labStep) +
+    var html = topbarHTML(true, S.labStep) +
+      '<div class="mebi-card lab-workspace">' +
+        reagentPanelHTML() +
 
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">' +
+        '<div class="lab-experiment-heading" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">' +
           '<div>' +
             '<div class="mebi-badge mebi-badge-cyan">DENEY MASASI & REAKSİYON DÜZENEĞİ</div>' +
             '<h2 style="font-size:23px;margin-top:5px;font-weight:800;">' + esc(r1.f) + ' + ' + esc(r2.f) + ' Deneyi</h2>' +
-          '</div>' +
-          '<div style="display:flex;gap:8px;">' +
-            '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm" data-action="goPool">' +
-              '<span class="mebi-btn-badge">' + window.MebiSVG.icon('undo') + '</span>' +
-              '<span>Tepken Değiştir</span>' +
-            '</button>' +
           '</div>' +
         '</div>' +
 
@@ -679,7 +651,7 @@
                   // 4. Gerçek Borosilikat Cam Beher Ön Modeli (Ön ağız kavisi, Boro 3.3 emaye skala, parlamalar - z-index: 8)
                   window.MebiSVG.renderRealisticMainBeakerGlassSVG() +
                 '</div>' +
-                '<div class="reagent-tag">' +
+                '<div class="reagent-tag lab-nameplate has-reagent ' + (r1.solid ? 'is-solid' : 'is-liquid') + '">' +
                   '<div class="reagent-formula">' + esc(r1.f) + '</div>' +
                   '<div class="reagent-name">' + esc(r1.name) + '</div>' +
                   '<div class="reagent-state">' + esc(r1.state) + '</div>' +
@@ -697,7 +669,7 @@
                   window.MebiSVG.renderRealisticDragBeakerGlassSVG() +
                   '<div class="pour-stream' + (isR2Solid ? ' powder-stream' : '') + (S.labStep === 'pouring' ? ' active' : '') + '" id="pourStream"></div>' +
                 '</div>' +
-                '<div class="reagent-tag">' +
+                '<div class="reagent-tag lab-nameplate has-reagent ' + (r2.solid ? 'is-solid' : 'is-liquid') + '">' +
                   '<div class="reagent-formula">' + esc(r2.f) + '</div>' +
                   '<div class="reagent-name">' + esc(r2.name) + '</div>' +
                   '<div class="reagent-state">' + esc(r2.state) + '</div>' +
@@ -706,7 +678,11 @@
             '</div>' +
           '</div>' +
 
-          dockHTML +
+          dockHTML + labSettingsHTML() +
+          '<div class="lab-camera-tools" role="toolbar" aria-label="Laboratuvar görünümü">' +
+            '<button type="button" class="mebi-btn-icon mebi-btn-secondary" data-lab-view="close" title="Düzeneğe Yaklaş" aria-label="Düzeneğe Yaklaş">' + window.MebiSVG.icon('eye') + '</button>' +
+            '<button type="button" class="mebi-btn-icon mebi-btn-secondary" data-lab-view="reset" title="Görünümü Sıfırla" aria-label="Görünümü Sıfırla">' + window.MebiSVG.icon('reset') + '</button>' +
+          '</div>' +
         '</div>';
 
     html += '</div>';
@@ -859,25 +835,11 @@
       }
     }
 
-    var html = topbarHTML(true) +
+    var html = topbarHTML(true, 'card') +
       '<div class="mebi-card">' +
-        stepperHTML('card') +
 
         // Resmi MEBİ Laboratuvar Deney Rapor Sayfası
         '<div class="mebi-report-sheet">' +
-          // Üst Bilgi Satırı
-          '<div class="report-meta-banner">' +
-            '<div class="report-meta-title-group">' +
-              '<div class="report-meta-badge">' +
-                window.MebiSVG.icon('shield') +
-                '<span>MEBİ KİMYA DİJİTAL LABORATUVARI • DENEY RAPORU</span>' +
-              '</div>' +
-              '<h2 class="report-meta-title">' + esc(r1.f) + ' + ' + esc(r2.f) + ' Süreç Analizi</h2>' +
-            '</div>' +
-            '<div class="report-meta-pills">' +
-              '<div class="report-meta-pill">Standart Koşullar (25°C, 1 atm)</div>' +
-            '</div>' +
-          '</div>' +
 
           // 🌟 BİRBİRİNİN DEVAMI ŞEKLİNDE BÜTÜNLEŞİK ÇİFT SEKME ÇUBUĞU (CONNECTED STEPPER TABS)
           '<div class="report-connected-nav" role="tablist" aria-label="Rapor ve Değerlendirme Aşamaları">' +
@@ -980,6 +942,8 @@
       'NaOH': ['Na', 'O', 'H'],
       'NH3': ['N', 'H'],
       'CuSO4': ['Cu', 'S', 'O'],
+      'Cu(NO3)2': ['Cu', 'N', 'O'],
+      'Na2CO3': ['Na', 'C', 'O'],
       'AgNO3': ['Ag', 'N', 'O'],
       'NaCl': ['Na', 'Cl'],
       'BaCl2': ['Ba', 'Cl'],
@@ -991,24 +955,123 @@
     };
 
     var CPK_DATA = {
-      H: { name: 'Hidrojen', color: '#f1f5f9', border: '#cbd5e1' },
-      O: { name: 'Oksijen', color: '#e11d48' },
-      C: { name: 'Karbon', color: '#334155' },
-      N: { name: 'Azot', color: '#0284c7' },
-      Cl: { name: 'Klor', color: '#22c55e' },
-      Na: { name: 'Sodyum', color: '#9333ea' },
-      Pb: { name: 'Kurşun', color: '#f59e0b' },
-      I: { name: 'İyot', color: '#7c3aed' },
-      Ag: { name: 'Gümüş', color: '#94a3b8' },
-      Cu: { name: 'Bakır', color: '#2563eb' },
-      Ca: { name: 'Kalsiyum', color: '#14b8a6' },
-      Ba: { name: 'Baryum', color: '#10b981' },
-      K: { name: 'Potasyum', color: '#8b5cf6' },
-      S: { name: 'Kükürt', color: '#eab308' },
-      Zn: { name: 'Çinko', color: '#64748b' },
-      Mn: { name: 'Mangan', color: '#a855f7' },
-      Fe: { name: 'Demir', color: '#ea580c' }
+      H: { name: 'Hidrojen', color: '#FFFFFF', border: '#CBD5E1' },
+      O: { name: 'Oksijen', color: '#FF0D0D' },
+      C: { name: 'Karbon', color: '#909090' },
+      N: { name: 'Azot', color: '#3050F8' },
+      Cl: { name: 'Klor', color: '#1FF01F' },
+      Na: { name: 'Sodyum', color: '#AB5CF2' },
+      Pb: { name: 'Kurşun', color: '#575961' },
+      I: { name: 'İyot', color: '#940094' },
+      Ag: { name: 'Gümüş', color: '#C0C0C0' },
+      Cu: { name: 'Bakır', color: '#C88033' },
+      Ca: { name: 'Kalsiyum', color: '#3DFF00' },
+      Ba: { name: 'Baryum', color: '#00C900' },
+      K: { name: 'Potasyum', color: '#8F40D4' },
+      S: { name: 'Kükürt', color: '#FFFF30' },
+      Zn: { name: 'Çinko', color: '#7D80B0' },
+      Mn: { name: 'Mangan', color: '#9C7AC7' },
+      Fe: { name: 'Demir', color: '#E06633' }
     };
+
+    function uniqueSymbols(symbols) {
+      return symbols.filter(function(symbol, index) { return CPK_DATA[symbol] && symbols.indexOf(symbol) === index; });
+    }
+    function formulaSymbols(formula, fallback) {
+      var parsed = String(formula || '').match(/[A-Z][a-z]?/g) || [];
+      parsed = uniqueSymbols(parsed);
+      return parsed.length ? parsed : uniqueSymbols(fallback || []);
+    }
+    var IONIC_NOTATION = {
+      NaHCO3: 'Na⁺ + HCO₃⁻',
+      H2O2: 'Moleküler Yapı (İyonlaşmaz)',
+      KI: 'K⁺ + I⁻',
+      'Pb(NO3)2': 'Pb²⁺ + 2NO₃⁻',
+      CaCO3: 'Ca²⁺ + CO₃²⁻ (Kristal Kafes)',
+      HCl: 'H⁺ + Cl⁻',
+      CaCl2: 'Ca²⁺ + 2Cl⁻',
+      NaOH: 'Na⁺ + OH⁻',
+      NH3: 'Moleküler Çözelti (İyonlaşmaz)',
+      AgNO3: 'Ag⁺ + NO₃⁻',
+      'Cu(NO3)2': 'Cu²⁺ + 2NO₃⁻',
+      Na2CO3: '2Na⁺ + CO₃²⁻ (Kristal Kafes)',
+      NaCl: 'Na⁺ + Cl⁻',
+      BaCl2: 'Ba²⁺ + 2Cl⁻',
+      Na2SO4: '2Na⁺ + SO₄²⁻',
+      CuSO4: 'Cu²⁺ + SO₄²⁻'
+    };
+    function ionicNotation(reagent) {
+      if (!reagent) return '';
+      if (IONIC_NOTATION[reagent.id]) return IONIC_NOTATION[reagent.id];
+      if (reagent.solid) return reagent.f + ' (Kristal Kafes)';
+      return '';
+    }
+    function getProductIonicNotation(key, rx, r1, r2, isPhysicalMix) {
+      if (isPhysicalMix) {
+        var reagent = (key === 'p2' ? r2 : r1);
+        return ionicNotation(reagent);
+      }
+      var hasPpt = (rx && rx.obs && rx.obs.indexOf('precipitate') > -1);
+      var hasGas = (rx && rx.obs && rx.obs.indexOf('gas') > -1);
+      var isComplex = (rx && ((rx.typeCategories && rx.typeCategories.indexOf('complex') > -1) || rx.typeCategory === 'complex'));
+      var isHclNaoh = (r1 && r2 && ((r1.id === 'HCl' && r2.id === 'NaOH') || (r1.id === 'NaOH' && r2.id === 'HCl')));
+      var isO2Gas = (r1 && r2 && (r1.id === 'H2O2' || r2.id === 'H2O2'));
+      var isCl2Gas = (r1 && r2 && ((r1.id === 'H2O2' && r2.id === 'HCl') || (r1.id === 'HCl' && r2.id === 'H2O2')));
+
+      var PPT_IONIC = {
+        'AgCl': '[Ag⁺] · [Cl⁻] Kristal Kafesi',
+        'PbI2': '[Pb²⁺] · 2[I⁻] Kristal Kafesi',
+        'CaCO3': '[Ca²⁺] · [CO₃²⁻] Kristal Kafesi',
+        'PbCO3': '[Pb²⁺] · [CO₃²⁻] Kristal Kafesi',
+        'BaSO4': '[Ba²⁺] · [SO₄²⁻] Kristal Kafesi',
+        'Cu(OH)2': '[Cu²⁺] · 2[OH⁻] Kristal Kafesi',
+        'Pb(OH)2': '[Pb²⁺] · 2[OH⁻] Kristal Kafesi',
+        'Ag2O': '2[Ag⁺] · [O²⁻] Kristal Kafesi',
+        'Ag2CO3': '2[Ag⁺] · [CO₃²⁻] Kristal Kafesi',
+        'Cu2CO3(OH)2': '2[Cu²⁺] · [CO₃²⁻] · 2[OH⁻] Kristal Kafesi'
+      };
+
+      if (hasPpt) {
+        if (key === 'p1') {
+          var sym = String((rx && rx.mainProductSymbol) || '').replace(/\(k\)$/i, '').replace(/\s+/g, '');
+          return PPT_IONIC[sym] || (sym ? '[' + sym + '] Kristal Kafesi' : 'Katı İyonik Kristal Kafesi');
+        }
+        if (hasGas) {
+          return (isO2Gas ? 'O₂' : 'CO₂') + ' (Moleküler Gaz)';
+        }
+        return (rx && rx.spectators) ? (rx.spectators + ' (Serbest İyonlar)') : 'Çözeltide Serbest İyonlar';
+      }
+
+      if (hasGas) {
+        if (key === 'p1') {
+          return (isO2Gas ? 'O₂' : (isCl2Gas ? 'Cl₂' : 'CO₂')) + ' (Moleküler Gaz)';
+        }
+        return (rx && rx.spectators) ? (rx.spectators + ' (Serbest İyonlar)') : 'Çözeltide Serbest İyonlar';
+      }
+
+      if (isComplex) {
+        if (key === 'p1') {
+          return ((rx && rx.mainProductSymbol) || '[Cu(NH₃)₄]²⁺') + ' (Kompleks Katyon)';
+        }
+        return (rx && rx.spectators) ? (rx.spectators + ' (Seyirci Anyonlar)') : 'NO₃⁻ Seyirci Anyonları';
+      }
+
+      // Nötrleşme
+      if (key === 'p1') {
+        return 'H⁺ + OH⁻ → H₂O (Moleküler Sıvı)';
+      }
+      return isHclNaoh ? 'Na⁺ + Cl⁻ (Serbest İyonlar)' : ((rx && rx.spectators) ? (rx.spectators + ' (Serbest İyonlar)') : 'Çözeltide Serbest İyonlar');
+    }
+    function particleIdentityHTML(formulaHTML, symbols, chemicalNameHTML, ionicFormulaHTML) {
+      var legend = uniqueSymbols(symbols).map(function(symbol) {
+        var atom = CPK_DATA[symbol];
+        return '<span class="particle-element-item"><i style="--atom-color:' + atom.color + ';' + (atom.border ? 'border-color:' + atom.border + ';' : '') + '"></i><b>' + symbol + '</b> ' + atom.name + '</span>';
+      }).join('');
+      return '<div class="particle-formula-line" title="Bileşik veya Molekül Formülü"><span class="particle-formula-tag">Formül:</span> <b>' + formulaHTML + '</b></div>' +
+        (ionicFormulaHTML ? '<div class="particle-ionic-line" aria-label="İyonik gösterim" title="İyon veya Molekül Durumu"><span class="particle-ionic-tag">İyonik Gösterim:</span> ' + ionicFormulaHTML + '</div>' : '') +
+        (chemicalNameHTML ? '<div class="particle-chemical-name">' + chemicalNameHTML + '</div>' : '') +
+        '<div class="particle-element-legend" aria-label="Modelde kullanılan CPK atom renkleri">' + legend + '</div>';
+    }
 
     var activeSymbols = [];
     var list1 = REAGENT_ELEMENTS[r1.id] || ['H', 'O'];
@@ -1032,30 +1095,8 @@
     }
 
     // 2. Üst Yapı
-    var html = topbarHTML(true) +
+    var html = topbarHTML(true, 'micro') +
       '<div class="mebi-card">' +
-        stepperHTML('micro') +
-
-        // Kompakt Üst Bilgi Başlığı (Meta Banner) & Johnstone Entegrasyonu
-        '<div class="camera-meta-banner">' +
-          '<div class="camera-meta-title-group">' +
-            '<div class="camera-meta-badge">' +
-              '<span class="mebi-badge-purple">5. AŞAMA • TANECİK KAMERASI</span>' +
-              '<span class="camera-meta-sep">•</span>' +
-              '<span class="camera-meta-rx">' + esc(r1.f) + ' + ' + esc(r2.f) + '</span>' +
-            '</div>' +
-            '<h2 class="camera-meta-title">Alt-Mikroskobik Tanecik Boyutu İncelemesi</h2>' +
-          '</div>' +
-          '<div class="camera-meta-pills">' +
-            '<div class="johnstone-pill-badge" title="Johnstone Kimya Üçgeni Aşamaları">' +
-              '<span class="j-pill is-done">1. Makroskobik ✓</span>' +
-              '<span class="j-sep">›</span>' +
-              '<span class="j-pill is-done">2. Sembolik ✓</span>' +
-              '<span class="j-sep">›</span>' +
-              '<span class="j-pill is-active">3. Alt-Mikroskobik 3B ●</span>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
 
         // Bütünleşik Çift Sekme Çubuğu (Connected Stepper Tabs)
         '<div class="report-connected-nav" role="tablist" aria-label="Tanecik Boyutu Aşamaları">' +
@@ -1107,13 +1148,13 @@
         '<div class="camera-macro-strip">' +
           '<span class="macro-strip-badge">👁️ Makroskobik Durum:</span>' +
           '<span class="macro-strip-text">' + esc(rx.macroReactantsText || (r1.name + ' ve ' + r2.name + ' sulu ortamda ayrı ayrı hazırlanmıştır.')) + '</span>' +
-          '<span class="macro-strip-hint">🔍 Modelleri 3B büyütmek için kartlara dokununuz</span>' +
+          '<span class="macro-strip-hint">Modeli sürükleyerek döndürün, boş alanı sürükleyerek taşıyın.</span>' +
         '</div>' +
 
         // 3B Tanecik Kartları Grid'i
         '<div class="camera-particles-row">' +
           // Kart 1: Tepken 1
-          '<div class="particle-subcard" data-action="zoomParticle" data-arg="r1" tabindex="0" role="button" title="Modeli Büyüt ve İncele">' +
+          '<div class="particle-subcard">' +
             '<div class="particle-subcard-title">' +
               '<div class="particle-title-left">' +
                 '<span class="particle-state-badge ' + (r1.solid ? 'badge-solid' : 'badge-aqueous') + '">' +
@@ -1121,18 +1162,16 @@
                 '</span>' +
                 '<span>' + esc(r1.f) + ' ' + (r1.solid ? '(katı)' : '(suda)') + '</span>' +
               '</div>' +
-              '<span class="particle-zoom-badge">🔍 Büyüt</span>' +
             '</div>' +
-            '<div class="particle-subcard-body">' + window.MebiSVG.renderGenericReactantParticle(r1) + '</div>' +
+            '<div class="particle-subcard-body particle-3d-host" data-particle-view="r1" aria-label="' + esc(r1.name) + ' üç boyutlu tanecik modeli"></div>' + particleIdentityHTML(esc(r1.f), list1, esc(r1.name), esc(ionicNotation(r1))) +
             '<div class="particle-caption">' +
               '<div>' + esc(r1.name) + '</div>' +
-              '<div class="sub-ion">' + (r1.solid ? '3B İyonik Kristal Kafesi (Susuz)' : (r1.id === 'H2O2' || r1.id === 'NH3' ? 'Suda Çözünmüş Molekül / Hidrojen Bağları' : 'Suda Ayrışmış Serbest Solvatize İyonlar')) + '</div>' +
-              '<div class="sub-zoom-hint">🔍 Modeli büyütmek için tıklayınız</div>' +
+              '<div class="sub-ion">' + (r1.solid ? '3B iyonik yapı' : (r1.id === 'H2O2' || r1.id === 'NH3' ? 'Suda çözünmüş molekül' : 'Suda birbirinden bağımsız iyonlar')) + '</div>' +
             '</div>' +
           '</div>' +
 
           // Kart 2: Tepken 2
-          '<div class="particle-subcard" data-action="zoomParticle" data-arg="r2" tabindex="0" role="button" title="Modeli Büyüt ve İncele">' +
+          '<div class="particle-subcard">' +
             '<div class="particle-subcard-title">' +
               '<div class="particle-title-left">' +
                 '<span class="particle-state-badge ' + (r2.solid ? 'badge-solid' : 'badge-aqueous') + '">' +
@@ -1140,13 +1179,11 @@
                 '</span>' +
                 '<span>' + esc(r2.f) + ' ' + (r2.solid ? '(katı)' : '(suda)') + '</span>' +
               '</div>' +
-              '<span class="particle-zoom-badge">🔍 Büyüt</span>' +
             '</div>' +
-            '<div class="particle-subcard-body">' + window.MebiSVG.renderGenericReactantParticle(r2) + '</div>' +
+            '<div class="particle-subcard-body particle-3d-host" data-particle-view="r2" aria-label="' + esc(r2.name) + ' üç boyutlu tanecik modeli"></div>' + particleIdentityHTML(esc(r2.f), list2, esc(r2.name), esc(ionicNotation(r2))) +
             '<div class="particle-caption">' +
               '<div>' + esc(r2.name) + '</div>' +
-              '<div class="sub-ion">' + (r2.solid ? '3B İyonik Kristal Kafesi (Susuz)' : (r2.id === 'H2O2' || r2.id === 'NH3' ? 'Suda Çözünmüş Molekül / Hidrojen Bağları' : 'Suda Ayrışmış Serbest Solvatize İyonlar')) + '</div>' +
-              '<div class="sub-zoom-hint">🔍 Modeli büyütmek için tıklayınız</div>' +
+              '<div class="sub-ion">' + (r2.solid ? '3B iyonik yapı' : (r2.id === 'H2O2' || r2.id === 'NH3' ? 'Suda çözünmüş molekül' : 'Suda birbirinden bağımsız iyonlar')) + '</div>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -1162,43 +1199,39 @@
         // Makroskobik Durum Şeridi
         '<div class="camera-macro-strip">' +
           '<span class="macro-strip-badge">👁️ Makroskobik Durum:</span>' +
-          '<span class="macro-strip-text">' + esc(rx.macroProductsText || 'Karışım gerçekleştikten sonra elde edilen durum.') + '</span>' +
-          '<span class="macro-strip-hint">🔍 Modelleri 3B büyütmek için kartlara dokununuz</span>' +
+          '<span class="macro-strip-text">' + esc((rx.macroProductsText || 'Karışım gerçekleştikten sonra elde edilen durum.') + (rx.scenarioNote ? ' ' + rx.scenarioNote : '')) + '</span>' +
+          '<span class="macro-strip-hint">Modeli sürükleyerek döndürün, boş alanı sürükleyerek taşıyın.</span>' +
         '</div>' +
 
         // 3B Tanecik Kartları Grid'i
         '<div class="camera-particles-row">';
 
         if (isPhysicalMix) {
-          html += '<div class="particle-subcard" data-action="zoomParticle" data-arg="p1" tabindex="0" role="button" title="Modeli Büyüt ve İncele">' +
+          html += '<div class="particle-subcard">' +
             '<div class="particle-subcard-title">' +
               '<div class="particle-title-left">' +
                 '<span class="particle-state-badge badge-physical">Fiziksel Karışım</span>' +
                 '<span>' + esc(r1.f) + '</span>' +
               '</div>' +
-              '<span class="particle-zoom-badge">🔍 Büyüt</span>' +
             '</div>' +
-            '<div class="particle-subcard-body">' + window.MebiSVG.renderGenericProductParticle('reactant1', rx, r1, r2) + '</div>' +
+            '<div class="particle-subcard-body particle-3d-host" data-particle-view="p1" aria-label="Birinci madde üç boyutlu karışım modeli"></div>' + particleIdentityHTML(esc(r1.f), list1, esc(r1.name), esc(ionicNotation(r1))) +
             '<div class="particle-caption">' +
               '<div>' + esc(r1.name) + '</div>' +
-              '<div class="sub-ion">' + (r1.solid ? 'Katı Kristal Yapısını Korur (Tepkime Yok)' : 'Sulu Çözeltide Orijinal Halinde Kalır') + '</div>' +
-              '<div class="sub-zoom-hint">🔍 Modeli büyütmek için tıklayınız</div>' +
+              '<div class="sub-ion">' + (r1.solid ? 'Katı Yapısını Korur (Tepkime Yok)' : 'Sulu Çözeltide Orijinal Halinde Kalır') + '</div>' +
             '</div>' +
           '</div>' +
 
-          '<div class="particle-subcard" data-action="zoomParticle" data-arg="p2" tabindex="0" role="button" title="Modeli Büyüt ve İncele">' +
+          '<div class="particle-subcard">' +
             '<div class="particle-subcard-title">' +
               '<div class="particle-title-left">' +
                 '<span class="particle-state-badge badge-physical">Fiziksel Karışım</span>' +
                 '<span>' + esc(r2.f) + '</span>' +
               '</div>' +
-              '<span class="particle-zoom-badge">🔍 Büyüt</span>' +
             '</div>' +
-            '<div class="particle-subcard-body">' + window.MebiSVG.renderGenericProductParticle('reactant2', rx, r1, r2) + '</div>' +
+            '<div class="particle-subcard-body particle-3d-host" data-particle-view="p2" aria-label="İkinci madde üç boyutlu karışım modeli"></div>' + particleIdentityHTML(esc(r2.f), list2, esc(r2.name), esc(ionicNotation(r2))) +
             '<div class="particle-caption">' +
               '<div>' + esc(r2.name) + '</div>' +
-              '<div class="sub-ion">' + (r2.solid ? 'Katı Kristal Yapısını Korur (Tepkime Yok)' : 'Sulu Çözeltide Orijinal Halinde Kalır') + '</div>' +
-              '<div class="sub-zoom-hint">🔍 Modeli büyütmek için tıklayınız</div>' +
+              '<div class="sub-ion">' + (r2.solid ? 'Katı Yapısını Korur (Tepkime Yok)' : 'Sulu Çözeltide Orijinal Halinde Kalır') + '</div>' +
             '</div>' +
           '</div>';
         } else {
@@ -1209,79 +1242,102 @@
           var isO2Gas = (r1.id === 'H2O2' || r2.id === 'H2O2');
           var isCl2Gas = (r1.id === 'H2O2' && r2.id === 'HCl') || (r1.id === 'HCl' && r2.id === 'H2O2');
 
-          var p1Title = '', p1Badge = '', p1Type = '', p1Caption = '';
-          var p2Title = '', p2Badge = '', p2Type = '', p2Caption = '';
+          var p1Title = '', p1Formula = '', p1ChemicalName = '', p1Badge = '', p1Type = '', p1Caption = '', p1Ionic = '';
+          var p2Title = '', p2Formula = '', p2ChemicalName = '', p2Badge = '', p2Type = '', p2Caption = '', p2Ionic = '';
 
           if (hasPpt) {
             p1Badge = '<span class="particle-state-badge badge-solid">Katı Çökelti</span>';
             p1Title = esc(rx.mainProductSymbol || 'Katı Çökelti');
             p1Type = rx.mainProductSymbol || 'precipitate';
+            p1Formula = rx.mainProductSymbol || 'Katı çökelti';
+            p1ChemicalName = 'Oluşan katı çökelti';
             p1Caption = 'Suda çözünmeyen katı kristal kafesi beherin dibine çöker.';
+            p1Ionic = getProductIonicNotation('p1', rx, r1, r2, false);
 
             if (hasGas) {
               p2Badge = '<span class="particle-state-badge badge-gas">Açığa Çıkan Gaz</span>';
               p2Title = isO2Gas ? 'O₂ (Oksijen Gazı)' : 'CO₂ (Karbondioksit Gazı)';
               p2Type = isO2Gas ? 'O2' : 'CO2';
+              p2Formula = isO2Gas ? 'O₂' : 'CO₂';
+              p2ChemicalName = isO2Gas ? 'Oksijen gazı' : 'Karbondioksit gazı';
               p2Caption = 'Tepkime sonucu oluşan serbest gaz molekülleri çözeltiden ayrılır.';
+              p2Ionic = getProductIonicNotation('p2', rx, r1, r2, false);
             } else {
               p2Badge = '<span class="particle-state-badge badge-aqueous">Sulu Çözelti</span>';
               p2Title = esc(rx.spectators || 'Seyirci İyonlar');
-              p2Type = 'spectators';
-              p2Caption = 'Çökelmeye katılmayan seyirci iyonlar çözeltide serbest solvatize kalır.';
+              p2Type = rx.spectators || 'spectators';
+              p2Formula = rx.spectators || 'Seyirci iyonlar';
+              p2ChemicalName = 'Suda çözünmüş seyirci iyonlar';
+              p2Caption = 'Çökelmeye katılmayan iyonlar çözeltide birbirinden bağımsız hareket eder.';
+              p2Ionic = getProductIonicNotation('p2', rx, r1, r2, false);
             }
           } else if (hasGas) {
             p1Badge = '<span class="particle-state-badge badge-gas">Açığa Çıkan Gaz</span>';
             p1Title = isO2Gas ? 'O₂ (Oksijen Gazı)' : (isCl2Gas ? 'Cl₂ (Klor Gazı)' : 'CO₂ (Karbondioksit Gazı)');
             p1Type = isO2Gas ? 'O2' : (isCl2Gas ? 'Cl2' : 'CO2');
+            p1Formula = isO2Gas ? 'O₂' : (isCl2Gas ? 'Cl₂' : 'CO₂');
+            p1ChemicalName = isO2Gas ? 'Oksijen gazı' : (isCl2Gas ? 'Klor gazı' : 'Karbondioksit gazı');
             p1Caption = 'Sıvıdan atmosfere yükselen kinetik serbest gaz molekülleri.';
+            p1Ionic = getProductIonicNotation('p1', rx, r1, r2, false);
 
             p2Badge = '<span class="particle-state-badge badge-aqueous">Sulu Çözelti</span>';
             p2Title = esc(rx.spectators || 'Çözünmüş İyonlar ve Su');
-            p2Type = 'spectators';
-            p2Caption = 'Tuz iyonları suda serbest solvatize haldedir.';
+            p2Type = rx.spectators || 'spectators';
+            p2Formula = rx.spectators || 'Çözünmüş iyonlar';
+            p2ChemicalName = 'Suda çözünmüş iyonlar';
+            p2Caption = 'Tuz iyonları çözeltide birbirinden bağımsız hareket eder.';
+            p2Ionic = getProductIonicNotation('p2', rx, r1, r2, false);
           } else if (isComplex) {
             p1Badge = '<span class="particle-state-badge badge-complex">Koordinasyon Kompleksi</span>';
             p1Title = esc(rx.mainProductSymbol || '[Cu(NH₃)₄]²⁺');
-            p1Type = 'CuComplex';
+            p1Type = rx.mainProductSymbol || 'Cu(NH3)4';
+            p1Formula = rx.mainProductSymbol || '[Cu(NH₃)₄]²⁺';
+            p1ChemicalName = 'Koordinasyon kompleksi';
             p1Caption = 'Merkez katyona ligandların koordine kovalent bağlarla bağlanması.';
+            p1Ionic = getProductIonicNotation('p1', rx, r1, r2, false);
 
             p2Badge = '<span class="particle-state-badge badge-aqueous">Sulu Çözelti</span>';
             p2Title = esc(rx.spectators || 'NO₃⁻ Seyirci İyonları');
-            p2Type = 'spectators';
-            p2Caption = 'Kompleksleşmeye katılmayan nitrat iyonları çözeltide serbest solvatize kalır.';
+            p2Type = rx.spectators || 'spectators';
+            p2Formula = rx.spectators || 'NO₃⁻';
+            p2ChemicalName = 'Seyirci iyonlar';
+            p2Caption = 'Nitrat iyonları çözeltide birbirinden bağımsız hareket eder.';
+            p2Ionic = getProductIonicNotation('p2', rx, r1, r2, false);
           } else {
             p1Badge = '<span class="particle-state-badge badge-aqueous">Nötrleşme Suyu</span>';
             p1Title = 'H₂O (Su Molekülleri)';
             p1Type = 'H2O';
+            p1Formula = 'H₂O';
+            p1ChemicalName = 'Su';
             p1Caption = 'Asit ve bazın nötrleşmesiyle oluşan kararlı kovalent H₂O molekülleri.';
+            p1Ionic = getProductIonicNotation('p1', rx, r1, r2, false);
 
             p2Badge = '<span class="particle-state-badge badge-aqueous">Çözünmüş Tuz</span>';
             p2Title = isHclNaoh ? 'Na⁺ ve Cl⁻ (Tuz Çözeltisi)' : esc(rx.spectators || 'Çözünmüş İyonlar');
-            p2Type = 'spectators';
-            p2Caption = 'Oluşan tuz iyonları suda serbest solvatize haldedir (katı kristal oluşturmaz).';
+            p2Type = isHclNaoh ? 'Na + Cl' : (rx.spectators || 'spectators');
+            p2Formula = isHclNaoh ? 'Na⁺ + Cl⁻' : (rx.spectators || 'Çözünmüş iyonlar');
+            p2ChemicalName = 'Suda çözünmüş tuz iyonları';
+            p2Caption = 'Tuz iyonları çözeltide birbirinden bağımsız hareket eder.';
+            p2Ionic = getProductIonicNotation('p2', rx, r1, r2, false);
           }
 
-          html += '<div class="particle-subcard" data-action="zoomParticle" data-arg="p1" tabindex="0" role="button" title="Modeli Büyüt ve İncele">' +
+          html += '<div class="particle-subcard">' +
             '<div class="particle-subcard-title">' +
               '<div class="particle-title-left">' + p1Badge + ' <span>' + p1Title + '</span></div>' +
-              '<span class="particle-zoom-badge">🔍 Büyüt</span>' +
             '</div>' +
-            '<div class="particle-subcard-body">' + window.MebiSVG.renderGenericProductParticle(p1Type, rx, r1, r2) + '</div>' +
+            '<div class="particle-subcard-body particle-3d-host" data-particle-view="p1" data-particle-type="' + esc(p1Type) + '" aria-label="Birinci ürün üç boyutlu tanecik modeli"></div>' + particleIdentityHTML(esc(p1Formula), formulaSymbols(p1Formula, list1.concat(list2)), esc(p1ChemicalName), esc(p1Ionic)) +
             '<div class="particle-caption">' +
               '<div>' + p1Caption + '</div>' +
-              '<div class="sub-zoom-hint">🔍 Modeli büyütmek için tıklayınız</div>' +
             '</div>' +
           '</div>' +
 
-          '<div class="particle-subcard" data-action="zoomParticle" data-arg="p2" tabindex="0" role="button" title="Modeli Büyüt ve İncele">' +
+          '<div class="particle-subcard">' +
             '<div class="particle-subcard-title">' +
               '<div class="particle-title-left">' + p2Badge + ' <span>' + p2Title + '</span></div>' +
-              '<span class="particle-zoom-badge">🔍 Büyüt</span>' +
             '</div>' +
-            '<div class="particle-subcard-body">' + window.MebiSVG.renderGenericProductParticle(p2Type, rx, r1, r2) + '</div>' +
+            '<div class="particle-subcard-body particle-3d-host" data-particle-view="p2" data-particle-type="' + esc(p2Type) + '" aria-label="İkinci ürün üç boyutlu tanecik modeli"></div>' + particleIdentityHTML(esc(p2Formula), formulaSymbols(p2Formula, list1.concat(list2)), esc(p2ChemicalName), esc(p2Ionic)) +
             '<div class="particle-caption">' +
               '<div>' + p2Caption + '</div>' +
-              '<div class="sub-zoom-hint">🔍 Modeli büyütmek için tıklayınız</div>' +
             '</div>' +
           '</div>';
         }
@@ -1365,7 +1421,7 @@
       '</div>';
     }
 
-    var html = topbarHTML(true) +
+    var html = topbarHTML(true, 'predict') +
       '<div class="mebi-card">' +
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
           '<div>' +
@@ -1385,6 +1441,7 @@
 
   /* ----------------- 4. SÜRÜKLE VE BIRAK MOTORU (DRAG & DROP) ----------------- */
   function wireDragAndDrop() {
+    if (window.LabScene && window.LabScene.available) return;
     var dragEl = document.getElementById('dragBeaker');
     var mainVessel = document.getElementById('mainVessel');
     var bench = document.getElementById('labBenchContainer');
@@ -1454,11 +1511,17 @@
 
   /* ----------------- 5. EYLEMLER VE YÖNLENDİRİCİ (ACTIONS & ROUTER) ----------------- */
   var actions = {
+    toggleReagentPanel: function() {
+      S.reagentPanelCollapsed = !S.reagentPanelCollapsed;
+      render(false);
+    },
     goMenu: function() {
       S.screen = 'menu';
       render();
     },
     goPool: function() {
+      ++fillToken; S.isFilling = false;
+      S.reagentPanelCollapsed = false;
       S.screen = 'pool';
       S.selectedSlot1 = null;
       S.selectedSlot2 = null;
@@ -1466,6 +1529,21 @@
       S.poured = false;
       S.labStep = 'predict';
       S.prediction = [];
+      S.labView = 'wide';
+      render();
+    },
+    changeReactants: function() {
+      ++fillToken; S.isFilling = false;
+      if (window.MebiAudio) window.MebiAudio.playClick();
+      S.reagentPanelCollapsed = false;
+      S.screen = 'pool';
+      S.selectedSlot1 = null;
+      S.selectedSlot2 = null;
+      S.activeReaction = null;
+      S.poured = false;
+      S.labStep = 'predict';
+      S.prediction = [];
+      S.labView = 'desk';
       render();
     },
     goCollection: function() {
@@ -1516,6 +1594,33 @@
       window.MebiUI.toggleTheme();
       render(false);
     },
+    toggleLabSettings: function() {
+      S.labSettingsOpen = !S.labSettingsOpen;
+      render(false);
+    },
+    closeLabSettings: function() {
+      S.labSettingsOpen = false;
+      render(false);
+    },
+    setLabView: function(view) {
+      if (['desk', 'closeup', 'wide'].indexOf(view) < 0) return;
+      S.labView = view;
+      if (window.LabScene && window.LabScene.setView) window.LabScene.setView(view);
+      render(false);
+    },
+    toggleLabLighting: function() {
+      S.labLighting = S.labLighting === 'dark' ? 'light' : 'dark';
+      if (window.LabScene && window.LabScene.setLighting) window.LabScene.setLighting(S.labLighting);
+      try { localStorage.setItem('three-faces-laboratory-lighting', S.labLighting); } catch (e) {}
+      render(false);
+    },
+    setTableColor: function(color) {
+      if (['#466455', '#3d4547', '#fff2d7'].indexOf(color) < 0) return;
+      S.tableColor = color;
+      if (window.LabScene && window.LabScene.setTableColor) window.LabScene.setTableColor(color);
+      try { localStorage.setItem('three-faces-table-color', color); } catch (e) {}
+      render(false);
+    },
     toggleAudio: function() {
       var isAudio = window.MebiAudio.isEnabled();
       window.MebiAudio.setEnabled(!isAudio);
@@ -1529,6 +1634,7 @@
       render(false);
     },
     clickReagent: function(id) {
+      if (S.screen !== 'pool' || !window.MebiData.getReagent(id)) return;
       if (window.MebiAudio) window.MebiAudio.playClick();
       if (S.selectedSlot1 === id) {
         S.selectedSlot1 = null;
@@ -1541,24 +1647,37 @@
       } else {
         S.selectedSlot2 = id;
       }
-      render(false);
+      S.reagentPanelCollapsed = !!(S.selectedSlot1 && S.selectedSlot2);
+      S.labView = S.selectedSlot1 && S.selectedSlot2 ? 'closeup' : (S.selectedSlot1 || S.selectedSlot2 ? 'desk' : 'wide');
+      finishSelection();
     },
     clearSlot: function(num) {
+      if (S.screen !== 'pool') return;
       if (window.MebiAudio) window.MebiAudio.playClick();
       if (num === '1') S.selectedSlot1 = null;
       if (num === '2') S.selectedSlot2 = null;
-      render(false);
+      S.reagentPanelCollapsed = false;
+      S.labView = S.selectedSlot1 || S.selectedSlot2 ? 'desk' : 'wide';
+      finishSelection();
     },
     resetPool: function() {
+      if (S.screen !== 'pool') return;
       if (window.MebiAudio) window.MebiAudio.playClick();
       S.selectedSlot1 = null;
       S.selectedSlot2 = null;
       S.searchQuery = '';
       S.categoryFilter = 'all';
-      render(false);
+      S.reagentPanelCollapsed = false;
+      S.labView = 'wide';
+      finishSelection();
     },
     resetExperiment: function() {
+      var approved = typeof window.confirm === 'function' && window.confirm('Bu işlem yaptığınız bütün keşifleri ve mevcut deney ilerlemesini kalıcı olarak silecektir. Devam etmek istiyor musunuz?');
+      if (!approved) return;
+      ++fillToken; S.isFilling = false;
       if (window.MebiAudio) window.MebiAudio.playClick();
+      S.collection = [];
+      saveCollectionToStorage();
       S.selectedSlot1 = null;
       S.selectedSlot2 = null;
       S.activeReaction = null;
@@ -1575,21 +1694,9 @@
       render();
     },
     startExperiment: function() {
-      if (!S.selectedSlot1 || !S.selectedSlot2) return;
+      if (!S.selectedSlot1 || !S.selectedSlot2 || S.isFilling) return;
       if (window.MebiAudio) window.MebiAudio.playClick();
-      S.activeReaction = window.MebiData.getReaction(S.selectedSlot1, S.selectedSlot2);
-      S.prediction = [];
-      S.labStep = 'predict';
-      S.poured = false;
-      S.currentTemp = S.activeReaction.tempInit;
-      S.manualTypeInput = '';
-      S.manualTypeSelections = [];
-      S.typeEvaluation = null;
-      S.typeChecked = false;
-      S.typeCorrect = false;
-      S.cameraTab = 'reactants';
-      S.reportTab = 'analysis';
-      S.screen = 'lab';
+      enterPredictionScreen();
       render();
     },
     // Gözlem Butonları Mantığı (Yönergeye göre "Belirgin değişim yok" karşılıklı dışlayan çalışır)
@@ -1619,6 +1726,7 @@
       render(false);
     },
     savePrediction: function() {
+      if (S.screen !== 'lab' || S.labStep !== 'predict' || !S.activeReaction) return;
       if (window.MebiAudio) window.MebiAudio.playClick();
       S.labStep = 'ready';
       render();
@@ -1633,12 +1741,15 @@
       render();
     },
     triggerPour: function() {
+      if (S.labStep !== 'ready') return;
+      var reactionAtStart = S.activeReaction;
       S.labStep = 'pouring';
       S.poured = true;
       if (window.MebiAudio) window.MebiAudio.playPour();
       render(false);
 
       setTimeout(function() {
+        if (S.activeReaction !== reactionAtStart || S.labStep !== 'pouring') return;
         S.labStep = 'reacting';
         var rx = S.activeReaction;
         if (window.MebiAudio && (rx.obs.indexOf('gas') > -1 || rx.hasTempRise)) {
@@ -1650,6 +1761,10 @@
         var tempStep = (targetTemp - initTemp) / 10;
         var count = 0;
         var tempInterval = setInterval(function() {
+          if (S.activeReaction !== reactionAtStart || (S.labStep !== 'reacting' && S.labStep !== 'observed')) {
+            clearInterval(tempInterval);
+            return;
+          }
           count++;
           S.currentTemp += tempStep;
           var digitalValEl = document.getElementById('digitalTempValue');
@@ -1662,6 +1777,7 @@
           } else if (textEl) {
             textEl.innerHTML = window.MebiSVG.icon('temp') + '<span>' + S.currentTemp.toFixed(1) + '°C</span>';
           }
+          if (window.LabScene) window.LabScene.setTemperature(S.currentTemp);
 
           if (thermoHeadEl && rx.hasTempRise) {
             thermoHeadEl.classList.add('is-heating');
@@ -1683,6 +1799,7 @@
         render(false);
 
         setTimeout(function() {
+          if (S.activeReaction !== reactionAtStart || S.labStep !== 'reacting') return;
           var exact = sameSet(S.prediction, rx.obs);
           S.labStep = 'observed';
           if (exact && window.MebiAudio) {
@@ -1690,7 +1807,7 @@
           }
           render();
         }, 1600);
-      }, 600);
+      }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 50 : 5000);
     },
     toCard: function() {
       if (window.MebiAudio) window.MebiAudio.playClick();
@@ -1807,23 +1924,23 @@
     openAllCpkDrawer: function() {
       if (window.MebiAudio) window.MebiAudio.playClick();
       var CPK_ALL = [
-        { sym: 'H', name: 'Hidrojen', color: '#f1f5f9', border: '#cbd5e1' },
-        { sym: 'O', name: 'Oksijen', color: '#e11d48' },
-        { sym: 'C', name: 'Karbon', color: '#334155' },
-        { sym: 'N', name: 'Azot', color: '#0284c7' },
-        { sym: 'Cl', name: 'Klor', color: '#22c55e' },
-        { sym: 'I', name: 'İyot', color: '#7c3aed' },
-        { sym: 'S', name: 'Kükürt', color: '#eab308' },
-        { sym: 'Na', name: 'Sodyum', color: '#9333ea' },
-        { sym: 'K', name: 'Potasyum', color: '#8b5cf6' },
-        { sym: 'Ca', name: 'Kalsiyum', color: '#14b8a6' },
-        { sym: 'Ba', name: 'Baryum', color: '#10b981' },
-        { sym: 'Pb', name: 'Kurşun', color: '#f59e0b' },
-        { sym: 'Ag', name: 'Gümüş', color: '#94a3b8' },
-        { sym: 'Cu', name: 'Bakır', color: '#2563eb' },
-        { sym: 'Fe', name: 'Demir', color: '#ea580c' },
-        { sym: 'Zn', name: 'Çinko', color: '#64748b' },
-        { sym: 'Mn', name: 'Mangan', color: '#a855f7' }
+        { sym: 'H', name: 'Hidrojen', color: '#FFFFFF', border: '#CBD5E1' },
+        { sym: 'O', name: 'Oksijen', color: '#FF0D0D' },
+        { sym: 'C', name: 'Karbon', color: '#909090' },
+        { sym: 'N', name: 'Azot', color: '#3050F8' },
+        { sym: 'Cl', name: 'Klor', color: '#1FF01F' },
+        { sym: 'I', name: 'İyot', color: '#940094' },
+        { sym: 'S', name: 'Kükürt', color: '#FFFF30' },
+        { sym: 'Na', name: 'Sodyum', color: '#AB5CF2' },
+        { sym: 'K', name: 'Potasyum', color: '#8F40D4' },
+        { sym: 'Ca', name: 'Kalsiyum', color: '#3DFF00' },
+        { sym: 'Ba', name: 'Baryum', color: '#00C900' },
+        { sym: 'Pb', name: 'Kurşun', color: '#575961' },
+        { sym: 'Ag', name: 'Gümüş', color: '#C0C0C0' },
+        { sym: 'Cu', name: 'Bakır', color: '#C88033' },
+        { sym: 'Fe', name: 'Demir', color: '#E06633' },
+        { sym: 'Zn', name: 'Çinko', color: '#7D80B0' },
+        { sym: 'Mn', name: 'Mangan', color: '#9C7AC7' }
       ];
 
       var r1 = window.MebiData.getReagent(S.selectedSlot1);
@@ -1835,7 +1952,9 @@
           'NaCl': ['Na', 'Cl'], 'KI': ['K', 'I'], 'Pb(NO3)2': ['Pb', 'N', 'O'],
           'BaCl2': ['Ba', 'Cl'], 'Na2SO4': ['Na', 'S', 'O'], 'CH3COOH': ['C', 'H', 'O'],
           'NH3': ['N', 'H'], 'H2SO4': ['H', 'S', 'O'], 'Ca(OH)2': ['Ca', 'O', 'H'],
-          'CuSO4': ['Cu', 'S', 'O'], 'Fe': ['Fe'], 'Zn': ['Zn'], 'Cu': ['Cu'],
+          'CuSO4': ['Cu', 'S', 'O'],
+          'Cu(NO3)2': ['Cu', 'N', 'O'],
+          'Na2CO3': ['Na', 'C', 'O'], 'Fe': ['Fe'], 'Zn': ['Zn'], 'Cu': ['Cu'],
           'NaHCO3': ['Na', 'H', 'C', 'O'], 'MnO2': ['Mn', 'O'], 'H2O2': ['H', 'O']
         };
         var l1 = REAGENT_ELEMENTS[r1.id] || [];
@@ -1882,6 +2001,7 @@
         title: '',
         badge: '',
         badgeClass: '',
+        modelKey: which,
         svg: '',
         desc: '',
         ions: []
@@ -1902,16 +2022,24 @@
           } else if (reactant.id === 'Zn') {
             modalData.ions = [{ label: 'Zn Katısı', desc: 'Metalik kristal örgü' }];
           } else {
-            modalData.ions = [{ label: reactant.f + ' Katısı', desc: 'Kristal örgü kafesi' }];
+            if (reactant.id === 'CaCO3') {
+              modalData.ions = [{ label: 'Ca²⁺ ve CO₃²⁻', desc: 'İyonik kristal örgü kafesi' }, { label: 'CaCO₃ Katısı', desc: 'Suda çözünmeyen katı kristal' }];
+            } else if (reactant.id === 'Na2CO3') {
+              modalData.ions = [{ label: '2Na⁺ ve CO₃²⁻', desc: 'İyonik kristal örgü kafesi' }, { label: 'Na₂CO₃ Katısı', desc: 'Beyaz katı kristal' }];
+            } else if (reactant.id === 'NaHCO3') {
+              modalData.ions = [{ label: 'Na⁺ ve HCO₃⁻', desc: 'İyonik kristal örgü kafesi' }, { label: 'NaHCO₃ Katısı', desc: 'Yemek sodası beyaz katı kristal' }];
+            } else {
+              modalData.ions = [{ label: reactant.f + ' Katısı', desc: 'Kristal örgü kafesi' }];
+            }
           }
         } else if (reactant.id === 'H2O2' || reactant.id === 'NH3') {
-          modalData.desc = reactant.name + ' sulu çözeltide moleküler halde dağılmıştır. Su molekülleri ile hidrojen bağları kurarak çözünür ve serbest solvatize moleküller halinde hareket eder.';
+          modalData.desc = reactant.name + ' sulu çözeltide moleküler halde dağılır ve serbestçe hareket eder.';
           modalData.ions = [
             { label: reactant.f + ' Molekülü', desc: 'Kovalent bağlı nötr tanecik' },
-            { label: 'H₂O Molekülleri', desc: 'Çözücü hidratasyon kılıfı' }
+            { label: reactant.f, desc: 'Moleküler kimyasal gösterim' }
           ];
         } else {
-          modalData.desc = reactant.name + ' suda tamamen iyonlaşarak katyon ve anyonlarına ayrışır. Her bir iyon su moleküllerinin dipolleri tarafından sarılarak (hidrate / solvatize) çözeltide serbestçe hareket eder.';
+          modalData.desc = reactant.name + ' suda katyon ve anyonlarına ayrışır. İyonlar çözeltide birbirinden bağımsız hareket eder; yükleri modelin altındaki kimyasal gösterimde belirtilir.';
           if (reactant.id === 'HCl') {
             modalData.ions = [{ label: 'H₃O⁺ / H⁺', desc: 'Hidronyum katyonu' }, { label: 'Cl⁻', desc: 'Klorür anyonu' }];
           } else if (reactant.id === 'NaOH') {
@@ -1926,11 +2054,11 @@
             modalData.ions = [{ label: 'Na⁺', desc: 'Sodyum katyonları' }, { label: 'SO₄²⁻', desc: 'Sülfat anyonu' }];
           } else if (reactant.id === 'KI') {
             modalData.ions = [{ label: 'K⁺', desc: 'Potasyum katyonu' }, { label: 'I⁻', desc: 'İyodür anyonu' }];
-          } else if (reactant.id === 'PbNO32') {
+          } else if (reactant.id === 'Pb(NO3)2' || reactant.id === 'PbNO32') {
             modalData.ions = [{ label: 'Pb²⁺', desc: 'Kurşun(II) katyonu' }, { label: 'NO₃⁻', desc: 'Nitrat anyonları' }];
           } else if (reactant.id === 'CuSO4') {
             modalData.ions = [{ label: 'Cu²⁺', desc: 'Bakır(II) katyonu' }, { label: 'SO₄²⁻', desc: 'Sülfat anyonu' }];
-          } else if (reactant.id === 'CuNO32') {
+          } else if (reactant.id === 'Cu(NO3)2' || reactant.id === 'CuNO32') {
             modalData.ions = [{ label: 'Cu²⁺', desc: 'Bakır(II) katyonu' }, { label: 'NO₃⁻', desc: 'Nitrat anyonları' }];
           } else if (reactant.id === 'KNO3') {
             modalData.ions = [{ label: 'K⁺', desc: 'Potasyum katyonu' }, { label: 'NO₃⁻', desc: 'Nitrat anyonu' }];
@@ -1990,10 +2118,10 @@
                 modalData.badge = 'Sulu Çözelti';
                 modalData.badgeClass = 'badge-aqueous';
                 modalData.svg = window.MebiSVG.renderGenericProductParticle('spectators', rx, r1, r2);
-                modalData.desc = 'Net çökelme tepkimesine katılmayan seyirci iyonlar, çözeltide serbest solvatize iyonlar halinde kalmaya devam eder.';
+                modalData.desc = 'Net çökelme tepkimesine katılmayan seyirci iyonlar çözeltide birbirinden bağımsız hareket etmeye devam eder.';
                 modalData.ions = [
-                  { label: rx.spectators || 'Seyirci İyonlar', desc: 'Çözeltide serbest ve hidrate iyonlar' },
-                  { label: 'H₂O Molekülleri', desc: 'Solvatasyon kılıfı' }
+                  { label: rx.spectators || 'Seyirci İyonlar', desc: 'Çözeltide serbest iyonlar' },
+                  { label: 'İyon Yükleri', desc: 'Kimyasal gösterimde belirtilir' }
                 ];
               }
             }
@@ -2036,7 +2164,7 @@
               modalData.badge = 'Sulu Çözelti';
               modalData.badgeClass = 'badge-aqueous';
               modalData.svg = window.MebiSVG.renderGenericProductParticle('spectators', rx, r1, r2);
-              modalData.desc = 'Kompleks oluşum tepkimesine katılmayan nitrat iyonları çözeltide elektriksel nötralliği sağlamak üzere serbest solvatize olarak bulunur.';
+              modalData.desc = 'Kompleks oluşum tepkimesine katılmayan nitrat iyonları çözeltide serbest olarak bulunur.';
               modalData.ions = [
                 { label: 'NO₃⁻ Anyonları', desc: 'Seyirci iyonlar' },
                 { label: 'H₂O', desc: 'Hidratasyon kılıfı' }
@@ -2059,16 +2187,18 @@
               modalData.badge = 'Çözünmüş Tuz';
               modalData.badgeClass = 'badge-aqueous';
               modalData.svg = window.MebiSVG.renderGenericProductParticle('spectators', rx, r1, r2);
-              modalData.desc = 'Nötrleşme tepkimesi sonucu oluşan tuz (örneğin NaCl) suda yüksek çözünürlüğe sahip olduğu için katı kristal oluşturmaz; çözeltide serbest solvatize iyonlar halinde kalır.';
+              modalData.desc = 'Nötrleşme tepkimesi sonucu oluşan tuz (örneğin NaCl) suda yüksek çözünürlüğe sahip olduğu için katı kristal oluşturmaz; çözeltide serbest iyonlar halinde kalır.';
               modalData.ions = [
-                { label: isHclNaoh ? 'Na⁺ ve Cl⁻' : 'Tuz İyonları', desc: 'Çözeltide serbest solvatize iyonlar' },
-                { label: 'H₂O', desc: 'Solvatasyon kılıfı' }
+                { label: isHclNaoh ? 'Na⁺ ve Cl⁻' : 'Tuz İyonları', desc: 'Çözeltide serbest iyonlar' },
+                { label: isHclNaoh ? 'Na⁺ + Cl⁻' : (rx.spectators || 'Tuz iyonları'), desc: 'Yükleriyle kimyasal gösterim' }
               ];
             }
           }
         }
       }
 
+      var sourceParticleHost = document.querySelector('.particle-3d-host[data-particle-view="' + which + '"]');
+      modalData.modelType = sourceParticleHost ? (sourceParticleHost.getAttribute('data-particle-type') || '') : '';
       if (window.MebiUI && window.MebiUI.openParticleModal) {
         window.MebiUI.openParticleModal(modalData);
       }
@@ -2090,6 +2220,7 @@
           prev.activeReaction = null;
           prev.prediction = [];
         }
+        ++fillToken; prev.isFilling = false;
         S = prev;
         render();
       } else {
@@ -2146,7 +2277,15 @@
     var app = document.getElementById('app');
     if (!app) return;
     var fn = SCREENS[S.screen] || screenMenu;
+    var oldList = app.querySelector('.lab-reagent-list');
+    var listScroll = oldList ? oldList.scrollTop : 0;
+    if (window.ParticleScene) window.ParticleScene.disposeCards();
     app.innerHTML = fn();
+    var newList = app.querySelector('.lab-reagent-list');
+    if (newList) newList.scrollTop = listScroll;
+    app.dataset.screen = S.screen;
+    if (window.LabScene) window.LabScene.sync(S, dispatch);
+    if (window.ParticleScene) window.ParticleScene.sync(S);
     wireInputs();
     wireDragAndDrop();
 
@@ -2203,6 +2342,14 @@
       }, true);
     }
 
+    document.addEventListener('click', function(e) {
+      if (!S.labSettingsOpen) return;
+      var target = e.target;
+      if (target && target.closest && target.closest('.lab-settings-wrap')) return;
+      S.labSettingsOpen = false;
+      render(false);
+    });
+
     // Tam ekran durumu değiştiğinde buton ikonunu güncelle
     ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(function(evt) {
       document.addEventListener(evt, function() {
@@ -2220,7 +2367,7 @@
 
   // Global erişim
   window.TepkimeArenasi = {
-    state: S,
+    get state() { return S; },
     dispatch: dispatch,
     render: render
   };

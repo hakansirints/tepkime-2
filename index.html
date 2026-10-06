@@ -13,13 +13,19 @@
 
   <!-- MEBİ Tasarım Sistemi ve Proje CSS Dosyaları -->
   <link rel="stylesheet" href="css/mebi-theme.css?v=4.7">
-  <link rel="stylesheet" href="css/mebi-components.css?v=4.7">
-  <link rel="stylesheet" href="css/arena.css?v=4.7">
+  <link rel="stylesheet" href="css/mebi-components.css?v=4.8">
+  <link rel="stylesheet" href="css/arena.css?v=5.1">
+  <link rel="stylesheet" href="css/lab-world.css?v=3.2">
+  <link rel="stylesheet" href="css/mebi-liquid-glass.css?v=1.0">
+  <script type="importmap">
+    { "imports": { "three": "./js/vendor/three/three.module.js" } }
+  </script>
 </head>
 <body class="mebi-landscape-required">
+  <div id="labWorld" aria-hidden="true"></div>
 
   <!-- MEBİ TAM EKRAN CİHAZI YATAY ÇEVİRİN EKRANI (ORIENTATION OVERLAY) -->
-  <div class="mebi-orientation-overlay" id="mebiOrientationOverlay" role="dialog" aria-modal="true" aria-labelledby="mebiOrientationTitle">
+  <div class="mebi-orientation-overlay" id="mebiOrientationOverlay" role="dialog" aria-modal="true" aria-labelledby="mebiOrientationTitle" aria-hidden="true">
     <div class="mebi-orientation-card">
       <!-- Kapat / Geri Dön Butonu (Önizleme ve Test İçin) -->
       <button class="mebi-orientation-close-btn" id="btnCloseOrientation" title="Önizlemeyi Kapat" aria-label="Ekranı Kapat">
@@ -194,7 +200,7 @@
                 <h4 class="welcome-step-name">1. Maddeleri Seç</h4>
               </div>
               <p class="welcome-step-desc">
-                Madde havuzundaki 12 kimyasal madde arasından reaksiyona sokmak istediğin iki tanesini seçerek <b>1. ve 2. deneme yuvasına</b> yerleştir.
+                Soldaki madde kartlarında bulunan 12 kimyasal madde arasından reaksiyona sokmak istediğin iki tanesini seçerek <b>laboratuvardaki 1. ve 2. behere</b> yerleştir.
               </p>
             </div>
           </div>
@@ -303,10 +309,13 @@
 
   <!-- Modüler JavaScript Dosyaları -->
   <script src="js/audio.js?v=4.7"></script>
-  <script src="js/data.js?v=4.7"></script>
-  <script src="js/svg-models.js?v=4.7"></script>
-  <script src="js/ui.js?v=4.7"></script>
-  <script src="js/app.js?v=4.7"></script>
+  <script src="js/data.js?v=5.1"></script>
+  <script src="js/svg-models.js?v=5.0"></script>
+  <script src="js/ui.js?v=4.9"></script>
+  <script src="js/chemistry-visuals.js?v=1"></script>
+  <script src="js/app.js?v=6.0"></script>
+  <script type="module" src="js/lab-scene.js?v=3.0"></script>
+  <script type="module" src="js/particle-scene.js?v=1.4"></script>
 
 </body>
 </html>

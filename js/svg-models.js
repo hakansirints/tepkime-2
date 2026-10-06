@@ -844,44 +844,23 @@
 
   // 4. SUDA ÇÖZÜNMÜŞ SEYİRCİ İYONLAR HÜCRESİ (Katı Kristal Değil, Solvatize İyonlar!)
   function renderProductSpectatorSolutionCell(rx, r1, r2) {
-    var specText = rx ? (rx.spectators || 'Seyirci İyonlar') : 'Seyirci İyonlar';
-    var isNaCl = (specText.indexOf('Na⁺') > -1 && specText.indexOf('Cl⁻') > -1);
-    var isKNO3 = (specText.indexOf('K⁺') > -1 && specText.indexOf('NO₃⁻') > -1);
-    var isNaNO3 = (specText.indexOf('Na⁺') > -1 && specText.indexOf('NO₃⁻') > -1);
-
-    var catFill = (isKNO3 ? 'url(#gK)' : 'url(#gNa)');
-    var catName = (isKNO3 ? 'K⁺' : 'Na⁺');
-    var anFill = (isNaCl ? 'url(#gCl)' : 'url(#gN)');
-    var anName = (isNaCl ? 'Cl⁻' : 'NO₃⁻');
-
+    var species = window.MebiChemistry ? window.MebiChemistry.spectatorSpecies(rx) : [];
+    var colors = {'Na⁺':'#9333ea','K⁺':'#a855f7','Ca²⁺':'#14b8a6','Cu²⁺':'#2563eb','Pb²⁺':'#f59e0b','Ag⁺':'#94a3b8','Cl⁻':'#15803d','NO₃⁻':'#0284c7','OH⁻':'#e11d48','NH₄⁺':'#6366f1','CO₃²⁻':'#334155','HCO₃⁻':'#475569'};
+    var ions = species.map(function(symbol, i) {
+      var x = 43 + (i % 3) * 42, y = 50 + Math.floor(i / 3) * 36;
+      return '<g filter="url(#spDrop)"><circle cx="' + x + '" cy="' + y + '" r="16" fill="' + colors[symbol] + '"/>' +
+        '<text x="' + x + '" y="' + (y + 4) + '" fill="white" font-size="9" font-weight="800" text-anchor="middle">' + symbol + '</text></g>';
+    }).join('');
     return '<div style="display:flex;align-items:center;justify-content:center;gap:12px;width:100%;">' +
-      '<svg viewBox="0 0 170 115" width="165" height="110" class="micro-chamber-svg">' +
-        getShared3DDefs() +
-        getChamberBackdrop('aqueous', 'Suda Çözünmüş İyonlar', 'Solvatize Seyirci İyonlar') +
-        // Solvasyon kılıfı su molekülleri
-        render3DWaterMolecule(24, 44, 180, 0.9) +
-        render3DWaterMolecule(26, 84, 140, 0.9) +
-        render3DWaterMolecule(52, 96, 90, 0.9) +
-        render3DWaterMolecule(86, 38, 35, 0.9) +
-        render3DWaterMolecule(148, 44, 150, 0.9) +
-        render3DWaterMolecule(122, 92, -90, 0.9) +
-        // Serbest İyonlar
-        '<g filter="url(#spDrop)">' +
-          '<circle cx="52" cy="62" r="16" fill="' + catFill + '"/>' +
-          '<text x="52" y="67" fill="#ffffff" font-family="inherit" font-size="10.5" font-weight="800" text-anchor="middle">' + catName + '</text>' +
-          '<circle cx="120" cy="62" r="18" fill="' + anFill + '"/>' +
-          '<text x="120" y="67" fill="#ffffff" font-family="inherit" font-size="11" font-weight="800" text-anchor="middle">' + anName + '</text>' +
-        '</g>' +
-      '</svg>' +
-      '<div class="particle-legend-col">' +
-        '<div class="legend-item"><div class="legend-dot" style="background:' + (catName === 'K⁺' ? '#a855f7' : '#9333ea') + ';"></div><span>' + catName + ' (Solvatize)</span></div>' +
-        '<div class="legend-item"><div class="legend-dot" style="background:' + (anName === 'Cl⁻' ? '#15803d' : '#0284c7') + ';"></div><span>' + anName + ' (Solvatize)</span></div>' +
-        '<div class="legend-item"><div class="legend-dot" style="background:#e11d48;"></div><span>H₂O (Solvasyon)</span></div>' +
-      '</div>' +
-    '</div>';
+      '<svg viewBox="0 0 170 140" width="165" height="135" class="micro-chamber-svg">' + getShared3DDefs() +
+      getChamberBackdrop('aqueous', 'Sulu Ortam', 'Seyirci İyonlar') +
+      render3DWaterMolecule(24, 102, 180, .9) + render3DWaterMolecule(140, 102, 35, .9) + ions +
+      (species.length ? '' : '<text x="85" y="62" text-anchor="middle" font-size="10">Seyirci iyon yok</text>') + '</svg>' +
+      '<div class="particle-legend-col">' + species.map(function(symbol) {
+        return '<div class="legend-item"><div class="legend-dot" style="background:' + colors[symbol] + ';"></div><span>' + symbol + ' (Suda)</span></div>';
+      }).join('') + '<div class="legend-item"><div class="legend-dot" style="background:#e11d48;"></div><span>H₂O (Çözücü)</span></div></div></div>';
   }
 
-  // 5. KOORDİNASYON KOMPLEKSİ ([Cu(NH3)4]²⁺ Safir Mavisi Kompleks)
   function renderParticleCuComplex() {
     return '<div style="display:flex;align-items:center;justify-content:center;gap:12px;width:100%;">' +
       '<svg viewBox="0 0 170 115" width="165" height="110" class="micro-chamber-svg">' +

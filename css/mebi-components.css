@@ -1282,3 +1282,8 @@ body.mebi-landscape-required .mebi-orientation-overlay .mebi-orientation-card {
   gap: 12px;
 }
 
+/* Gerçek mobil dikey kullanımda yön uyarısı, cihaz yataya çevrilene kadar kapatılamaz. */
+.mebi-orientation-overlay.is-forced .mebi-orientation-close-btn,
+.mebi-orientation-overlay.is-forced .mebi-orientation-actions {
+  display: none;
+}

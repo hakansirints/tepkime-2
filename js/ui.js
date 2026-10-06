@@ -182,6 +182,20 @@
       ionsHtml += '</div>';
     }
 
+    if (data.modelKey && window.ParticleScene && window.TepkimeArenasi) {
+      bodyEl.innerHTML =
+        '<div class="particle-modal-stage-wrap particle-modal-stage-3d" id="particleModalStageWrap">' +
+          '<div class="particle-3d-host" id="particleModal3dHost" data-particle-view="' + data.modelKey + '" data-particle-type="' + (data.modelType || '') + '" aria-label="Etkileşimli üç boyutlu tanecik modeli"></div>' +
+        '</div>' +
+        '<div class="particle-modal-info-panel"><div class="particle-modal-desc-text"><b>Kimyasal ve Fiziksel Durum:</b> ' + descContent + ionsHtml + '</div></div>';
+      overlay.classList.add('is-active');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      window.ParticleScene.mountModal(document.getElementById('particleModal3dHost'), data.modelKey, window.TepkimeArenasi.state);
+      if (window.MebiAudio) window.MebiAudio.playClick();
+      return;
+    }
+
     bodyEl.innerHTML =
       '<div class="particle-modal-toolbar">' +
         '<div class="particle-modal-zoom-controls">' +
@@ -326,6 +340,7 @@
       overlay.classList.remove('is-active');
       overlay.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
+      if (window.ParticleScene) window.ParticleScene.disposeModal();
       if (window.MebiAudio) window.MebiAudio.playClick();
     }
   }
@@ -446,6 +461,12 @@
 
   function closeOrientationOverlay() {
     var overlay = document.getElementById('mebiOrientationOverlay');
+    var isPortrait = (window.innerHeight > window.innerWidth) || (window.matchMedia && window.matchMedia('(orientation: portrait)').matches);
+    var isMobileOrTablet = (window.innerWidth <= 900) || (window.innerHeight <= 600 && window.innerWidth <= 1024);
+    if (isPortrait && isMobileOrTablet) {
+      checkOrientation();
+      return;
+    }
     if (overlay) {
       overlay.classList.remove('is-active');
       overlay.classList.remove('is-forced');
@@ -473,14 +494,20 @@
 
     var isPortrait = (window.innerHeight > window.innerWidth) || (window.matchMedia && window.matchMedia('(orientation: portrait)').matches);
     var isMobileOrTablet = (window.innerWidth <= 900) || (window.innerHeight <= 600 && window.innerWidth <= 1024);
+    var isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
 
-    if (isPortrait && isMobileOrTablet && !isOrientationDismissed) {
+    document.body.classList.toggle('mebi-mobile-landscape', !isPortrait && isMobileOrTablet);
+
+    if (isPortrait && isMobileOrTablet && isTouchDevice && !isOrientationDismissed) {
       document.body.classList.add('mebi-landscape-required');
       overlay.classList.add('is-forced');
+      overlay.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
-    } else {
+    } else if (!isPortrait || !isMobileOrTablet || isOrientationDismissed) {
       overlay.classList.remove('is-forced');
       overlay.classList.remove('is-active');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('mebi-landscape-required');
       document.body.style.overflow = '';
       if (!isPortrait) {
         isOrientationDismissed = false;
@@ -702,4 +729,3 @@
   window.showMebiToast = showMebiToast;
 
 })(window);
-
