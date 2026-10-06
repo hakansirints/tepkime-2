@@ -21,6 +21,35 @@ const REAGENT_ELEMENTS = {
   CuSO4:['Cu','S','O'], Zn:['Zn'], Cu:['Cu'], Fe:['Fe']
 };
 
+const ION_LABELS = {
+  Na:'Na⁺', K:'K⁺', Ag:'Ag⁺', H:'H⁺', NH4:'NH₄⁺',
+  Ca:'Ca²⁺', Ba:'Ba²⁺', Pb:'Pb²⁺', Cu:'Cu²⁺', Zn:'Zn²⁺', Fe:'Fe²⁺', Mn:'Mn²⁺',
+  Cl:'Cl⁻', I:'I⁻', OH:'OH⁻', NO3:'NO₃⁻', HCO3:'HCO₃⁻',
+  CO3:'CO₃²⁻', SO4:'SO₄²⁻', O:'O²⁻'
+};
+
+function createIonLabelSprite(text) {
+  if (typeof document === 'undefined' || !document.createElement) return null;
+  const canvas = document.createElement('canvas');
+  if (!canvas || !canvas.getContext) return null;
+  canvas.width = 256;
+  canvas.height = 128;
+  const ctx = canvas.getContext('2d');
+  if (!ctx || !ctx.fillText) return null;
+  ctx.clearRect(0, 0, 256, 128);
+  ctx.font = '700 48px "JetBrains Mono", "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#2563eb';
+  ctx.fillText(text, 128, 64);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.minFilter = THREE.LinearFilter;
+  const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false });
+  const sprite = new THREE.Sprite(material);
+  sprite.scale.set(0.64, 0.32, 1);
+  return sprite;
+}
+
 const viewers = new Set();
 let animationFrame = 0;
 let modalViewer = null;
@@ -238,6 +267,13 @@ function assemblyFor(descriptor) {
     const speciesName = formulaParts[index];
     const scale = covalent ? (count === 1 ? 1.02 : 0.82) : separatedIons ? (count > 3 ? 0.68 : 0.76) : (count > 4 ? 0.64 : 0.74);
     const item = speciesObject(speciesName, scale, separatedIons);
+    if (separatedIons && ION_LABELS[speciesName]) {
+      const sprite = createIonLabelSprite(ION_LABELS[speciesName]);
+      if (sprite) {
+        sprite.position.set(0, -0.42 * scale - 0.22, 0.05);
+        item.add(sprite);
+      }
+    }
     item.traverse(object => { object.userData.selectableRoot = null; });
     if (count > 1) {
       const angle = (index / count) * Math.PI * 2 + Math.PI / 2;

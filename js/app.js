@@ -115,18 +115,39 @@
     var isAudio = window.MebiAudio ? window.MebiAudio.isEnabled() : true;
     var isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
     var curTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    var gearIcon = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<circle cx="12" cy="12" r="3"></circle>' +
+      '<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>' +
+    '</svg>';
+
     var showLabSettings = true;
     var settingsHTML = showLabSettings ? '<div class="lab-settings-wrap">' +
-      '<button class="mebi-btn-icon mebi-btn-secondary lab-settings-trigger" data-action="toggleLabSettings" aria-expanded="' + S.labSettingsOpen + '" aria-controls="labSettingsPanel" title="Laboratuvar ayarları" aria-label="Laboratuvar ayarları">' +
-        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6m8 4v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>' +
+      '<button class="mebi-btn-icon mebi-btn-secondary lab-settings-trigger" data-action="toggleLabSettings" aria-expanded="' + S.labSettingsOpen + '" aria-controls="labSettingsPanel" title="Ayarlar" aria-label="Ayarlar">' +
+        gearIcon +
       '</button>' +
-      '<section id="labSettingsPanel" class="lab-settings-panel" aria-label="Laboratuvar ayarları"' + (S.labSettingsOpen ? '' : ' hidden') + '>' +
-        '<div class="lab-settings-heading"><strong>Laboratuvar ayarları</strong><button type="button" data-action="closeLabSettings" aria-label="Ayarları kapat">×</button></div>' +
-        '<div class="lab-settings-section"><span class="lab-settings-label">Kamera görünümü</span><div class="lab-settings-views" role="group" aria-label="Kamera bakış açısı">' +
+      '<section id="labSettingsPanel" class="lab-settings-panel" aria-label="Ayarlar"' + (S.labSettingsOpen ? '' : ' hidden') + '>' +
+        '<div class="lab-settings-heading"><strong>⚙️ Ayarlar</strong><button type="button" data-action="closeLabSettings" aria-label="Ayarları kapat">×</button></div>' +
+
+        '<div class="lab-settings-section lab-settings-quick-grid">' +
+          '<button type="button" class="lab-settings-btn-tile" data-action="toggleAudio" title="Sesi Aç / Kapat" aria-pressed="' + isAudio + '">' +
+            '<span>' + (isAudio ? '🔊' : '🔇') + '</span><small>' + (isAudio ? 'Ses Açık' : 'Ses Kapalı') + '</small>' +
+          '</button>' +
+          '<button type="button" class="lab-settings-btn-tile" data-action="toggleFullscreen" title="Tam Ekran" aria-pressed="' + isFs + '">' +
+            '<span>' + (isFs ? '🗗' : '⛶') + '</span><small>' + (isFs ? 'Küçült' : 'Tam Ekran') + '</small>' +
+          '</button>' +
+          '<button type="button" class="lab-settings-btn-tile" data-action="toggleTheme" title="Temayı Değiştir" aria-pressed="' + (curTheme === 'dark') + '">' +
+            '<span>' + (curTheme === 'dark' ? '🌙' : '☀️') + '</span><small>' + (curTheme === 'dark' ? 'Karanlık' : 'Aydınlık') + '</small>' +
+          '</button>' +
+        '</div>' +
+
+        '<div class="lab-settings-section"><span class="lab-settings-label">Kamera Bakış Açısı</span><div class="lab-settings-views" role="group" aria-label="Kamera bakış açısı">' +
           [['desk','Masa'],['closeup','Yakın'],['wide','Oda']].map(function(view) { return '<button type="button" data-action="setLabView" data-arg="' + view[0] + '" aria-pressed="' + (S.labView === view[0]) + '">' + view[1] + '</button>'; }).join('') +
-        '</div><button type="button" class="lab-settings-reset" data-action="setLabView" data-arg="desk">↺ Kamerayı sıfırla</button></div>' +
-        '<div class="lab-settings-section"><span class="lab-settings-label">Aydınlatma</span><button type="button" class="lab-settings-light" data-action="toggleLabLighting" aria-pressed="' + (S.labLighting === 'dark') + '">' + (S.labLighting === 'dark' ? '☾ Laboratuvar: Karanlık' : '☀ Laboratuvar: Aydınlık') + '</button></div>' +
-        '<div class="lab-settings-section"><span class="lab-settings-label">Masa rengi</span><div class="lab-settings-colors" role="group" aria-label="Masa rengi">' +
+        '</div><button type="button" class="lab-settings-reset" data-action="setLabView" data-arg="desk">↺ Kamerayı Sıfırla</button></div>' +
+
+        '<div class="lab-settings-section"><span class="lab-settings-label">Laboratuvar Ortamı</span>' +
+          '<button type="button" class="lab-settings-light" data-action="toggleLabLighting" aria-pressed="' + (S.labLighting === 'dark') + '">' + (S.labLighting === 'dark' ? '☾ Ortam: Karanlık' : '☀ Ortam: Aydınlık') + '</button>' +
+        '</div>' +
+        '<div class="lab-settings-section"><span class="lab-settings-label">Masa Rengi</span><div class="lab-settings-colors" role="group" aria-label="Masa rengi">' +
           [['#466455','Yeşil'],['#3d4547','Antrasit'],['#fff2d7','Açık']].map(function(color) { return '<button type="button" data-action="setTableColor" data-arg="' + color[0] + '" aria-pressed="' + (S.tableColor.toLowerCase() === color[0]) + '"><span style="--swatch:' + color[0] + '"></span>' + color[1] + '</button>'; }).join('') +
         '</div></div>' +
       '</section></div>' : '';
@@ -148,28 +169,7 @@
       '</div>' +
 
       '<div class="mebi-topbar-tools">' +
-        // Ses Butonu
-        '<button class="mebi-btn-icon mebi-btn-secondary" data-action="toggleAudio" title="' + (isAudio ? 'Sesi Kapat' : 'Sesi Aç') + '">' +
-          window.MebiSVG.icon(isAudio ? 'volumeOn' : 'volumeOff') +
-        '</button>' +
         settingsHTML +
-
-        // Tam Ekran Butonu
-        '<button class="mebi-btn-icon mebi-btn-secondary" data-action="toggleFullscreen" title="' + (isFs ? 'Tam Ekrandan Çık' : 'Tam Ekran Modu') + '">' +
-          window.MebiSVG.icon(isFs ? 'fullscreenExit' : 'fullscreen') +
-        '</button>' +
-
-        // Yatay Ekran Uyarısı Önizleme Butonu
-        '<button class="mebi-btn-icon mebi-btn-secondary" data-action="testOrientation" title="Yatay Ekran Modunu Önizle">' +
-          window.MebiSVG.icon('deviceRotate') +
-        '</button>' +
-
-        // Kayar Tema Anahtarı
-        '<button class="mebi-theme-toggle" data-action="toggleTheme" title="Temayı Değiştir">' +
-          '<span class="mebi-theme-icon-sun">☀️</span>' +
-          '<span class="mebi-theme-icon-moon">🌙</span>' +
-          '<span class="mebi-theme-thumb"' + (curTheme === 'dark' ? ' style="transform:translateX(30px);"' : '') + '></span>' +
-        '</button>' +
 
         // Uygulama ve Laboratuvar Rehberi Butonu
         '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm" data-action="openGuideDrawer">' +
@@ -1067,8 +1067,10 @@
         var atom = CPK_DATA[symbol];
         return '<span class="particle-element-item"><i style="--atom-color:' + atom.color + ';' + (atom.border ? 'border-color:' + atom.border + ';' : '') + '"></i><b>' + symbol + '</b> ' + atom.name + '</span>';
       }).join('');
-      return '<div class="particle-formula-line" title="Bileşik veya Molekül Formülü"><span class="particle-formula-tag">Formül:</span> <b>' + formulaHTML + '</b></div>' +
-        (ionicFormulaHTML ? '<div class="particle-ionic-line" aria-label="İyonik gösterim" title="İyon veya Molekül Durumu"><span class="particle-ionic-tag">İyonik Gösterim:</span> ' + ionicFormulaHTML + '</div>' : '') +
+      return '<div class="particle-interaction-hint">Boş alanda sürükle: taşı • atomda sürükle: döndür • tekerlek: yakınlaştır</div>' +
+        '<div class="particle-divider"></div>' +
+        '<div class="particle-formula-line">' + formulaHTML + '</div>' +
+        (ionicFormulaHTML ? '<div class="particle-ionic-line" aria-label="İyonik gösterim">' + ionicFormulaHTML + '</div>' : '') +
         (chemicalNameHTML ? '<div class="particle-chemical-name">' + chemicalNameHTML + '</div>' : '') +
         '<div class="particle-element-legend" aria-label="Modelde kullanılan CPK atom renkleri">' + legend + '</div>';
     }
