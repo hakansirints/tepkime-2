@@ -24,29 +24,31 @@ const REAGENT_ELEMENTS = {
 const ION_LABELS = {
   Na:'Na⁺', K:'K⁺', Ag:'Ag⁺', H:'H⁺', NH4:'NH₄⁺',
   Ca:'Ca²⁺', Ba:'Ba²⁺', Pb:'Pb²⁺', Cu:'Cu²⁺', Zn:'Zn²⁺', Fe:'Fe²⁺', Mn:'Mn²⁺',
-  Cl:'Cl⁻', I:'I⁻', OH:'OH⁻', NO3:'NO₃⁻', HCO3:'HCO₃⁻',
-  CO3:'CO₃²⁻', SO4:'SO₄²⁻', O:'O²⁻'
+  Cl:'Cl⁻', I:'I⁻', OH:'OH⁻', NO3:'NO₃⁻', HCO3:'HCO₃⁻', HO2:'HO₂⁻',
+  CO3:'CO₃²⁻', SO4:'SO₄²⁻', O:'O²⁻',
+  H2O:'H₂O', H2O2:'H₂O₂', NH3:'NH₃', CO2:'CO₂', O2:'O₂', Cl2:'Cl₂',
+  'CuCl4':'[CuCl₄]²⁻', 'Ag(NH3)2':'[Ag(NH₃)₂]⁺', 'Cu(NH3)4':'[Cu(NH₃)₄]²⁺'
 };
 
 function createIonLabelSprite(text) {
   if (typeof document === 'undefined' || !document.createElement) return null;
   const canvas = document.createElement('canvas');
   if (!canvas || !canvas.getContext) return null;
-  canvas.width = 256;
-  canvas.height = 128;
+  canvas.width = 512;
+  canvas.height = 256;
   const ctx = canvas.getContext('2d');
   if (!ctx || !ctx.fillText) return null;
-  ctx.clearRect(0, 0, 256, 128);
-  ctx.font = '700 48px "JetBrains Mono", "Plus Jakarta Sans", sans-serif';
+  ctx.clearRect(0, 0, 512, 256);
+  ctx.font = '700 96px "JetBrains Mono", "Plus Jakarta Sans", sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#2563eb';
-  ctx.fillText(text, 128, 64);
+  ctx.fillText(text, 256, 128);
   const texture = new THREE.CanvasTexture(canvas);
   texture.minFilter = THREE.LinearFilter;
   const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false });
   const sprite = new THREE.Sprite(material);
-  sprite.scale.set(0.64, 0.32, 1);
+  sprite.scale.set(1.4, 0.7, 1);
   return sprite;
 }
 
@@ -175,6 +177,10 @@ const STRUCTURES = {
   'Cu(NH3)4': {
     atoms:[{symbol:'Cu',position:[0,0,0]},{symbol:'N',position:[0.78,0,0]},{symbol:'N',position:[-0.78,0,0]},{symbol:'N',position:[0,0.78,0]},{symbol:'N',position:[0,-0.78,0]},{symbol:'H',position:[1.15,0.34,0.25]},{symbol:'H',position:[1.15,-0.34,0.25]},{symbol:'H',position:[1.15,0,-0.42]},{symbol:'H',position:[-1.15,0.34,0.25]},{symbol:'H',position:[-1.15,-0.34,0.25]},{symbol:'H',position:[-1.15,0,-0.42]},{symbol:'H',position:[0.34,1.15,0.25]},{symbol:'H',position:[-0.34,1.15,0.25]},{symbol:'H',position:[0,1.15,-0.42]},{symbol:'H',position:[0.34,-1.15,0.25]},{symbol:'H',position:[-0.34,-1.15,0.25]},{symbol:'H',position:[0,-1.15,-0.42]}],
     bonds:[[0,1,1],[0,2,1],[0,3,1],[0,4,1],[1,5,1],[1,6,1],[1,7,1],[2,8,1],[2,9,1],[2,10,1],[3,11,1],[3,12,1],[3,13,1],[4,14,1],[4,15,1],[4,16,1]]
+  },
+  HO2: {
+    atoms:[{symbol:'H',position:[-0.8,0.3,0]},{symbol:'O',position:[-0.2,0,0]},{symbol:'O',position:[0.6,0,0]}],
+    bonds:[[0,1,1],[1,2,1]]
   }
 };
 
@@ -212,7 +218,7 @@ const IONIC_SPECIES = {
   'Cu2CO3(OH)2':['Cu','Cu','CO3','OH','OH'], PbI2:['Pb','I','I'], AgI:['Ag','I'],
   CuI:['Cu','I'], PbCl2:['Pb','Cl','Cl'], 'Pb(OH)2':['Pb','OH','OH'],
   'Ca(OH)2':['Ca','OH','OH'], Ag2O:['Ag','Ag','O'], 'Cu(OH)2':['Cu','OH','OH'],
-  NH4Cl:['NH4','Cl'], NaHO2:['Na','OH','O']
+  NH4Cl:['NH4','Cl'], NaHO2:['Na','HO2']
 };
 
 function normalizeFormula(formula) {
@@ -267,7 +273,7 @@ function assemblyFor(descriptor) {
     const speciesName = formulaParts[index];
     const scale = covalent ? (count === 1 ? 1.02 : 0.82) : separatedIons ? (count > 3 ? 0.68 : 0.76) : (count > 4 ? 0.64 : 0.74);
     const item = speciesObject(speciesName, scale, separatedIons);
-    if (separatedIons && ION_LABELS[speciesName]) {
+    if ((separatedIons || covalent) && ION_LABELS[speciesName]) {
       const sprite = createIonLabelSprite(ION_LABELS[speciesName]);
       if (sprite) {
         sprite.position.set(0, -0.42 * scale - 0.22, 0.05);

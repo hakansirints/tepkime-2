@@ -1129,18 +1129,17 @@
               '<span class="report-conn-sub">' + (isPhysicalMix ? 'Serbest ve Bağımsız Tanecikler' : 'Yeni Bağlar & Kristal/Molekül Modeli') + '</span>' +
             '</span>' +
           '</button>' +
-        '</div>' +
-
-        // Akıllı CPK Atom Renk Lejantı
-        '<div class="cpk-smart-bar">' +
-          '<div class="cpk-smart-items">' +
-            '<span class="cpk-smart-label">ATOM RENKLERİ:</span>' +
-            cpkChipsHtml +
-          '</div>' +
-          '<button type="button" class="cpk-drawer-btn" data-action="openAllCpkDrawer" title="Tüm standart CPK periyodik atom renklerini incele">' +
-            '<span>🎨 Tüm Renkler (CPK) ▾</span>' +
-          '</button>' +
         '</div>';
+
+    var smartBarHTML = '<div class="cpk-smart-bar">' +
+      '<div class="cpk-smart-items">' +
+        '<span class="cpk-smart-label">ATOM RENKLERİ:</span>' +
+        cpkChipsHtml +
+      '</div>' +
+      '<button type="button" class="cpk-drawer-btn" data-action="openAllCpkDrawer" title="Tüm standart CPK periyodik atom renklerini incele">' +
+        '<span>🎨 Tüm Renkler (CPK) ▾</span>' +
+      '</button>' +
+    '</div>';
 
     // 3. İÇERİK BÖLÜMÜ
     if (currentTab === 'reactants') {
@@ -1150,7 +1149,6 @@
         '<div class="camera-macro-strip">' +
           '<span class="macro-strip-badge">👁️ Makroskobik Durum:</span>' +
           '<span class="macro-strip-text">' + esc(rx.macroReactantsText || (r1.name + ' ve ' + r2.name + ' sulu ortamda ayrı ayrı hazırlanmıştır.')) + '</span>' +
-          '<span class="macro-strip-hint">Modeli sürükleyerek döndürün, boş alanı sürükleyerek taşıyın.</span>' +
         '</div>' +
 
         // 3B Tanecik Kartları Grid'i
@@ -1189,6 +1187,8 @@
             '</div>' +
           '</div>' +
         '</div>' +
+        
+        smartBarHTML +
 
         // Tanecik Düzeyi Değerlendirmesi
         '<div class="camera-note-box">' +
@@ -1202,7 +1202,6 @@
         '<div class="camera-macro-strip">' +
           '<span class="macro-strip-badge">👁️ Makroskobik Durum:</span>' +
           '<span class="macro-strip-text">' + esc((rx.macroProductsText || 'Karışım gerçekleştikten sonra elde edilen durum.') + (rx.scenarioNote ? ' ' + rx.scenarioNote : '')) + '</span>' +
-          '<span class="macro-strip-hint">Modeli sürükleyerek döndürün, boş alanı sürükleyerek taşıyın.</span>' +
         '</div>' +
 
         // 3B Tanecik Kartları Grid'i
@@ -1345,6 +1344,8 @@
         }
 
         html += '</div>' +
+
+        smartBarHTML +
 
         // Tanecik Düzeyi Değerlendirmesi
         '<div class="camera-note-box" style="border-left-color:var(--mebi-teal);">' +

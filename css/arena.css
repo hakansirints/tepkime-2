@@ -58,15 +58,17 @@
 .particle-interaction-hint { margin:6px 10px 6px; font-size:11px; font-weight:500; color:var(--mebi-text-secondary); text-align:center; line-height:1.3; opacity:0.85; }
 .particle-divider { width:92%; height:1px; margin:0 auto 10px; background:color-mix(in srgb,var(--mebi-border) 60%,transparent); }
 [data-theme="dark"] .particle-divider { background:rgba(255,255,255,0.10); }
-.particle-formula-line { display:block; margin:0 10px 3px; color:var(--mebi-text-primary); font-size:17px; font-weight:800; letter-spacing:.01em; line-height:1.2; text-align:center; }
+.particle-formula-line { display:block; margin:0 10px 3px; color:var(--mebi-text-main); font-size:1.15rem; font-weight:800; letter-spacing:.01em; line-height:1.2; text-align:center; }
 .particle-formula-tag, .particle-ionic-tag { display:none; }
-.particle-ionic-line { display:block; margin:0 10px 3px; color:#1d4ed8; font-family:'JetBrains Mono',monospace; font-size:13.5px; font-weight:700; line-height:1.25; text-align:center; }
+.particle-ionic-line { display:block; margin:0 10px 3px; color:#1d4ed8; font-family:'JetBrains Mono',monospace; font-size:0.9rem; font-weight:700; line-height:1.25; text-align:center; }
 [data-theme="dark"] .particle-ionic-line { color:#60a5fa; }
-.particle-chemical-name { display:block; margin:0 10px 8px; color:var(--mebi-text-secondary); font-size:12px; font-weight:600; line-height:1.25; text-align:center; }
+.particle-chemical-name { display:block; margin:0 10px 8px; color:var(--mebi-text-secondary); font-size:0.85rem; font-weight:600; line-height:1.25; text-align:center; }
+[data-theme="dark"] .particle-chemical-name { color:#cbd5e1; }
 .particle-element-legend { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px 14px; min-height:24px; margin:0 10px 10px; padding:0; background:transparent; }
-.particle-element-item { display:inline-flex; align-items:center; gap:5px; color:var(--mebi-text-secondary); font-size:11.5px; font-weight:500; line-height:1; white-space:nowrap; }
-.particle-element-item i { width:11px; height:11px; flex:0 0 11px; border:1px solid color-mix(in srgb,var(--mebi-text-primary) 18%,transparent); border-radius:50%; background:var(--atom-color); box-shadow:inset 0 0 0 1px rgba(255,255,255,.22); }
-.particle-element-item b { color:var(--mebi-text-primary); font-size:11.5px; font-weight:700; }
+.particle-element-item { display:inline-flex; align-items:center; gap:5px; color:var(--mebi-text-secondary); font-size:0.75rem; font-weight:500; line-height:1; white-space:nowrap; }
+[data-theme="dark"] .particle-element-item { color:var(--mebi-text-main); }
+.particle-element-item i { width:11px; height:11px; flex:0 0 11px; border:1px solid color-mix(in srgb,var(--mebi-text-main) 18%,transparent); border-radius:50%; background:var(--atom-color); box-shadow:inset 0 0 0 1px rgba(255,255,255,.22); }
+.particle-element-item b { color:var(--mebi-text-main); font-size:0.75rem; font-weight:700; }
 .particle-modal-stage-wrap .particle-3d-host { width:100%; height:330px; min-height:330px; }
 .particle-modal-stage-wrap .particle-3d-host canvas { min-height:330px; }
 @media(max-width:850px) {
@@ -325,15 +327,16 @@
     display: grid;
     grid-template-rows: repeat(2, 1fr);
     grid-auto-flow: column;
-    grid-auto-columns: minmax(118px, 1fr);
+    grid-auto-columns: minmax(130px, 1fr);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x mandatory;
-    padding-bottom: 6px;
+    padding-bottom: 12px;
     gap: 8px;
   }
   .reagents-grid .beaker-card {
     scroll-snap-align: start;
+    min-width: 0;
   }
 }
 
