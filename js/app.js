@@ -628,18 +628,20 @@
                   // 3. Dijital Laboratuvar Termometresi (Prob beherin içinde, Gösterge beherin biraz üstünde)
                   '<div class="digital-thermo-wrap" id="digitalThermoWrap">' +
                     '<div class="digital-thermo-head' + ((isReacting && rx.hasTempRise) ? ' is-heating' : '') + '" id="digitalThermoHead">' +
-                      '<div class="digital-head-top">' +
-                        '<span class="digital-brand-label">DİJİTAL TERMOMETRE</span>' +
-                        '<span class="digital-status-led" id="digitalStatusLed" title="Sensör Aktif"></span>' +
-                      '</div>' +
                       '<div class="digital-lcd-display">' +
-                        '<span class="digital-temp-value" id="digitalTempValue">' + S.currentTemp.toFixed(1) + '</span>' +
-                        '<span class="digital-temp-unit">°C</span>' +
+                        '<div class="digital-head-top">' +
+                          '<span class="digital-brand-label">DIGITAL TEMP</span>' +
+                          '<span class="digital-status-led-wrap">REC <span class="digital-status-led" id="digitalStatusLed"></span></span>' +
+                        '</div>' +
+                        '<div class="digital-temp-center">' +
+                          '<span class="digital-temp-value" id="digitalTempValue">' + S.currentTemp.toFixed(1) + '</span>' +
+                          '<span class="digital-temp-unit">°C</span>' +
+                        '</div>' +
+                        '<div class="digital-head-bottom">' +
+                          '<span class="digital-sub-label">MEBİ KİMYALAB - PROBE-T1</span>' +
+                        '</div>' +
                       '</div>' +
-                      '<div class="digital-head-bottom">' +
-                        '<span class="digital-sub-label">PASLANMAZ PROB</span>' +
-                        '<span class="digital-mode-tag">CANLI</span>' +
-                      '</div>' +
+                      '<div class="digital-head-screws"><div class="screw"></div><div class="screw"></div></div>' +
                     '</div>' +
                     '<div class="digital-probe-collar"></div>' +
                     '<div class="digital-probe-stem">' +

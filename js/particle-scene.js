@@ -242,7 +242,7 @@ function formulaSpecies(formula, symbols) {
   const clean = normalizeFormula(formula);
   if (IONIC_SPECIES[clean]) return IONIC_SPECIES[clean];
   if (STRUCTURES[clean]) return [clean];
-  const parts = String(formula || '').split(/\s+(?:ve|and)\s+|\s*\+\s*/i);
+  const parts = String(formula || '').split(/\s+(?:ve|and)\s+|\s*\+\s*|,\s*/i);
   const parsedSpecies = [];
   parts.forEach(part => {
     const normalized = normalizeFormula(part).replace(/^\d+/, '');

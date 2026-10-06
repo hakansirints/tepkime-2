@@ -332,3 +332,8 @@ body.lab-3d-active #app :is(.lab-reagent-panel,.bench-dock) { --mebi-bg-surface:
 @media(max-height:650px) and (orientation:landscape) {
  .lab-3d-active #app .mebi-top-shell > .mebi-stepper { height:43px; padding:3px 8px; }
 }
+
+/* Fix reagent card overlapping on mobile landscape */
+.lab-reagent-card {
+  flex-shrink: 0 !important;
+}
