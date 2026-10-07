@@ -15,7 +15,7 @@
     labSettingsOpen: false,
     labView: 'wide',
     labLighting: 'light',
-    tableColor: '#466455',
+    tableColor: '#3d4547',
     searchQuery: '',
     categoryFilter: 'all',
     selectedSlot1: null,
@@ -37,7 +37,7 @@
 
   try {
     S.labLighting = localStorage.getItem('three-faces-laboratory-lighting') || 'light';
-    S.tableColor = localStorage.getItem('three-faces-table-color') || '#466455';
+    S.tableColor = localStorage.getItem('three-faces-table-color') || '#3d4547';
   } catch (e) {}
 
   var HISTORY = [];
@@ -142,7 +142,7 @@
 
         '<div class="lab-settings-section"><span class="lab-settings-label">Kamera Bakış Açısı</span><div class="lab-settings-views" role="group" aria-label="Kamera bakış açısı">' +
           [['desk','Masa'],['wide','Oda']].map(function(view) { return '<button type="button" data-action="setLabView" data-arg="' + view[0] + '" aria-pressed="' + (S.labView === view[0]) + '">' + view[1] + '</button>'; }).join('') +
-        '</div><button type="button" class="lab-settings-reset" data-action="setLabView" data-arg="desk">↺ Kamerayı Sıfırla</button></div>' +
+        '</div></div>' +
 
         '<div class="lab-settings-section"><span class="lab-settings-label">Laboratuvar Ortamı</span>' +
           '<button type="button" class="lab-settings-light" data-action="toggleLabLighting" aria-pressed="' + (S.labLighting === 'dark') + '">' + (S.labLighting === 'dark' ? '☾ Ortam: Karanlık' : '☀ Ortam: Aydınlık') + '</button>' +
@@ -221,8 +221,7 @@
 
   // EKRAN 1: AÇILIŞ MENÜSÜ (Görseldeki Mint Kimya Temalı 16:9 Yatay Kart)
   function screenMenu() {
-    return topbarHTML(true, 'predict') +
-      '<div class="mebi-card arena-menu-card arena-menu-mint-16-9">' +
+    return '<div class="mebi-card arena-menu-card arena-menu-mint-16-9">' +
         // Kimya Temalı Arka Plan Çizimleri (Molekül, Baloncuklar, Atom Yörüngeleri)
         '<div class="arena-mint-decorations" aria-hidden="true">' +
           '<svg class="mint-decor-hex top-left" viewBox="0 0 120 120">' +
@@ -351,7 +350,7 @@
       }).join('') + '</div>') + '<div class="lab-reagent-list">' + (cards || '<p>Bu aramada madde bulunamadı.</p>') + '</div>' +
       (compactSelection && locked ? '<div class="lab-panel-footer lab-change-reactants"><button type="button" class="mebi-btn mebi-btn-secondary mebi-btn-sm new-experiment-btn" data-action="changeReactants">' + window.MebiSVG.icon('undo') + '<span>Tepkenleri Değiştir</span></button></div>' : '') +
       (compactSelection ? '' : '<div class="lab-panel-footer"><span>' + ((S.selectedSlot1 ? 1 : 0) + (S.selectedSlot2 ? 1 : 0)) + ' / 2 madde seçildi</span>' +
-      '<button type="button" class="mebi-btn mebi-btn-secondary mebi-btn-sm" data-action="resetPool">Seçimi temizle</button></div>') + '</div></aside>';
+      '<button type="button" class="mebi-btn mebi-btn-secondary mebi-btn-sm" data-action="resetPool" title="Seçimleri temizle">Temizle</button></div>') + '</div></aside>';
   }
 
   function labSettingsHTML() { return ''; }
@@ -639,16 +638,15 @@
             '</div>'
         ) +
         '<div class="dock-actions" style="display:flex;flex-direction:column;gap:6px;">' +
-          '<button class="mebi-btn mebi-btn-primary dock-btn-full" data-action="toCard">' +
-            '<span class="mebi-btn-badge">' + window.MebiSVG.icon('flaskOutline') + '</span>' +
-            '<span>Rapor Aşamasına Geç →</span>' +
-          '</button>' +
-          (!exact
-            ? '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm dock-btn-full" data-action="redoPrediction">' +
+          (exact
+            ? '<button class="mebi-btn mebi-btn-primary dock-btn-full" data-action="toCard">' +
+                '<span class="mebi-btn-badge">' + window.MebiSVG.icon('flaskOutline') + '</span>' +
+                '<span>Rapor Aşamasına Geç →</span>' +
+              '</button>'
+            : '<button class="mebi-btn mebi-btn-primary dock-btn-full" data-action="redoPrediction">' +
                 '<span class="mebi-btn-badge">' + window.MebiSVG.icon('undo') + '</span>' +
                 '<span>Tahmini Tekrarla</span>' +
               '</button>'
-            : ''
           ) +
         '</div>' +
       '</div>';
@@ -1583,6 +1581,18 @@
     window.addEventListener('pointercancel', onPointerUp);
   }
 
+  function checkSettingsHint() {
+    try {
+      if (sessionStorage.getItem('mebi_settings_hint_shown')) return;
+      sessionStorage.setItem('mebi_settings_hint_shown', 'true');
+      setTimeout(function() {
+        if (window.MebiUI && window.MebiUI.showToast) {
+          window.MebiUI.showToast('settings', 'Laboratuvar Ayarları', 'Buradan laboratuvar ortamının ayarlarını yapabilirsiniz.', 4000);
+        }
+      }, 700);
+    } catch (e) {}
+  }
+
   /* ----------------- 5. EYLEMLER VE YÖNLENDİRİCİ (ACTIONS & ROUTER) ----------------- */
   var actions = {
     toggleReagentPanel: function() {
@@ -1603,8 +1613,12 @@
       S.poured = false;
       S.labStep = 'predict';
       S.prediction = [];
-      S.labView = 'desk';
+      S.labView = 'wide';
+      if (window.Mebi3DLab && typeof window.Mebi3DLab.setView === 'function') {
+        window.Mebi3DLab.setView('wide');
+      }
       render();
+      checkSettingsHint();
     },
     changeReactants: function() {
       ++fillToken; S.isFilling = false;
@@ -1617,7 +1631,6 @@
       S.poured = false;
       S.labStep = 'predict';
       S.prediction = [];
-      S.labView = 'desk';
       render();
     },
     goCollection: function() {
@@ -2379,6 +2392,9 @@
     if (window.ParticleScene) window.ParticleScene.sync(S);
     wireInputs();
     wireDragAndDrop();
+    if (S.screen === 'pool' || S.screen === 'lab') {
+      checkSettingsHint();
+    }
 
     if (scrollTop !== false) {
       window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });

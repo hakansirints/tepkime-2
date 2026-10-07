@@ -143,7 +143,7 @@ function initialize() {
   const room = new THREE.Group(); scene.add(room);
   const selected = 'C';
   const t = {wall:'#efe1c8',floor:'#c6ad8b',cabinet:'#a6b69a',top:'#fff2d7',wood:'#aa7a49',tile:'#eee7d9',metal:'#76664f'};
-  const tableColor = '#466455';
+  const tableColor = '#3d4547';
   let tableSurface;
   const tableY = 1.425;
 const roomMat=(color,roughness=.7)=>new THREE.MeshStandardMaterial({color,roughness});
@@ -524,7 +524,7 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
     state = nextState;
     dispatch = nextDispatch;
     setLaboratoryLighting(state.labLighting || 'light');
-    setTableColor(state.tableColor || '#466455');
+    setTableColor(state.tableColor || '#3d4547');
     if (drag && (state.screen !== 'lab' || state.labStep !== 'ready')) {
       if (drag.capture.hasPointerCapture(drag.pointerId)) drag.capture.releasePointerCapture(drag.pointerId);
       drag = null;
@@ -587,13 +587,15 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
       camera.fov = viewFov.wide;
       camera.updateProjectionMatrix();
       controls.update();
-      activeView = 'wide';
-      setTimeout(() => {
-        setView('desk', 1800);
-        if (typeof dispatch === 'function') {
-          dispatch('setLabView', 'desk');
-        }
-      }, 700);
+      activeView = state.labView || 'wide';
+      if (state.labView !== 'wide') {
+        setTimeout(() => {
+          setView('desk', 1800);
+          if (typeof dispatch === 'function') {
+            dispatch('setLabView', 'desk');
+          }
+        }, 700);
+      }
     }
     [state.selectedSlot1, state.selectedSlot2].forEach((id, index) => {
       const filling = fillStreams[index];

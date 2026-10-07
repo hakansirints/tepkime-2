@@ -182,109 +182,84 @@
         <button type="button" class="welcome-modal-close-btn" id="btnCloseWelcomeModal" title="Kapat" aria-label="Rehberi Kapat">✕</button>
       </div>
 
-      <!-- Modal Gövdesi (Body) -->
+      <!-- Modal Gövdesi (Body - Öneri 1: Kompakt Yatay Süreç Hattı & Johnstone Üçgeni) -->
       <div class="welcome-modal-body" id="welcomeModalBody">
-        <!-- Giriş ve Amaç Kartı -->
+        <!-- Giriş ve Amaç Özeti -->
         <div class="welcome-intro-box">
           <span class="welcome-intro-icon">💡</span>
           <div class="welcome-intro-text">
-            Bu simülasyonda 12 farklı kimyasal maddeyi seçip karıştırarak kimyasal tepkime belirtilerini (gaz çıkışı, çökelti oluşumu, renk ve sıcaklık değişimi) gözlemleyecek ve moleküler dünyayı 3B tanecik kamerasıyla keşfedeceksin. İşte izlemen gereken adımlar:
+            12 kimyasal maddeyi seçip deney masasında karıştırarak gaz çıkışı, çökelti, renk ve sıcaklık değişimini gözlemle ve 3B tanecik kamerasıyla moleküler dünyayı keşfet:
           </div>
         </div>
 
-        <!-- 5 Adımlı Yönerge Akış Kartları -->
-        <div class="welcome-steps-grid">
-          <!-- 1. Adım -->
-          <div class="welcome-step-item">
-            <div class="welcome-step-indicator step-1">
-              <span>1</span>
-            </div>
-            <div class="welcome-step-details">
-              <div class="welcome-step-heading">
-                <span class="welcome-step-emoji">🧪</span>
-                <h4 class="welcome-step-name">1. Maddeleri Seç</h4>
-              </div>
-              <p class="welcome-step-desc">
-                Soldaki madde kartlarında bulunan 12 kimyasal madde arasından reaksiyona sokmak istediğin iki tanesini seçerek <b>laboratuvardaki 1. ve 2. behere</b> yerleştir.
-              </p>
+        <!-- 5 Adımlı Yatay Süreç Akışı (Interactive Stepper Track) -->
+        <div class="welcome-stepper-track">
+          <div class="welcome-step-chip">
+            <div class="chip-step-badge step-1">1</div>
+            <div class="chip-content">
+              <div class="chip-title"><span class="chip-emoji">🧪</span> 1. Maddeleri Seç</div>
+              <div class="chip-desc">12 kimyasaldan 2'sini 1. ve 2. behere koy.</div>
             </div>
           </div>
+          <div class="chip-arrow" aria-hidden="true">➔</div>
 
-          <!-- 2. Adım -->
-          <div class="welcome-step-item">
-            <div class="welcome-step-indicator step-2">
-              <span>2</span>
-            </div>
-            <div class="welcome-step-details">
-              <div class="welcome-step-heading">
-                <span class="welcome-step-emoji">🎯</span>
-                <h4 class="welcome-step-name">2. Değişimi Tahmin Et</h4>
-              </div>
-              <p class="welcome-step-desc">
-                Maddeler karıştırılmadan önce; <b>gaz çıkışı</b>, <b>çökelti (katı) oluşumu</b>, <b>renk</b> veya <b>sıcaklık değişimi</b> olup olmayacağını tahmin et.
-              </p>
+          <div class="welcome-step-chip">
+            <div class="chip-step-badge step-2">2</div>
+            <div class="chip-content">
+              <div class="chip-title"><span class="chip-emoji">🎯</span> 2. Değişimi Tahmin Et</div>
+              <div class="chip-desc">Gaz, çökelti, renk veya sıcaklığı öngör.</div>
             </div>
           </div>
+          <div class="chip-arrow" aria-hidden="true">➔</div>
 
-          <!-- 3. Adım -->
-          <div class="welcome-step-item">
-            <div class="welcome-step-indicator step-3">
-              <span>3</span>
-            </div>
-            <div class="welcome-step-details">
-              <div class="welcome-step-heading">
-                <span class="welcome-step-emoji">🫗</span>
-                <h4 class="welcome-step-name">3. Beheri Dök ve Karıştır</h4>
-              </div>
-              <p class="welcome-step-desc">
-                Sağdaki beheri tutup <b>soldaki beherin ağzına sürükle</b> veya <b>"Beheri Dök"</b> düğmesine tıklayarak maddeleri birleştir.
-              </p>
+          <div class="welcome-step-chip">
+            <div class="chip-step-badge step-3">3</div>
+            <div class="chip-content">
+              <div class="chip-title"><span class="chip-emoji">🫗</span> 3. Dök ve Karıştır</div>
+              <div class="chip-desc">Sağdaki beheri sürükle veya butona tıkla.</div>
             </div>
           </div>
+          <div class="chip-arrow" aria-hidden="true">➔</div>
 
-          <!-- 4. Adım -->
-          <div class="welcome-step-item">
-            <div class="welcome-step-indicator step-4">
-              <span>4</span>
-            </div>
-            <div class="welcome-step-details">
-              <div class="welcome-step-heading">
-                <span class="welcome-step-emoji">🌡️</span>
-                <h4 class="welcome-step-name">4. Sıcaklığı ve Belirtileri İzle</h4>
-              </div>
-              <p class="welcome-step-desc">
-                Dijital termometreden <b>sıcaklık değişimini</b> ve beherdeki olayları takip et. Deney raporunu doldurup <b>tepkime türünü</b> belirle.
-              </p>
+          <div class="welcome-step-chip">
+            <div class="chip-step-badge step-4">4</div>
+            <div class="chip-content">
+              <div class="chip-title"><span class="chip-emoji">🌡️</span> 4. Belirtileri İzle</div>
+              <div class="chip-desc">Sıcaklığı takip et, raporla tepkime türünü bul.</div>
             </div>
           </div>
+          <div class="chip-arrow" aria-hidden="true">➔</div>
 
-          <!-- 5. Adım -->
-          <div class="welcome-step-item">
-            <div class="welcome-step-indicator step-5">
-              <span>5</span>
-            </div>
-            <div class="welcome-step-details">
-              <div class="welcome-step-heading">
-                <span class="welcome-step-emoji">🔬</span>
-                <h4 class="welcome-step-name">5. Tanecik Kamerasını Keşfet</h4>
-              </div>
-              <p class="welcome-step-desc">
-                <b>"TEPKENLER"</b> ve <b>"ÜRÜNLER"</b> sekmelerinde iyonların su kılıflarını (solvasyon), kristal örgü kafeslerini ve gaz dağılımını 3B incele.
-              </p>
+          <div class="welcome-step-chip">
+            <div class="chip-step-badge step-5">5</div>
+            <div class="chip-content">
+              <div class="chip-title"><span class="chip-emoji">🔬</span> 5. 3B Kamerayı İncele</div>
+              <div class="chip-desc">İyon kılıflarını ve kristal örgüleri 3B gör.</div>
             </div>
           </div>
         </div>
 
-        <!-- Johnstone Pedagoji Bilgi Kutusu -->
-        <div class="welcome-pedagogy-card">
-          <div class="welcome-pedagogy-badge">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Johnstone Kimya Üçgeni Kompakt 3'lü Bilgi Hattı -->
+        <div class="welcome-johnstone-compact">
+          <div class="johnstone-compact-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
             </svg>
-            <span>Johnstone Kimya Üçgeni</span>
+            <span>Johnstone Kimya Üçgeni:</span>
           </div>
-          <div class="welcome-pedagogy-desc">
-            Bu simülasyonda kimyasal olayları 3 temel boyutta öğreneceksin: <b>1. Makroskobik</b> (deney masası & sıcaklık), <b>2. Sembolik</b> (denklemler & formüller) ve <b>3. Alt-mikroskobik</b> (3B atom ve tanecik kamerası).
+          <div class="johnstone-compact-grid">
+            <div class="johnstone-pill">
+              <span class="johnstone-pill-badge">1. Makroskobik</span>
+              <span class="johnstone-pill-text">Deney masası, renk, çökelti ve sıcaklık</span>
+            </div>
+            <div class="johnstone-pill">
+              <span class="johnstone-pill-badge">2. Sembolik</span>
+              <span class="johnstone-pill-text">Formüller, tepkime türü ve denklemler</span>
+            </div>
+            <div class="johnstone-pill">
+              <span class="johnstone-pill-badge">3. Alt-Mikroskobik</span>
+              <span class="johnstone-pill-text">3B atomlar, solvatasyon ve kristal kafes</span>
+            </div>
           </div>
         </div>
       </div>
@@ -298,14 +273,6 @@
         <div class="welcome-modal-buttons">
           <button type="button" class="mebi-btn mebi-btn-secondary mebi-btn-sm" id="btnDismissWelcomeModal">
             <span>Rehberi Kapat</span>
-          </button>
-          <button type="button" class="mebi-btn mebi-btn-primary mebi-btn-sm" id="btnStartFromWelcome">
-            <span class="mebi-btn-badge">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <polygon points="5 3 19 12 5 21 5 3"/>
-              </svg>
-            </span>
-            <span>Arenaya Gir ve Deneye Başla ➔</span>
           </button>
         </div>
       </div>

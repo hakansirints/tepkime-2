@@ -795,7 +795,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #ffffff;
+  color: var(--mebi-text-main, #0f172a);
   position: relative;
   box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3), var(--mebi-shadow-lg);
   animation: mebiFadeIn 250ms ease;
@@ -899,7 +899,7 @@
   inset: 0;
   border: 0;
   background: transparent;
-  color: #ffffff;
+  color: var(--mebi-text-secondary, #64748b);
   cursor: pointer;
   display: flex;
   align-items: center;
