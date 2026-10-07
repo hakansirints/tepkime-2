@@ -843,7 +843,18 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
       const start = secondary.group.localToWorld(spoutLocal.clone());
       const end = main.group.position.clone();
       end.x += (main.radius * beakerScale * 0.18);
-      end.y = tableY + 0.065 + Math.max(0.04, main.level);
+      // Beher 1 içindeki anlık sıvı/katı yüzeyi (Dökme akışı yüzeye çarpar ve sıvı doldukça yükselir)
+      let localSurfaceY = 0.07;
+      if (mix && mix.liquid > 0.005) {
+        localSurfaceY = 0.066 + mix.liquid;
+      } else if (mix && mix.powder > 0.005) {
+        localSurfaceY = 0.065 + (mix.powder * 0.35);
+      } else if (r1 && !r1.solid) {
+        localSurfaceY = 0.066 + (0.42 * fill1);
+      } else if (r1 && r1.solid) {
+        localSurfaceY = 0.065 + (0.42 * fill1 * 0.35);
+      }
+      end.y = main.group.position.y + (localSurfaceY * beakerScale);
       end.z = main.group.position.z;
       const visual = window.MebiChemistry.appearance(r2);
       if (transferring && !r2.solid) {
@@ -863,8 +874,8 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
         splashRings.forEach((ring, index) => {
           const phase = (time * 2.2 + index / splashRings.length) % 1;
           ring.visible = true;
-          ring.position.copy(end).add(new THREE.Vector3(0, 0.003 + index * 0.001, 0));
-          ring.scale.setScalar(0.42 + phase * 1.35);
+          ring.position.copy(end).add(new THREE.Vector3(0, 0.0015 + index * 0.0008, 0));
+          ring.scale.setScalar(0.35 + phase * 0.95);
           ring.material.color.set(visual.color);
           ring.material.opacity = (1 - phase) * 0.52;
         });

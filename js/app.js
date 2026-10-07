@@ -219,52 +219,105 @@
 
   /* ----------------- 3. EKRANLAR (SCREENS) ----------------- */
 
-  // EKRAN 1: AÇILIŞ MENÜSÜ
+  // EKRAN 1: AÇILIŞ MENÜSÜ (Görseldeki Mint Kimya Temalı 16:9 Yatay Kart)
   function screenMenu() {
     return topbarHTML(true, 'predict') +
-      '<div class="mebi-card arena-menu-card">' +
-        '<div class="arena-hero-badge">' +
-          '<span class="mebi-badge mebi-badge-cyan">ETKİLEŞİMLİ KİMYA SİMÜLASYONU</span>' +
-        '</div>' +
-        '<h1 class="arena-title">' +
-          '<span class="arena-title-icon">' + window.MebiSVG.icon('flaskIc') + '</span>' +
-          '<span>Tepkime Arenası</span>' +
-        '</h1>' +
-        '<p class="arena-lead">' +
-          'Kimyasal maddeleri seç, deney masasında birleştirerek değişimi tahmin et, reaksiyonu gözlemle ve mikroskobik atom dünyasında tepkime türünü keşfet!' +
-        '</p>' +
-
-        '<div class="arena-menu-actions">' +
-          '<button class="mebi-btn mebi-btn-primary arena-menu-btn" data-action="goPool">' +
-            '<div class="arena-menu-btn-icon">' + window.MebiSVG.icon('flaskOutline') + '</div>' +
-            '<div class="arena-menu-btn-text">' +
-              '<span class="arena-menu-btn-main">Arenaya Gir ve Deneye Başla</span>' +
-              '<span class="arena-menu-btn-sub">12 farklı kimyasal madde arasından tepken seç</span>' +
-            '</div>' +
-          '</button>' +
-
-          '<button class="mebi-btn mebi-btn-secondary arena-menu-btn" data-action="goCollection">' +
-            '<div class="arena-menu-btn-icon">' + window.MebiSVG.icon('grid') + '</div>' +
-            '<div class="arena-menu-btn-text">' +
-              '<span class="arena-menu-btn-main">Tepkime Koleksiyonum (' + S.collection.length + ' Keşif)</span>' +
-              '<span class="arena-menu-btn-sub">Tamamladığın deney kartlarını ve denklemleri incele</span>' +
-            '</div>' +
-          '</button>' +
-
-          '<button class="mebi-btn mebi-btn-secondary arena-menu-btn" data-action="openGuideDrawer">' +
-            '<div class="arena-menu-btn-icon">' + window.MebiSVG.icon('helpCircle') + '</div>' +
-            '<div class="arena-menu-btn-text">' +
-              '<span class="arena-menu-btn-main">Uygulama ve Laboratuvar Rehberi</span>' +
-              '<span class="arena-menu-btn-sub">Deney adımları, dökme mekaniği ve gözlem ipuçları</span>' +
-            '</div>' +
-          '</button>' +
+      '<div class="mebi-card arena-menu-card arena-menu-mint-16-9">' +
+        // Kimya Temalı Arka Plan Çizimleri (Molekül, Baloncuklar, Atom Yörüngeleri)
+        '<div class="arena-mint-decorations" aria-hidden="true">' +
+          '<svg class="mint-decor-hex top-left" viewBox="0 0 120 120">' +
+            '<polygon points="60,10 100,32 100,78 60,100 20,78 20,32" fill="none" stroke="currentColor" stroke-width="2.2"/>' +
+            '<polygon points="60,25 85,39 85,71 60,85 35,71 35,39" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="4 3"/>' +
+            '<circle cx="60" cy="10" r="3" fill="currentColor"/>' +
+            '<circle cx="100" cy="32" r="3" fill="currentColor"/>' +
+            '<circle cx="100" cy="78" r="3" fill="currentColor"/>' +
+          '</svg>' +
+          '<svg class="mint-decor-bubbles top-right" viewBox="0 0 100 100">' +
+            '<circle cx="28" cy="72" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/>' +
+            '<circle cx="68" cy="42" r="11" fill="none" stroke="currentColor" stroke-width="2"/>' +
+            '<circle cx="48" cy="22" r="5" fill="none" stroke="currentColor" stroke-width="1.6"/>' +
+            '<circle cx="82" cy="18" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/>' +
+          '</svg>' +
+          '<svg class="mint-decor-atom bottom-left" viewBox="0 0 90 90">' +
+            '<circle cx="45" cy="45" r="4.5" fill="currentColor"/>' +
+            '<ellipse cx="45" cy="45" rx="36" ry="13" fill="none" stroke="currentColor" stroke-width="1.8" transform="rotate(32 45 45)"/>' +
+            '<ellipse cx="45" cy="45" rx="36" ry="13" fill="none" stroke="currentColor" stroke-width="1.8" transform="rotate(-32 45 45)"/>' +
+            '<circle cx="76" cy="56" r="3" fill="currentColor"/>' +
+          '</svg>' +
+          '<svg class="mint-decor-hex bottom-right" viewBox="0 0 120 120">' +
+            '<polygon points="60,10 100,32 100,78 60,100 20,78 20,32" fill="none" stroke="currentColor" stroke-width="2"/>' +
+            '<circle cx="20" cy="78" r="3" fill="currentColor"/>' +
+            '<circle cx="60" cy="100" r="3" fill="currentColor"/>' +
+          '</svg>' +
         '</div>' +
 
-        '<div style="display:flex;justify-content:center;gap:12px;margin-top:10px;">' +
-          '<button class="mebi-btn mebi-btn-ghost" data-action="resetExperiment">' +
-            '<span class="mebi-btn-badge">' + window.MebiSVG.icon('reset') + '</span>' +
-            '<span>Sıfırla</span>' +
-          '</button>' +
+        // Sol Kolon: Erlenmayer, Başlık ve Açıklama
+        '<div class="arena-mint-left">' +
+          '<div class="arena-mint-flask-wrap">' +
+            '<div class="arena-mint-flask-badge">' +
+              '<svg viewBox="0 0 72 84" width="60" height="70" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                '<path d="M30 6V26L10 64C8 68 11 74 16 74H56C61 74 64 68 62 64L42 26V6H30Z" stroke="#059669" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+                '<line x1="26" y1="6" x2="46" y2="6" stroke="#059669" stroke-width="4.5" stroke-linecap="round"/>' +
+                '<path d="M16 54L22 42C26 40 32 44 38 42C44 40 50 44 56 54" stroke="#10b981" stroke-width="3" stroke-linecap="round"/>' +
+                '<circle cx="26" cy="62" r="3" fill="#10b981"/>' +
+                '<circle cx="36" cy="56" r="2.5" fill="#10b981"/>' +
+                '<circle cx="46" cy="64" r="3.5" fill="#10b981"/>' +
+                '<circle cx="36" cy="16" r="2" fill="#34d399"/>' +
+                '<circle cx="33" cy="2" r="2.5" fill="#34d399"/>' +
+              '</svg>' +
+            '</div>' +
+          '</div>' +
+          '<h1 class="arena-mint-title">Tepkime Arenası</h1>' +
+          '<p class="arena-mint-subtitle">' +
+            'Kimyasal maddeleri seç, deney masasında birleştirerek değişimi tahmin et' +
+          '</p>' +
+        '</div>' +
+
+        // Sağ Kolon: Beyaz Kapsül Buton Paneli
+        '<div class="arena-mint-right">' +
+          '<div class="arena-mint-actions-panel">' +
+            '<button type="button" class="arena-mint-pill-btn is-primary" data-action="goPool">' +
+              '<div class="pill-btn-icon-wrap">' +
+                '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                  '<path d="M10 2v7.31L4.35 19.35A2 2 0 0 0 6 22h12a2 2 0 0 0 1.65-2.65L14 9.31V2"/>' +
+                  '<path d="M8.5 2h7"/>' +
+                  '<path d="M14 9.3a6.5 6.5 0 1 1-4 0"/>' +
+                '</svg>' +
+              '</div>' +
+              '<span class="pill-btn-text">Arenaya Gir ve Deneye Başla</span>' +
+            '</button>' +
+
+            '<button type="button" class="arena-mint-pill-btn is-white" data-action="goCollection">' +
+              '<div class="pill-btn-icon-wrap mint-icon">' +
+                '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                  '<circle cx="6" cy="6" r="3"/>' +
+                  '<circle cx="18" cy="8" r="3"/>' +
+                  '<circle cx="12" cy="18" r="3"/>' +
+                  '<line x1="8.5" y1="7.5" x2="15.5" y2="7.5"/>' +
+                  '<line x1="8" y1="8" x2="10.5" y2="15.5"/>' +
+                  '<line x1="16" y1="10" x2="13.5" y2="15.5"/>' +
+                '</svg>' +
+              '</div>' +
+              '<span class="pill-btn-text">Tepkime Koleksiyonum</span>' +
+            '</button>' +
+
+            '<button type="button" class="arena-mint-pill-btn is-white" data-action="openGuideDrawer">' +
+              '<div class="pill-btn-icon-wrap mint-icon">' +
+                '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                  '<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>' +
+                  '<path d="M6 6h10"/>' +
+                  '<path d="M6 10h7"/>' +
+                '</svg>' +
+              '</div>' +
+              '<span class="pill-btn-text">Laboratuvar Rehberi</span>' +
+            '</button>' +
+
+            '<div class="arena-mint-reset-wrap">' +
+              '<button type="button" class="arena-mint-reset-link" data-action="resetExperiment">' +
+                'Sıfırla' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
         '</div>' +
       '</div>';
   }
@@ -585,16 +638,17 @@
               '<span>' + S.currentTemp.toFixed(1) + '°C · ΔT: ' + (S.currentTemp - rx.tempInit).toFixed(1) + '°C</span>' +
             '</div>'
         ) +
-        '<div class="dock-actions">' +
-          (exact
-            ? '<button class="mebi-btn mebi-btn-primary dock-btn-full" data-action="toCard">' +
-                '<span class="mebi-btn-badge">' + window.MebiSVG.icon('flaskOutline') + '</span>' +
-                '<span>Rapor Aşamasına Geç →</span>' +
-              '</button>'
-            : '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm dock-btn-full" data-action="redoPrediction">' +
+        '<div class="dock-actions" style="display:flex;flex-direction:column;gap:6px;">' +
+          '<button class="mebi-btn mebi-btn-primary dock-btn-full" data-action="toCard">' +
+            '<span class="mebi-btn-badge">' + window.MebiSVG.icon('flaskOutline') + '</span>' +
+            '<span>Rapor Aşamasına Geç →</span>' +
+          '</button>' +
+          (!exact
+            ? '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm dock-btn-full" data-action="redoPrediction">' +
                 '<span class="mebi-btn-badge">' + window.MebiSVG.icon('undo') + '</span>' +
-                '<span>Tahmine Dön</span>' +
+                '<span>Tahmini Tekrarla</span>' +
               '</button>'
+            : ''
           ) +
         '</div>' +
       '</div>';
@@ -604,10 +658,11 @@
       '<div class="mebi-card lab-workspace">' +
         reagentPanelHTML() +
 
-        '<div class="lab-experiment-heading" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">' +
-          '<div>' +
-            '<div class="mebi-badge mebi-badge-cyan">DENEY MASASI & REAKSİYON DÜZENEĞİ</div>' +
-            '<h2 style="font-size:23px;margin-top:5px;font-weight:800;">' + esc(r1.f) + ' + ' + esc(r2.f) + ' Deneyi</h2>' +
+        '<div class="lab-experiment-heading">' +
+          '<div class="lab-unified-experiment-badge mebi-badge mebi-badge-cyan">' +
+            '<span class="lab-badge-label">DENEY MASASI & REAKSİYON DÜZENEĞİ</span>' +
+            '<span class="lab-badge-sep">•</span>' +
+            '<span class="lab-badge-title">' + esc(r1.f) + ' + ' + esc(r2.f) + ' Deneyi</span>' +
           '</div>' +
         '</div>' +
 
@@ -1691,26 +1746,35 @@
       finishSelection();
     },
     resetExperiment: function() {
-      var approved = typeof window.confirm === 'function' && window.confirm('Bu işlem yaptığınız bütün keşifleri ve mevcut deney ilerlemesini kalıcı olarak silecektir. Devam etmek istiyor musunuz?');
-      if (!approved) return;
-      ++fillToken; S.isFilling = false;
-      if (window.MebiAudio) window.MebiAudio.playClick();
-      S.collection = [];
-      saveCollectionToStorage();
-      S.selectedSlot1 = null;
-      S.selectedSlot2 = null;
-      S.activeReaction = null;
-      S.prediction = [];
-      S.labStep = 'predict';
-      S.manualTypeInput = '';
-      S.manualTypeSelections = [];
-      S.typeEvaluation = null;
-      S.typeChecked = false;
-      S.typeCorrect = false;
-      S.cameraTab = 'reactants';
-      S.reportTab = null;
-      S.screen = 'menu';
-      render();
+      function doReset() {
+        ++fillToken; S.isFilling = false;
+        if (window.MebiAudio) window.MebiAudio.playClick();
+        S.collection = [];
+        saveCollectionToStorage();
+        S.selectedSlot1 = null;
+        S.selectedSlot2 = null;
+        S.activeReaction = null;
+        S.prediction = [];
+        S.labStep = 'predict';
+        S.manualTypeInput = '';
+        S.manualTypeSelections = [];
+        S.typeEvaluation = null;
+        S.typeChecked = false;
+        S.typeCorrect = false;
+        S.cameraTab = 'reactants';
+        S.reportTab = null;
+        S.screen = 'menu';
+        render();
+        if (window.MebiUI && window.MebiUI.showToast) {
+          window.MebiUI.showToast('İlerleme ve keşif kartları başarıyla sıfırlandı.', 'info');
+        }
+      }
+      if (window.MebiUI && window.MebiUI.openResetModal) {
+        window.MebiUI.openResetModal(S.collection.length, doReset);
+      } else {
+        var approved = typeof window.confirm === 'function' && window.confirm('Bu işlem yaptığınız bütün keşifleri ve mevcut deney ilerlemesini kalıcı olarak silecektir. Devam etmek istiyor musunuz?');
+        if (approved) doReset();
+      }
     },
     startExperiment: function() {
       if (!S.selectedSlot1 || !S.selectedSlot2 || S.isFilling) return;

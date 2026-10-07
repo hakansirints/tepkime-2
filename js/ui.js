@@ -445,6 +445,42 @@
     }
   }
 
+  /* ----------------- 5b. SIFIRLAMA ONAY MODALI (RESET CONFIRMATION MODAL) ----------------- */
+  var pendingResetConfirmCallback = null;
+
+  function openResetModal(count, onConfirm) {
+    var overlay = document.getElementById('resetModalOverlay');
+    var textEl = document.getElementById('resetModalText');
+    if (!overlay) return;
+    pendingResetConfirmCallback = onConfirm;
+    if (textEl) {
+      textEl.textContent = 'Bu işlem keşfettiğiniz tüm tepkime kartlarını (' + (count || 0) + ' adet) ve mevcut laboratuvar deney ilerlemesini kalıcı olarak silecektir. Devam etmek istiyor musunuz?';
+    }
+    overlay.classList.add('is-active');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    if (window.MebiAudio) window.MebiAudio.playClick();
+  }
+
+  function closeResetModal() {
+    var overlay = document.getElementById('resetModalOverlay');
+    if (overlay) {
+      overlay.classList.remove('is-active');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      pendingResetConfirmCallback = null;
+      if (window.MebiAudio) window.MebiAudio.playClick();
+    }
+  }
+
+  function confirmResetModal() {
+    var callback = pendingResetConfirmCallback;
+    closeResetModal();
+    if (typeof callback === 'function') {
+      callback();
+    }
+  }
+
   /* ----------------- 6. CİHAZI YATAY ÇEVİRİN (ORIENTATION LOCK) YÖNETİMİ ----------------- */
   var isOrientationDismissed = false;
 
@@ -664,9 +700,28 @@
       });
     }
 
+    // Sıfırlama Onay Modalı butonları
+    var closeResetBtn = document.getElementById('btnCloseResetModal');
+    var cancelResetBtn = document.getElementById('btnCancelResetModal');
+    var confirmResetBtn = document.getElementById('btnConfirmResetModal');
+    var resetOverlay = document.getElementById('resetModalOverlay');
+
+    if (closeResetBtn) closeResetBtn.addEventListener('click', closeResetModal);
+    if (cancelResetBtn) cancelResetBtn.addEventListener('click', closeResetModal);
+    if (confirmResetBtn) confirmResetBtn.addEventListener('click', confirmResetModal);
+    if (resetOverlay) {
+      resetOverlay.addEventListener('click', function(e) {
+        if (e.target === resetOverlay) closeResetModal();
+      });
+    }
+
     // ESC tuşu ile kapatma
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
+        if (resetOverlay && resetOverlay.classList.contains('is-active')) {
+          closeResetModal();
+          return;
+        }
         if (welcomeOverlay && welcomeOverlay.classList.contains('is-active')) {
           closeWelcomeModal();
           return;
@@ -721,6 +776,8 @@
     closeParticleModal: closeParticleModal,
     openEvalModal: openEvalModal,
     closeEvalModal: closeEvalModal,
+    openResetModal: openResetModal,
+    closeResetModal: closeResetModal,
     openOrientation: openOrientationOverlay,
     closeOrientation: closeOrientationOverlay,
     checkOrientation: checkOrientation

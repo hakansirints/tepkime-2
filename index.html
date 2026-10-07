@@ -312,6 +312,35 @@
     </div>
   </div>
 
+  <!-- MEBİ Sıfırlama Onay Modalı (Reset Confirmation Modal) -->
+  <div id="resetModalOverlay" class="mebi-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="resetModalTitle" aria-hidden="true">
+    <div class="reset-modal-card" id="resetModalCard">
+      <div class="reset-modal-header">
+        <div class="reset-modal-icon-badge">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </div>
+        <div class="reset-modal-title-wrap">
+          <h3 class="reset-modal-title" id="resetModalTitle">Deney İlerlemesini Sıfırla</h3>
+          <span class="reset-modal-badge mebi-badge mebi-badge-amber">Geri Alınamaz İşlem</span>
+        </div>
+        <button type="button" class="reset-modal-close-btn" id="btnCloseResetModal" title="Kapat" aria-label="Kapat">✕</button>
+      </div>
+      <div class="reset-modal-body">
+        <p class="reset-modal-text" id="resetModalText">
+          Bu işlem yaptığınız bütün keşifleri ve mevcut deney ilerlemesini kalıcı olarak silecektir. Devam etmek istiyor musunuz?
+        </p>
+      </div>
+      <div class="reset-modal-footer">
+        <button type="button" class="mebi-btn mebi-btn-secondary mebi-btn-sm" id="btnCancelResetModal">Vazgeç</button>
+        <button type="button" class="mebi-btn mebi-btn-danger mebi-btn-sm" id="btnConfirmResetModal">
+          <span>Evet, Sıfırla</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modüler JavaScript Dosyaları -->
   <script src="js/audio.js?v=5.0"></script>
   <script src="js/data.js?v=6.0"></script>

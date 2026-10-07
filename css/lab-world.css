@@ -4,14 +4,48 @@ body.lab-3d-active { background:#e7e6dd; --mebi-bg-surface:rgba(255,253,248,.97)
 [data-theme="dark"] body.lab-3d-active { --mebi-bg-surface:rgba(34,41,35,.97); --mebi-bg-subtle:#303a31; --mebi-bg-sunken:#283128; --mebi-border:#526052; --mebi-base-card:#1c271e; }
 .lab-3d-active #app { position:relative; z-index:1; pointer-events:none; }
 .lab-3d-active #app > * { pointer-events:auto; }
-.lab-3d-active #app[data-screen="menu"] .arena-menu-card { max-width:680px; margin-top:7vh; }
+.lab-3d-active #app[data-screen="menu"] .arena-menu-card { max-width: min(940px, 94vw); margin-top: 4vh; }
 .lab-3d-active #app[data-screen="pool"], .lab-3d-active #app[data-screen="lab"] { --left-panel:264px; --right-panel:400px; --lab-top:160px; max-width:none; width:100%; min-height:100dvh; padding:14px 18px; }
 .lab-3d-active #app .mebi-topbar { background:var(--mebi-bg-surface); border-radius:12px; box-shadow:0 4px 20px #24352c14; position:relative; z-index:12; margin:0; }
 .lab-3d-active #app .lab-workspace { display:contents; pointer-events:none; }
 .lab-3d-active #app .lab-workspace > .mebi-stepper { position:absolute; top:83px; left:18px; right:18px; height:59px; margin:0; padding:6px 16px; border-radius:12px; background:var(--mebi-bg-surface); border:1px solid var(--mebi-border); z-index:10; pointer-events:auto; }
 .lab-3d-active #app .lab-experiment-heading { position:absolute; top:var(--lab-top); left:calc(var(--left-panel) + 40px); right:calc(var(--right-panel) + 40px); z-index:8; pointer-events:auto; gap:8px!important; }
-.lab-3d-active #app .lab-experiment-heading h2 { font-size:20px!important; color:#263e2e; text-shadow:0 0 6px #fff; margin-top:6px; }
-[data-theme="dark"] .lab-3d-active #app .lab-experiment-heading h2 { color:#f1f7ea; text-shadow:0 1px 5px #162419; }
+.lab-3d-active #app .lab-unified-experiment-badge {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 14px !important;
+  font-size: 11.5px !important;
+  font-weight: 700;
+  border-radius: 999px !important;
+  max-width: 100%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+}
+.lab-3d-active #app .lab-unified-experiment-badge .lab-badge-label,
+.lab-3d-active #app .lab-unified-experiment-badge .lab-badge-title {
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  line-height: 1.2;
+}
+.lab-3d-active #app .lab-unified-experiment-badge .lab-badge-sep {
+  opacity: 0.55;
+  font-weight: 400;
+  margin: 0 1px;
+}
+@media (max-width: 750px), (max-height: 650px) {
+  .lab-3d-active #app .lab-unified-experiment-badge {
+    padding: 4px 10px !important;
+    gap: 6px;
+  }
+  .lab-3d-active #app .lab-unified-experiment-badge .lab-badge-label,
+  .lab-3d-active #app .lab-unified-experiment-badge .lab-badge-title {
+    font-size: 9.5px !important;
+  }
+}
+.lab-3d-active #app .lab-experiment-heading h2 { display:none!important; }
 .lab-3d-active #app .lab-bench { position:absolute; inset:0; width:100%; height:100dvh; min-height:0; margin:0; padding:0; display:block; border:0; border-radius:0; background:none; box-shadow:none; overflow:visible; pointer-events:none; isolation:auto; }
 .lab-3d-active #app .bench-stage { position:absolute; inset:0; width:100%; padding:0; display:block; pointer-events:none; }
 .lab-3d-active #app .bench-items { display:contents; }
@@ -535,6 +569,16 @@ body.lab-3d-active #app :is(.lab-reagent-panel,.bench-dock) { --mebi-bg-surface:
 
 /* 🌟 Item 4: Mobilde deney aşamalarında TEPKİME ARENASI başlığını gizleme ve butonları stepper'a ekleme */
 @media (max-height: 650px) and (orientation: landscape) {
+  body.mebi-mobile-landscape #app .mebi-top-shell.has-stage {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
   body.mebi-mobile-landscape #app .mebi-top-shell.has-stage .mebi-topbar {
     display: none !important;
   }
