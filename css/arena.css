@@ -60,10 +60,11 @@
 [data-theme="dark"] .particle-divider { background:rgba(255,255,255,0.10); }
 .particle-formula-line { display:block; margin:0 10px 3px; color:var(--mebi-text-main); font-size:1.15rem; font-weight:800; letter-spacing:.01em; line-height:1.2; text-align:center; }
 .particle-formula-tag, .particle-ionic-tag { display:none; }
-.particle-ionic-line { display:block; margin:0 10px 3px; color:#1d4ed8; font-family:'JetBrains Mono',monospace; font-size:0.9rem; font-weight:700; line-height:1.25; text-align:center; }
+.particle-ionic-line { display:block; margin:2px 10px 4px; color:#1d4ed8; font-family:var(--mebi-font-family, 'Plus Jakarta Sans', sans-serif); font-size:1.05rem; font-weight:800; line-height:1.3; text-align:center; }
 [data-theme="dark"] .particle-ionic-line { color:#60a5fa; }
-.particle-chemical-name { display:block; margin:0 10px 8px; color:var(--mebi-text-secondary); font-size:0.85rem; font-weight:600; line-height:1.25; text-align:center; }
-[data-theme="dark"] .particle-chemical-name { color:#cbd5e1; }
+.particle-chemical-name { display:block; margin:2px 10px 6px; color:var(--mebi-text-main); font-size:1rem; font-weight:700; line-height:1.3; text-align:center; }
+[data-theme="dark"] .particle-chemical-name { color:#f1f5f9; }
+.particle-identity-compact { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:6px 8px 2px; text-align:center; }
 .particle-element-legend { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px 14px; min-height:24px; margin:0 10px 10px; padding:0; background:transparent; }
 .particle-element-item { display:inline-flex; align-items:center; gap:5px; color:var(--mebi-text-secondary); font-size:0.75rem; font-weight:500; line-height:1; white-space:nowrap; }
 [data-theme="dark"] .particle-element-item { color:var(--mebi-text-main); }
@@ -1044,7 +1045,7 @@
 
 /* Deney Masası Sağ Kontrol ve Gözlem Dock'u (Konsept 1: Fildişi & Milimetrik) */
 .bench-dock {
-  width: 360px;
+  width: 400px;
   max-width: 45%;
   flex-shrink: 0;
   background-color: var(--mebi-bg-surface);
@@ -1158,7 +1159,7 @@
 
 .dock-obs-chip.is-dimmed {
   opacity: 0.40;
-  pointer-events: none;
+
 }
 
 .dock-obs-chip.is-locked {
@@ -2786,10 +2787,13 @@
   border: 1px solid var(--mebi-border-subcard);
   box-shadow: 0 2px 0 var(--mebi-base-card);
   border-radius: var(--mebi-radius-lg);
-  padding: 18px 22px;
-  margin: 16px 0;
-  font-family: 'JetBrains Mono', monospace;
+  padding: 16px 20px;
+  margin: 14px 0;
+  font-family: var(--mebi-font-family, 'Plus Jakarta Sans', sans-serif);
   font-size: 14px;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 [data-theme="dark"] .chemical-eq-card {
@@ -2799,29 +2803,42 @@
 }
 
 .chemical-eq-title {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 12px;
+  font-family: var(--mebi-font-family, 'Plus Jakarta Sans', sans-serif);
+  font-size: clamp(11px, 2.5vw, 12px);
   font-weight: 800;
   color: var(--mebi-text-muted);
   text-transform: uppercase;
   margin-bottom: 8px;
   letter-spacing: 0.5px;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+[data-theme="dark"] .chemical-eq-title {
+  color: #94a3b8;
 }
 
 .chemical-eq-body {
-  font-size: 15px;
+  font-family: var(--mebi-font-family, 'Plus Jakarta Sans', sans-serif);
+  font-size: clamp(13px, 3.2vw, 15px);
   font-weight: 700;
   color: var(--mebi-text-main);
   line-height: 1.5;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .chemical-net-ionic {
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1.5px dashed var(--mebi-border);
-  font-size: 13.5px;
+  font-family: var(--mebi-font-family, 'Plus Jakarta Sans', sans-serif);
+  font-size: clamp(12px, 2.8vw, 13.5px);
   color: var(--mebi-primary);
   line-height: 1.6;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 [data-theme="dark"] .chemical-net-ionic {
@@ -4501,20 +4518,20 @@
 /* ----------------- 6. KOLEKSİYON VE REHBER EKRANLARI ----------------- */
 .collection-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin: 20px 0;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 10px;
+  margin: 12px 0;
 }
 
 .collection-card {
   background: var(--mebi-bg-surface);
   border: 1.5px solid var(--mebi-border);
   box-shadow: 0 2px 0 var(--mebi-base-card), var(--mebi-shadow-sm);
-  border-radius: var(--mebi-radius-lg);
-  padding: 18px 20px;
+  border-radius: var(--mebi-radius-md);
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease, background-color 120ms ease;
 }
 
@@ -4538,13 +4555,13 @@
 }
 
 .collection-card-formula {
-  font-size: 16px;
+  font-size: 13.5px;
   font-weight: 800;
   color: var(--mebi-text-main);
 }
 
 .collection-card-type {
-  font-size: 12.5px;
+  font-size: 11px;
   color: var(--mebi-primary);
   font-weight: 700;
 }
@@ -4555,9 +4572,9 @@
 
 .collection-card-eq {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11.5px;
+  font-size: 10px;
   color: var(--mebi-text-secondary);
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 /* ==========================================================================
@@ -4718,8 +4735,8 @@ body.mebi-mobile-landscape .arena-menu-btn { height:47px; padding:0 8px; gap:6px
 body.mebi-mobile-landscape .arena-menu-btn-icon { width:27px; height:27px; }
 body.mebi-mobile-landscape .arena-menu-btn-main { font-size:9px; line-height:1.2; }
 body.mebi-mobile-landscape .arena-menu-btn-sub { display:none; }
-body.mebi-mobile-landscape #app:is([data-screen="card"],[data-screen="micro"],[data-screen="collection"]) { padding:5px 8px; }
-body.mebi-mobile-landscape #app:is([data-screen="card"],[data-screen="micro"],[data-screen="collection"]) > .mebi-card { width:100%; max-height:calc(100dvh - 85px); margin:0; padding:7px 9px; overflow:auto; overscroll-behavior:contain; }
+body.mebi-mobile-landscape #app:is([data-screen="card"],[data-screen="micro"],[data-screen="collection"]) { padding: 48px 8px 6px 8px !important; }
+body.mebi-mobile-landscape #app:is([data-screen="card"],[data-screen="micro"],[data-screen="collection"]) > .mebi-card { width:100%; max-height:calc(100dvh - 54px) !important; margin:0; padding:7px 9px; overflow:auto; overscroll-behavior:contain; }
 body.mebi-mobile-landscape #app[data-screen="card"] .mebi-report-sheet { margin:3px 0; padding:6px 8px; }
 body.mebi-mobile-landscape #app[data-screen="card"] .report-meta-banner { padding-bottom:4px; margin-bottom:4px; gap:4px; }
 body.mebi-mobile-landscape #app[data-screen="card"] .report-meta-title { font-size:13px; }
@@ -4872,8 +4889,8 @@ body.mebi-mobile-landscape #app[data-screen="micro"] .particle-3d-host::after { 
   z-index: 18 !important;
   transform: rotateX(60deg) !important;
 }
-.lab-3d-active #app .digital-thermo-head { width:140px !important; }
-.lab-3d-active #app .digital-thermo-wrap { width:140px !important; }
+.lab-3d-active #app .digital-thermo-head { width:84px !important; }
+.lab-3d-active #app .digital-thermo-wrap { width:84px !important; }
 
 /* Responsive styling for full 3D particles modeling cards */
 #app[data-screen="micro"] .camera-particles-row {
@@ -4893,4 +4910,296 @@ body.mebi-mobile-landscape #app[data-screen="micro"] .particle-3d-host::after { 
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
     gap: 8px !important;
   }
+}
+
+/* Dark mode font color and readability enhancements */
+[data-theme="dark"] .report-quiz-hint { color: #94a3b8 !important; }
+[data-theme="dark"] .report-conn-sub { color: #94a3b8; }
+[data-theme="dark"] .metric-tile-title { color: #94a3b8; }
+[data-theme="dark"] .metric-tile-sub { color: #cbd5e1; }
+[data-theme="dark"] .report-footer-hint { color: #cbd5e1; }
+[data-theme="dark"] .macro-strip-text { color: #f1f5f9; }
+[data-theme="dark"] .camera-note-box { color: #cbd5e1; }
+[data-theme="dark"] .dock-subtext { color: #94a3b8; }
+[data-theme="dark"] .lab-panel-hint { color: #94a3b8; }
+[data-theme="dark"] .mebi-quiz-text { color: #f1f5f9; }
+[data-theme="dark"] .reagent-name { color: #cbd5e1; }
+
+/* Mobile buttons and headings overflow prevention */
+@media (max-width: 640px) {
+  .mebi-btn {
+    white-space: normal !important;
+    text-align: center;
+    line-height: 1.25 !important;
+    min-width: 0 !important;
+  }
+  .report-bottom-bar, .camera-bottom-bar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+  .report-bottom-bar .mebi-btn, .camera-bottom-bar .mebi-btn {
+    width: 100% !important;
+  }
+  .report-conn-tab {
+    padding: 5px 8px !important;
+    gap: 6px !important;
+  }
+  .report-conn-title {
+    font-size: 11px !important;
+  }
+  .report-conn-sub {
+    font-size: 9.5px !important;
+  }
+  .report-quiz-title {
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+  }
+  .report-quiz-sub {
+    font-size: 10px !important;
+  }
+  .mebi-step-label {
+    font-size: 8.5px !important;
+    letter-spacing: -0.2px !important;
+    white-space: nowrap !important;
+  }
+  /* 🌟 UYGULA.DOCX GÖRSEL 3: Rapor kartı ve Johnstone denklem font boyutları */
+  .report-metrics-grid {
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+  }
+  .report-metric-tile {
+    padding: 6px 8px !important;
+    gap: 2px !important;
+    border-radius: 8px !important;
+  }
+  .metric-tile-header {
+    font-size: 9px !important;
+    gap: 4px !important;
+  }
+  .metric-tile-val {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    line-height: 1.25 !important;
+  }
+  .metric-tile-sub {
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+  }
+  .chemical-eq-card {
+    padding: 8px 12px !important;
+    margin: 6px 0 !important;
+    border-radius: 10px !important;
+  }
+  .chemical-eq-title {
+    font-size: 9.5px !important;
+    margin-bottom: 3px !important;
+  }
+  .chemical-eq-body {
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    line-height: 1.35 !important;
+  }
+  .chemical-net-ionic {
+    font-size: 10.5px !important;
+    margin-top: 6px !important;
+    padding-top: 6px !important;
+    line-height: 1.4 !important;
+  }
+  .report-tab-footer-prompt {
+    padding: 6px 10px !important;
+    margin-top: 6px !important;
+  }
+  .report-footer-hint {
+    font-size: 10px !important;
+    line-height: 1.3 !important;
+  }
+  /* Değerlendirme Sorusu Seçenekleri (Item 11) */
+  .mebi-quiz-grid-2col {
+    gap: 5px !important;
+    margin: 6px 0 !important;
+  }
+  .mebi-quiz-choice {
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+    gap: 8px !important;
+    min-height: 32px !important;
+  }
+  .mebi-quiz-checkbox {
+    width: 16px !important;
+    height: 16px !important;
+    font-size: 10px !important;
+  }
+  .mebi-quiz-letter {
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 10px !important;
+  }
+  .mebi-quiz-text {
+    font-size: 11px !important;
+    line-height: 1.25 !important;
+  }
+}
+
+/* Ayrıca mobil yatay ekranda (max-height: 600px) rapor ve soru fontlarını optimize et */
+@media (max-height: 600px) and (orientation: landscape) {
+  .report-metrics-grid {
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+  }
+  .report-metric-tile {
+    padding: 5px 8px !important;
+    gap: 2px !important;
+    border-radius: 8px !important;
+  }
+  .metric-tile-header {
+    font-size: 9px !important;
+  }
+  .metric-tile-val {
+    font-size: 11px !important;
+    line-height: 1.25 !important;
+  }
+  .metric-tile-sub {
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+  }
+  .chemical-eq-card {
+    padding: 7px 10px !important;
+    margin: 5px 0 !important;
+    border-radius: 8px !important;
+  }
+  .chemical-eq-title {
+    font-size: 9px !important;
+    margin-bottom: 2px !important;
+  }
+  .chemical-eq-body {
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+  }
+  .chemical-net-ionic {
+    font-size: 10px !important;
+    margin-top: 5px !important;
+    padding-top: 5px !important;
+    line-height: 1.35 !important;
+  }
+  .report-tab-footer-prompt {
+    padding: 5px 8px !important;
+    margin-top: 5px !important;
+  }
+  .report-footer-hint {
+    font-size: 9.5px !important;
+  }
+  .report-quiz-title {
+    font-size: 11.5px !important;
+    line-height: 1.3 !important;
+  }
+  .report-quiz-sub {
+    font-size: 9.5px !important;
+  }
+  .mebi-quiz-grid-2col {
+    gap: 5px !important;
+    margin: 5px 0 !important;
+  }
+  .mebi-quiz-choice {
+    padding: 5px 8px !important;
+    font-size: 10.5px !important;
+    gap: 7px !important;
+    min-height: 30px !important;
+  }
+  .mebi-quiz-checkbox {
+    width: 15px !important;
+    height: 15px !important;
+    font-size: 9.5px !important;
+  }
+  .mebi-quiz-letter {
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 9.5px !important;
+  }
+  .mebi-quiz-text {
+    font-size: 10.5px !important;
+    line-height: 1.2 !important;
+  }
+}
+
+
+/* 🌟 Item 4 & 5 UI Enhancements */
+.mebi-btn-icon-only {
+  min-width: 34px !important;
+  width: 34px !important;
+  height: 34px !important;
+  padding: 0 !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+}
+.mebi-btn-icon-only .mebi-btn-badge {
+  margin: 0 !important;
+}
+.mebi-stepper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  position: relative !important;
+}
+.mebi-stepper-track {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-around !important;
+  position: relative !important;
+  flex: 1 1 auto !important;
+}
+.mebi-stepper-inline-tools {
+  display: none;
+}
+/* 🌟 Item 5: Tanecik kartları kimyasal kimlik ve 3 ürünlü kartlar taşma önleme */
+.particle-subcard {
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+.particle-identity-compact.is-inline {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px 6px !important;
+  margin: 5px 0 2px 0 !important;
+  text-align: center !important;
+  white-space: normal !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 0 2px !important;
+}
+.particle-identity-compact.is-inline .particle-ionic-line {
+  display: inline !important;
+  font-size: clamp(10.5px, 1.2vw, 12px) !important;
+  font-weight: 800 !important;
+  color: var(--mebi-primary) !important;
+  margin: 0 !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+.particle-identity-compact.is-inline .particle-identity-sep {
+  display: inline !important;
+  color: var(--mebi-text-muted) !important;
+  font-weight: 800 !important;
+  font-size: 11px !important;
+  margin: 0 1px !important;
+  user-select: none;
+}
+.particle-identity-compact.is-inline .particle-chemical-name {
+  display: inline !important;
+  font-size: clamp(10px, 1.1vw, 11.5px) !important;
+  font-weight: 700 !important;
+  color: var(--mebi-text-main) !important;
+  margin: 0 !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+.particle-caption {
+  font-size: clamp(9.5px, 1.05vw, 11px) !important;
+  line-height: 1.35 !important;
+  word-break: break-word !important;
+  white-space: normal !important;
 }

@@ -1,5 +1,7 @@
 # Yerel çalışma ve yönerge dosyaları
 yonerge.docx
+*.docx
+~$*
 ornek.html
 
 # İşletim sistemi kalıntıları

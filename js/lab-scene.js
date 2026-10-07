@@ -21,14 +21,23 @@ function initialize() {
   renderer.shadowMap.needsUpdate = true;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.92;
+  renderer.domElement.addEventListener('contextmenu', (e) => e.preventDefault());
+  host.addEventListener('contextmenu', (e) => e.preventDefault());
   host.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#e7e6dd');
-  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 60);
+  const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 60);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
-  controls.enablePan = false;
+  controls.enablePan = true;
+  controls.screenSpacePanning = true;
+  controls.panSpeed = 0.8;
+  controls.mouseButtons = {
+    LEFT: THREE.MOUSE.ROTATE,
+    MIDDLE: THREE.MOUSE.DOLLY,
+    RIGHT: THREE.MOUSE.PAN
+  };
   controls.enableZoom = true;
   controls.zoomSpeed = 0.65;
   controls.minDistance = 1.1;
@@ -48,8 +57,10 @@ function initialize() {
   // Keep the eye inside the floor footprint and clear of walls/ceiling.
   const cameraBounds = new THREE.Box3(
     new THREE.Vector3(-5.6, 1.6, -4.4), new THREE.Vector3(5.6, 4.55, 5.5));
-  camera.position.copy(home);
-  controls.target.copy(focus);
+  camera.position.copy(roomView);
+  controls.target.copy(roomFocus);
+  camera.fov = viewFov.wide;
+  camera.updateProjectionMatrix();
   controls.update();
 
   const hemisphere = new THREE.HemisphereLight(0xf2ffff, 0x8a9191, 1.7);
@@ -191,9 +202,9 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
     renderer.shadowMap.needsUpdate = true;
   }
   const glassMaterial = new THREE.MeshPhysicalMaterial({
-    color: '#ffffff', metalness: 0, roughness: 0.12,
-    transparent: true, opacity: 0.25, side: THREE.DoubleSide,
-    depthWrite: false, envMapIntensity: 1.4
+    color: '#ffffff', metalness: 0, roughness: 0.08,
+    transparent: true, opacity: 0.14, transmission: 0.88, thickness: 0.02,
+    side: THREE.DoubleSide, depthWrite: false, envMapIntensity: 1.5
   });
   // Preserve the 67:92 low-form proportions, enlarge for readable classroom use.
   const beakerScale = 0.42 / 1.1;
@@ -251,7 +262,7 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
     const points = [[0, 0.02], [radius - 0.05, 0.02], [radius, 0.07], [radius, height],
       [radius - 0.022, height], [radius - 0.022, 0.075], [0, 0.075]];
     mesh(new THREE.LatheGeometry(points.map(p => new THREE.Vector2(...p)), 64), glassMaterial, group);
-    const edgeMaterial = new THREE.MeshStandardMaterial({ color: '#d4e6e7', roughness: 0.22, transparent: true, opacity: 0.65, metalness: 0.1 });
+    const edgeMaterial = new THREE.MeshStandardMaterial({ color: '#d4e6e7', roughness: 0.22, transparent: true, opacity: 0.32, metalness: 0.1 });
     for (const y of [0.07, height]) {
       const rim = mesh(new THREE.TorusGeometry(radius - 0.011, 0.012, 8, 64), edgeMaterial, group, 0, y, 0);
       rim.rotation.x = Math.PI / 2;
@@ -287,13 +298,13 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
     const sediment = cylinder(radius - 0.033, 1, standard('#ffffff', 0.92), group);
     sediment.name = 'precipitate';
     sediment.visible = false;
-    const grains = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(0.024, 0), standard('#ffffff', 0.95), 60);
+    const grains = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(0.020, 0), standard('#ffffff', 0.95), 60);
     grains.name = 'solid-grains';
     const dummy = new THREE.Object3D();
     for (let i = 0; i < 60; i++) {
       const angle = i * 2.39996;
-      const r = Math.sqrt((i + 0.5) / 60) * (radius - 0.07);
-      dummy.position.set(Math.cos(angle) * r, 0.13 + 0.035 * Math.sin(i * 1.7), Math.sin(angle) * r);
+      const r = Math.sqrt((i + 0.5) / 60) * (radius - 0.075);
+      dummy.position.set(Math.cos(angle) * r, 0.088 + 0.022 * Math.sin(i * 1.7), Math.sin(angle) * r);
       dummy.updateMatrix();
       grains.setMatrixAt(i, dummy.matrix);
     }
@@ -310,9 +321,10 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
   // 2. Yaka Boğaz Halkası (Collar Ring - Beherin üst ağız hizasında)
   const collarRing = mesh(new THREE.TorusGeometry(0.016, 0.005, 8, 24), materials.dark, scene, probeX, tableY + 0.455, probeZ);
   collarRing.rotation.x = Math.PI / 2;
-  // 3. Dijital Termometre Gövdesi (Beher kenarında ileriye bakan koyu gövde)
+  // 3. Dijital Termometre Gövdesi (Beher kenarında ileriye bakan koyu gövde - %40 küçültülmüş)
   const thermoHead = new THREE.Group();
-  thermoHead.position.set(probeX, tableY + 0.555, probeZ);
+  thermoHead.scale.setScalar(0.60);
+  thermoHead.position.set(probeX, tableY + 0.51, probeZ);
   scene.add(thermoHead);
   box(0.24, 0.15, 0.035, materials.dark, thermoHead, 0, 0, 0);
   // Yüksek Çözünürlüklü Dijital LCD Ekran
@@ -328,13 +340,24 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
   const screw2 = cylinder(0.008, 0.005, standard('#38bdf8'), thermoHead, 0.075, -0.055, 0.0185);
   screw2.rotation.x = Math.PI / 2;
 
-  const stream = new THREE.Group();
-  stream.visible = false;
-  scene.add(stream);
-  const streamSegments = Array.from({ length: 14 }, () => cylinder(0.0075, 1, main.liquid.material.clone(), stream));
-  const pourDrops = new THREE.InstancedMesh(new THREE.SphereGeometry(0.012, 10, 8), main.liquid.material.clone(), 16);
-  pourDrops.visible = false;
-  scene.add(pourDrops);
+  const streamCurve = new THREE.QuadraticBezierCurve3(new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3());
+  const streamMaterial = new THREE.MeshPhysicalMaterial({
+    color: '#38bdf8',
+    roughness: 0.06,
+    metalness: 0.0,
+    transmission: 0.85,
+    thickness: 0.03,
+    transparent: true,
+    opacity: 0.88,
+    ior: 1.333,
+    reflectivity: 0.6,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.04,
+    depthWrite: false
+  });
+  const streamMesh = new THREE.Mesh(new THREE.TubeGeometry(streamCurve, 18, 0.007, 8, false), streamMaterial);
+  streamMesh.visible = false;
+  scene.add(streamMesh);
   const splashMaterial = new THREE.MeshBasicMaterial({ color: '#dff5f7', transparent: true, opacity: 0.55, depthWrite: false });
   const splashRings = Array.from({ length: 3 }, (_, index) => {
     const ring = mesh(new THREE.TorusGeometry(0.055 + index * 0.012, 0.005, 8, 40), splashMaterial.clone());
@@ -466,35 +489,9 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
       document.body.dataset.panelCompact = 'false';
       panelWasCompact = false;
     }
-    if (predictionStage && dock) dock.style.maxHeight = Math.max(80, h - dock.getBoundingClientRect().top - 18) + 'px';
-    if (bench && dock && tools && !predictionStage) {
-      let bar = bench.querySelector('.lab-action-bar');
-      let instruments = bench.querySelector('.lab-footer-instruments');
-      if (h < 650 && w > h) {
-        if (!bar) {
-          bar = document.createElement('div');
-          bar.className = 'lab-action-bar';
-          bench.appendChild(bar);
-        }
-        if (!instruments) {
-          instruments = document.createElement('div');
-          instruments.className = 'lab-footer-instruments';
-          bar.prepend(instruments);
-        }
-        if (thermo) instruments.appendChild(thermo);
-        instruments.appendChild(tools);
-      } else if (instruments) {
-        if (thermo && overlay) overlay.appendChild(thermo);
-        bench.appendChild(tools);
-        instruments.remove();
-        if (bar && !bar.querySelector('.dock-actions')) { bar.remove(); bar = null; }
-      }
-      if (!(w < 600 && h > w)) {
-        const limit = bar ? bar.getBoundingClientRect().top : h - 18;
-        dock.style.maxHeight = Math.max(80, limit - dock.getBoundingClientRect().top - 12) + 'px';
-      } else {
-        dock.style.maxHeight = '';
-      }
+    if (dock) {
+      const topOffset = dock.getBoundingClientRect().top || 86;
+      dock.style.maxHeight = Math.max(100, h - topOffset - 12) + 'px';
     }
     const portrait = w < 600 && h > w;
     const presetFov = viewFov[activeView] || 40;
@@ -574,10 +571,6 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
           if (event.detail === 0 && state.labStep === 'ready') dispatch('triggerPour');
         });
         overlay.appendChild(dragButton);
-        pourTarget = document.createElement('div');
-        pourTarget.className = 'lab-pour-target';
-        pourTarget.setAttribute('aria-hidden', 'true');
-        overlay.appendChild(pourTarget);
         const originalGuide = document.querySelector('.hand-guide-pill');
         if (originalGuide) {
           handGuide = document.createElement('div');
@@ -587,11 +580,20 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
         }
       }
     }
-    if (inLab && !wasInLab && !hasPlayedIntro) {
+    if (!hasPlayedIntro) {
       hasPlayedIntro = true;
       camera.position.copy(roomView);
       controls.target.copy(roomFocus);
+      camera.fov = viewFov.wide;
+      camera.updateProjectionMatrix();
       controls.update();
+      activeView = 'wide';
+      setTimeout(() => {
+        setView('desk', 1800);
+        if (typeof dispatch === 'function') {
+          dispatch('setLabView', 'desk');
+        }
+      }, 700);
     }
     [state.selectedSlot1, state.selectedSlot2].forEach((id, index) => {
       const filling = fillStreams[index];
@@ -606,7 +608,7 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
       main.level = 0.42;
       secondary.level = 0.52;
       if (state.screen === 'pool') {
-        setView(state.labView || (state.selectedSlot1 && state.selectedSlot2 ? 'closeup' : (state.selectedSlot1 || state.selectedSlot2 ? 'desk' : 'wide')), 900);
+        setView(state.labView || 'desk', 700);
       }
     }
     if (state.labStep !== lastStep) {
@@ -616,6 +618,8 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
         secondary.group.position.copy(secondaryHome);
         secondary.group.rotation.set(0, 0, 0);
         main.level = 0.42; secondary.level = 0.52;
+        if (streamMesh) streamMesh.visible = false;
+        if (splashRings) splashRings.forEach(r => { r.visible = false; });
       }
       lastStep = state.labStep;
     }
@@ -763,7 +767,8 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
     vessel.surface.rotation.z = -angle;
     vessel.powder.scale.y = Math.max(0.001, powder * 0.35);
     vessel.powder.position.y = 0.065 + powder * 0.175;
-    vessel.grains.position.y = powder * 0.35 - 0.1;
+    vessel.grains.position.y = Math.max(0, powder * 0.28);
+    vessel.grains.visible = powder > 0.015;
     vessel.liquid.material.color.set(color);
     vessel.liquid.material.opacity = opacity;
     vessel.surface.material.color.set(color);
@@ -815,67 +820,56 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
       main.liquid.material.color.lerp(new THREE.Color(mix.targetColor), reactionProgress);
     }
     const transferring = pouring && progress >= 0.22 && progress <= 0.80 && r2;
-    stream.visible = !!(transferring && !r2.solid);
-    pourDrops.visible = stream.visible;
+    streamMesh.visible = !!(transferring && !r2.solid);
     pourGrains.visible = !!(transferring && r2.solid);
     impactGrains.visible = pourGrains.visible;
-    if (!stream.visible) {
+    if (!streamMesh.visible) {
       splashRings.forEach(ring => { ring.visible = false; });
       main.surface.scale.set(1, 1, 1);
     }
     if (pouring && r2) {
       secondary.group.rotation.z = pourAngle;
-      const spoutLocal = new THREE.Vector3(-secondary.radius * 0.91, secondary.height * 0.91, 0);
+      const spoutLocal = new THREE.Vector3(-secondary.radius * 0.92, secondary.height * 0.95, 0);
       const spoutOffset = spoutLocal.clone().multiplyScalar(beakerScale)
         .applyAxisAngle(new THREE.Vector3(0, 0, 1), secondary.group.rotation.z);
       const restSpout = secondaryHome.clone().add(spoutLocal.clone().multiplyScalar(beakerScale));
-      const targetSpout = new THREE.Vector3(main.group.position.x, tableY + main.height * beakerScale + 0.17, main.group.position.z);
+      // Gerçek kimya laboratuvarı: Dökülen beherin ağzı alıcı beherin ağız kenarına tam yaslanır
+      const targetSpout = new THREE.Vector3(main.group.position.x + (main.radius * beakerScale * 0.88), tableY + main.height * beakerScale + 0.012, main.group.position.z);
       let desiredSpout;
       if (progress < 0.22) desiredSpout = restSpout.clone().lerp(targetSpout, lift);
-      else if (progress < 0.80) desiredSpout = targetSpout.clone().add(new THREE.Vector3(0, Math.sin(time * 5) * 0.004, 0));
+      else if (progress < 0.80) desiredSpout = targetSpout.clone().add(new THREE.Vector3(0, Math.sin(time * 5) * 0.001, 0));
       else desiredSpout = targetSpout.clone().lerp(restSpout, returnPhase);
       secondary.group.position.copy(desiredSpout.sub(spoutOffset));
-      const start = secondary.group.localToWorld(spoutLocal);
-      const end = main.group.localToWorld(main.surface.position.clone());
-      end.x = main.group.position.x;
+      const start = secondary.group.localToWorld(spoutLocal.clone());
+      const end = main.group.position.clone();
+      end.x += (main.radius * beakerScale * 0.18);
+      end.y = tableY + 0.065 + Math.max(0.04, main.level);
       end.z = main.group.position.z;
       const visual = window.MebiChemistry.appearance(r2);
       if (transferring && !r2.solid) {
-        const control = start.clone().lerp(end, 0.48);
-        control.y -= 0.08 + Math.sin(time * 3.1) * 0.008;
-        const curve = new THREE.QuadraticBezierCurve3(start, control, end);
-        streamSegments.forEach((segment, index) => {
-          const a = curve.getPoint(index / streamSegments.length);
-          const b = curve.getPoint((index + 1) / streamSegments.length);
-          const direction = b.clone().sub(a);
-          const taper = 1 - index / streamSegments.length * 0.55;
-          segment.position.copy(a).add(b).multiplyScalar(0.5);
-          segment.scale.set(taper, direction.length(), taper);
-          segment.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize());
-          segment.material.color.set(visual.color);
-          segment.material.opacity = Math.max(0.35, visual.opacity);
-        });
-        for (let i = 0; i < 16; i++) {
-          const phase = (time * 1.75 + i / 16) % 1;
-          dummy.position.copy(curve.getPoint(phase));
-          dummy.position.x += Math.sin(i * 8.1) * 0.006;
-          dummy.position.z += Math.cos(i * 5.3) * 0.006;
-          dummy.scale.setScalar(0.45 + (i % 4) * 0.13);
-          dummy.updateMatrix(); pourDrops.setMatrixAt(i, dummy.matrix);
-        }
-        pourDrops.material.color.set(visual.color);
-        pourDrops.material.opacity = Math.max(0.32, visual.opacity);
-        pourDrops.instanceMatrix.needsUpdate = true;
+        // Kesintisiz, pürüzsüz laminer sıvı akışı (Smooth laminar jet)
+        const control = start.clone().lerp(end, 0.40);
+        control.y = Math.min(start.y - 0.012, (start.y + end.y) * 0.5 - 0.018);
+        streamCurve.v0.copy(start);
+        streamCurve.v1.copy(control);
+        streamCurve.v2.copy(end);
+        streamMesh.geometry.dispose();
+        const streamRadius = 0.0068 + Math.sin(time * 7) * 0.0003;
+        streamMesh.geometry = new THREE.TubeGeometry(streamCurve, 18, streamRadius, 8, false);
+        streamMaterial.color.set(visual.color);
+        streamMaterial.opacity = Math.max(0.72, visual.opacity);
+
+        // Sıvı yüzeyine çarpma dalga halkaları (Ripples)
         splashRings.forEach((ring, index) => {
-          const phase = (time * 1.75 + index / splashRings.length) % 1;
+          const phase = (time * 2.2 + index / splashRings.length) % 1;
           ring.visible = true;
-          ring.position.copy(end).add(new THREE.Vector3(0, 0.006 + index * 0.001, 0));
-          ring.scale.setScalar(0.45 + phase * 1.55);
+          ring.position.copy(end).add(new THREE.Vector3(0, 0.003 + index * 0.001, 0));
+          ring.scale.setScalar(0.42 + phase * 1.35);
           ring.material.color.set(visual.color);
-          ring.material.opacity = (1 - phase) * 0.48;
+          ring.material.opacity = (1 - phase) * 0.52;
         });
-        const wobble = Math.sin(time * 15) * 0.016 * (1 - transfer * 0.35);
-        main.surface.scale.set(1 + wobble, 1 - wobble * 0.45, 1);
+        const wobble = Math.sin(time * 14) * 0.015 * (1 - transfer * 0.3);
+        main.surface.scale.set(1 + wobble, 1 - wobble * 0.4, 1);
       }
       const solidCurve = new THREE.QuadraticBezierCurve3(start, start.clone().lerp(end, 0.48).add(new THREE.Vector3(0, -0.10, 0)), end);
       for (let i = 0; i < 70; i++) {
@@ -891,8 +885,8 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
       for (let i = 0; i < 24; i++) {
         const phase = (time * 1.6 + i / 24) % 1;
         const angle = i * 2.39996;
-        const radius = phase * 0.10;
-        dummy.position.copy(end).add(new THREE.Vector3(Math.cos(angle) * radius, 0.012 + Math.sin(phase * Math.PI) * 0.035, Math.sin(angle) * radius));
+        const radius = phase * 0.045;
+        dummy.position.copy(end).add(new THREE.Vector3(Math.cos(angle) * radius, 0.012 + Math.sin(phase * Math.PI) * 0.02, Math.sin(angle) * radius));
         dummy.rotation.set(i, phase * 4, time);
         dummy.scale.setScalar((1 - phase) * 0.75); dummy.updateMatrix(); impactGrains.setMatrixAt(i, dummy.matrix);
       }
@@ -900,7 +894,7 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
       impactGrains.material.color.set(visual.color);
     } else if (!drag) {
       splashRings.forEach(ring => { ring.visible = false; });
-      pourDrops.visible = false;
+      if (streamMesh) streamMesh.visible = false;
       pourGrains.visible = false;
       impactGrains.visible = false;
       main.surface.scale.set(1, 1, 1);
@@ -946,15 +940,19 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
       flakes.material.color.set(color);
       main.sediment.material.color.set(color);
       const settled = THREE.MathUtils.clamp((performance.now() - reactionStarted) / 1800, 0.05, 1);
-      main.sediment.scale.y = 0.1 * settled;
-      main.sediment.position.y = 0.068 + 0.05 * settled;
+      main.sediment.scale.y = 0.08 * settled;
+      main.sediment.position.y = 0.065 + 0.04 * settled;
+      const maxY = Math.max(0.12, liquidHeight - 0.045);
+      const minY = 0.088 + 0.035 * settled;
       for (let i = 0; i < 80; i++) {
         const phase = (time * 0.22 + i * 0.117) % 1;
         const angle = i * 2.39996;
-        const flakeScale = 0.72 + (i % 3) * 0.16;
-        const safeRadius = Math.max(0.04, main.radius - 0.055 - 0.016 * flakeScale);
+        const flakeScale = 0.55 + (i % 3) * 0.12;
+        const safeRadius = Math.max(0.025, (main.radius - 0.085) * (0.8 + 0.2 * (1 - settled)));
         const r = Math.sqrt((i + 0.5) / 80) * safeRadius;
-        dummy.position.set(Math.cos(angle) * r, 0.12 + (1 - phase) * 0.52 * (1 - settled * 0.7), Math.sin(angle) * r);
+        const fallProgress = (1 - phase) * (1 - settled * 0.75);
+        const yPos = minY + fallProgress * (maxY - minY);
+        dummy.position.set(Math.cos(angle) * r, yPos, Math.sin(angle) * r);
         dummy.scale.setScalar(flakeScale);
         dummy.updateMatrix(); flakes.setMatrixAt(i, dummy.matrix);
       }

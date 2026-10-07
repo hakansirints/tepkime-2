@@ -258,8 +258,9 @@
       spectators: 'Na⁺(suda) ve NO₃⁻(suda)',
       products: 'Ag₂CO₃(katı, soluk sarı-beyaz çökelti) + CO₂(gaz) + 2NaNO₃(suda) + H₂O(sıvı)',
       mainProductSymbol: 'Ag₂CO₃(k)',
-      obs: ['precipitate', 'gas'],
+      obs: ['precipitate', 'color', 'gas'],
       precipColor: '#fef08a',
+      toColor: '#fef9c3',
       tempInit: 22.0, tempFinal: 22.5, hasTempRise: false,
       macroReactantsText: 'Berrak renksiz gümüş nitrat çözeltisi ile beyaz katı bikarbonat tozu birleştirilmek üzere bekler.',
       macroProductsText: 'Maddeler karıştırıldığında soluk sarı-beyaz renkli Ag₂CO₃ çökeltisi ve hafif gaz kabarcıkları gözlenir.',
@@ -595,8 +596,9 @@
       spectators: 'NO₃⁻(suda)',
       products: 'Ag₂CO₃(katı, soluk sarı yüzey çökeltisi) + Ca(NO₃)₂(suda)',
       mainProductSymbol: 'Ag₂CO₃(k)',
-      obs: ['precipitate'],
+      obs: ['precipitate', 'color'],
       precipColor: '#fef08a',
+      toColor: '#fef9c3',
       tempInit: 22.0, tempFinal: 22.0, hasTempRise: false,
       macroReactantsText: 'Berrak gümüş çözeltisi ile katı beyaz kireçtaşı tozu birleştirilir.',
       macroProductsText: 'Katı taneciklerin yüzeyi soluk sarı-beyaz renkli Ag₂CO₃ tabakasıyla kaplanır.',
@@ -616,7 +618,8 @@
       spectators: 'NO₃⁻(suda)',
       products: 'Cu₂CO₃(OH)₂(katı, mavi-yeşil tortu) + CO₂(gaz) + 2Ca(NO₃)₂(suda)',
       mainProductSymbol: 'Cu₂CO₃(OH)₂(k)',
-      obs: ['color', 'gas'],
+      obs: ['precipitate', 'color', 'gas'],
+      precipColor: '#0d9488',
       toColor: '#0f766e',
       tempInit: 22.0, tempFinal: 22.5, hasTempRise: false,
       macroReactantsText: 'Mavi bakır çözeltisi ile beyaz katı kireçtaşı tozu bulunur.',
@@ -1049,6 +1052,8 @@
 
     var note = (rx && rx.pedagogicalNote) ? (' ' + rx.pedagogicalNote) : '';
 
+    var canonName = (rx && (rx.canonical || rx.typeName)) ? (rx.canonical || rx.typeName) : 'Fiziksel Karışım (Belirgin Tepkime Yok)';
+
     // Durum 1: Hiç hatalı/geçersiz seçenek yok
     if (invalidCats.length === 0) {
       if (missedCats.length === 0) {
@@ -1060,10 +1065,10 @@
           validCategories: validCats,
           matchedCategories: matchedCats,
           missedCategories: [],
-          title: 'Tam Doğru: ' + (rx ? rx.canonical : ''),
+          title: 'Tam Doğru: ' + canonName,
           explanation: (validCats.length > 1)
-            ? ('Tebrikler! Deneyde gerçekleşen her iki kimyasal süreci de eksiksiz ve tam doğru tespit ettiniz: <b>' + rx.canonical + '</b>.' + (note ? ('<br><span style="margin-top:6px;display:inline-block;opacity:0.95;">' + note + '</span>') : ''))
-            : ('Tebrikler! Kimyasal süreci doğru tespit ettiniz: <b>' + rx.canonical + '</b>.' + (note ? ('<br><span style="margin-top:6px;display:inline-block;opacity:0.95;">' + note + '</span>') : ''))
+            ? ('Tebrikler! Deneyde gerçekleşen her iki kimyasal süreci de eksiksiz ve tam doğru tespit ettiniz: <b>' + canonName + '</b>.' + (note ? ('<br><span style="margin-top:6px;display:inline-block;opacity:0.95;">' + note + '</span>') : ''))
+            : ('Tebrikler! Kimyasal süreci doğru tespit ettiniz: <b>' + canonName + '</b>.' + (note ? ('<br><span style="margin-top:6px;display:inline-block;opacity:0.95;">' + note + '</span>') : ''))
         };
       } else {
         // Kısmi Başarı (Doğru seçti ama çoklu reaksiyondaki diğer süreci kaçırdı)
@@ -1092,7 +1097,7 @@
         matchedCategories: matchedCats,
         missedCategories: missedCats,
         title: 'Gözden Geçiriniz',
-        explanation: 'Bu deneyde belirgin kimyasal değişim kanıtları (çökelti, gaz, renk veya sıcaklık değişimi) gözlenmiştir; dolayısıyla fiziksel temas değildir. Bilimsel sınıflandırma: <b>' + rx.canonical + '</b>.' + (note ? ('<br><span style="margin-top:6px;display:inline-block;opacity:0.95;">' + note + '</span>') : '')
+        explanation: 'Bu deneyde belirgin kimyasal değişim kanıtları (çökelti, gaz, renk veya sıcaklık değişimi) gözlenmiştir; dolayısıyla fiziksel temas değildir. Bilimsel sınıflandırma: <b>' + canonName + '</b>.' + (note ? ('<br><span style="margin-top:6px;display:inline-block;opacity:0.95;">' + note + '</span>') : '')
       };
     }
 
@@ -1107,7 +1112,7 @@
         matchedCategories: matchedCats,
         missedCategories: missedCats,
         title: 'Gözden Geçiriniz',
-        explanation: 'İşaretlediğiniz <b>' + matchedNames + '</b> tespiti bu deney için geçerlidir; ancak işaretlediğiniz <b>' + invalidNames + '</b> süreci bu reaksiyonda yer almaz. Doğru sınıflandırma: <b>' + rx.canonical + '</b>.' + (note ? ('<br><span style="margin-top:6px;display:inline-block;opacity:0.95;">' + note + '</span>') : '')
+        explanation: 'İşaretlediğiniz <b>' + matchedNames + '</b> tespiti bu deney için geçerlidir; ancak işaretlediğiniz <b>' + invalidNames + '</b> süreci bu reaksiyonda yer almaz. Doğru sınıflandırma: <b>' + canonName + '</b>.' + (note ? ('<br><span style="margin-top:6px;display:inline-block;opacity:0.95;">' + note + '</span>') : '')
       };
     }
 
@@ -1120,7 +1125,7 @@
       matchedCategories: matchedCats,
       missedCategories: missedCats,
       title: 'Gözden Geçiriniz',
-      explanation: 'Seçtiğiniz <b>' + invalidNames + '</b> bu deney için uygun değildir. Bu deneyin bilimsel karşılığı: <b>' + rx.canonical + '</b>.' + (note ? ('<br><span style="margin-top:6px;display:inline-block;opacity:0.95;">' + note + '</span>') : '')
+      explanation: 'Seçtiğiniz <b>' + invalidNames + '</b> bu deney için uygun değildir. Bu deneyin bilimsel karşılığı: <b>' + canonName + '</b>.' + (note ? ('<br><span style="margin-top:6px;display:inline-block;opacity:0.95;">' + note + '</span>') : '')
     };
   }
 

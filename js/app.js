@@ -57,7 +57,7 @@
     S.cameraTab = 'reactants';
     S.reportTab = 'analysis';
     S.screen = 'lab';
-    S.labView = 'closeup';
+    S.labView = 'desk';
     S.reagentPanelCollapsed = true;
     return true;
   }
@@ -141,7 +141,7 @@
         '</div>' +
 
         '<div class="lab-settings-section"><span class="lab-settings-label">Kamera Bakış Açısı</span><div class="lab-settings-views" role="group" aria-label="Kamera bakış açısı">' +
-          [['desk','Masa'],['closeup','Yakın'],['wide','Oda']].map(function(view) { return '<button type="button" data-action="setLabView" data-arg="' + view[0] + '" aria-pressed="' + (S.labView === view[0]) + '">' + view[1] + '</button>'; }).join('') +
+          [['desk','Masa'],['wide','Oda']].map(function(view) { return '<button type="button" data-action="setLabView" data-arg="' + view[0] + '" aria-pressed="' + (S.labView === view[0]) + '">' + view[1] + '</button>'; }).join('') +
         '</div><button type="button" class="lab-settings-reset" data-action="setLabView" data-arg="desk">↺ Kamerayı Sıfırla</button></div>' +
 
         '<div class="lab-settings-section"><span class="lab-settings-label">Laboratuvar Ortamı</span>' +
@@ -151,38 +151,36 @@
           [['#466455','Yeşil'],['#3d4547','Antrasit'],['#fff2d7','Açık']].map(function(color) { return '<button type="button" data-action="setTableColor" data-arg="' + color[0] + '" aria-pressed="' + (S.tableColor.toLowerCase() === color[0]) + '"><span style="--swatch:' + color[0] + '"></span>' + color[1] + '</button>'; }).join('') +
         '</div></div>' +
       '</section></div>' : '';
-
-    var html = '<div class="mebi-top-shell' + (stage ? ' has-stage' : '') + '"><div class="mebi-topbar">' +
-      '<div class="mebi-brand" data-action="goMenu">' +
-        '<div class="mebi-brand-icon">' + window.MebiSVG.icon('shield') + '</div>' +
-        '<span>TEPKİME ARENASI</span>' +
-      '</div>' +
-
-      // Topbar Çukur İlerleme Rozeti
-      '<div class="mebi-progress-wrapper" title="Keşfedilen Tepkimeler">' +
-        '<span class="mebi-progress-star">' + window.MebiSVG.icon('star') + '</span>' +
-        '<span>' + totalDiscovered + ' / ' + totalReactions + ' Keşif</span>' +
-        '<div class="mebi-progress-bar-mini">' +
-          '<div class="mebi-progress-fill-mini" style="width:' + pct + '%;"></div>' +
-        '</div>' +
-        '<span>%' + pct + '</span>' +
-      '</div>' +
-
-      '<div class="mebi-topbar-tools">' +
-        settingsHTML +
-
-        // Uygulama ve Laboratuvar Rehberi Butonu
-        '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm" data-action="openGuideDrawer">' +
+      var toolsHTML = settingsHTML +
+        '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm mebi-btn-icon-only" data-action="openGuideDrawer" title="Laboratuvar Rehberi" aria-label="Rehber">' +
           '<span class="mebi-btn-badge">' + window.MebiSVG.icon('helpCircle') + '</span>' +
-          '<span>Rehber</span>' +
-        '</button>' +
-      '</div>' +
-    '</div>' + (stage ? stepperHTML(stage) : '') + '</div>';
+        '</button>';
+
+      var html = '<div class="mebi-top-shell' + (stage ? ' has-stage' : '') + '"><div class="mebi-topbar">' +
+        '<div class="mebi-brand" data-action="goMenu">' +
+          '<div class="mebi-brand-icon">' + window.MebiSVG.icon('shield') + '</div>' +
+          '<span>TEPKİME ARENASI</span>' +
+        '</div>' +
+
+        // Topbar Çukur İlerleme Rozeti
+        '<div class="mebi-progress-wrapper" title="Keşfedilen Tepkimeler">' +
+          '<span class="mebi-progress-star">' + window.MebiSVG.icon('star') + '</span>' +
+          '<span>' + totalDiscovered + ' / ' + totalReactions + ' Keşif</span>' +
+          '<div class="mebi-progress-bar-mini">' +
+            '<div class="mebi-progress-fill-mini" style="width:' + pct + '%;"></div>' +
+          '</div>' +
+          '<span>%' + pct + '</span>' +
+        '</div>' +
+
+        '<div class="mebi-topbar-tools">' +
+          toolsHTML +
+        '</div>' +
+      '</div>' + (stage ? stepperHTML(stage, toolsHTML) : '') + '</div>';
 
     return html;
   }
 
-  function stepperHTML(step) {
+  function stepperHTML(step, toolsHTML) {
     var steps = [
       { key: 'predict', label: '1. TAHMİN' },
       { key: 'reacting', label: '2. DENEY' },
@@ -195,9 +193,10 @@
     var pctLine = (idx / (steps.length - 1)) * 100;
 
     var html = '<div class="mebi-stepper">' +
-      '<div class="mebi-step-line">' +
-        '<div class="mebi-step-line-fill" style="width:' + pctLine + '%;"></div>' +
-      '</div>';
+      '<div class="mebi-stepper-track">' +
+        '<div class="mebi-step-line">' +
+          '<div class="mebi-step-line-fill" style="width:' + pctLine + '%;"></div>' +
+        '</div>';
 
     for (var i = 0; i < steps.length; i++) {
       var isDone = i < idx;
@@ -212,7 +211,9 @@
       '</div>';
     }
 
-    html += '</div>';
+    html += '</div>' +
+      (toolsHTML ? '<div class="mebi-stepper-inline-tools">' + toolsHTML + '</div>' : '') +
+    '</div>';
     return html;
   }
 
@@ -585,14 +586,16 @@
             '</div>'
         ) +
         '<div class="dock-actions">' +
-          '<button class="mebi-btn mebi-btn-primary dock-btn-full" data-action="toCard">' +
-            '<span class="mebi-btn-badge">' + window.MebiSVG.icon('flaskOutline') + '</span>' +
-            '<span>Rapor Aşamasına Geç →</span>' +
-          '</button>' +
-          '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm dock-btn-full" data-action="redoPrediction">' +
-            '<span class="mebi-btn-badge">' + window.MebiSVG.icon('undo') + '</span>' +
-            '<span>Tahmine Dön</span>' +
-          '</button>' +
+          (exact
+            ? '<button class="mebi-btn mebi-btn-primary dock-btn-full" data-action="toCard">' +
+                '<span class="mebi-btn-badge">' + window.MebiSVG.icon('flaskOutline') + '</span>' +
+                '<span>Rapor Aşamasına Geç →</span>' +
+              '</button>'
+            : '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm dock-btn-full" data-action="redoPrediction">' +
+                '<span class="mebi-btn-badge">' + window.MebiSVG.icon('undo') + '</span>' +
+                '<span>Tahmine Dön</span>' +
+              '</button>'
+          ) +
         '</div>' +
       '</div>';
     }
@@ -806,20 +809,24 @@
 
         // Yanıtı Kontrol Et ve Değerlendirme Kartını Aç Butonları
         '<div class="report-quiz-actions">' +
-          '<button type="button" class="mebi-btn mebi-btn-primary mebi-btn-sm" data-action="checkType"' + (curSelections.length === 0 ? ' disabled style="opacity:0.55;cursor:not-allowed;"' : '') + '>' +
-            '<span class="mebi-btn-badge">' + window.MebiSVG.icon('check') + '</span>' +
-            '<span>' + (S.typeChecked ? 'Seçimi Yeniden Değerlendir' : 'Yanıtı Kontrol Et') + '</span>' +
-          '</button>' +
+
           (S.typeChecked
-            ? '<button type="button" class="mebi-btn mebi-btn-secondary mebi-btn-sm" data-action="showEvalModal">' +
-                '<span class="mebi-btn-badge">' + window.MebiSVG.icon('info') + '</span>' +
-                '<span>Değerlendirme Kartını Gör</span>' +
-              '</button>'
+            ? (S.typeCorrect
+                ? '<div class="report-quiz-inline-status status-correct" style="margin-top:10px;padding:9px 12px;border-radius:8px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);color:var(--mebi-success);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;width:100%;">' +
+                    '<div style="display:flex;align-items:center;gap:6px;"><span>✓</span><span>Tebrikler! Tepkime türünü eksiksiz ve doğru tespit ettiniz.</span></div>' +
+                    '<button type="button" class="mebi-btn mebi-btn-primary mebi-btn-sm" data-action="saveCard" style="white-space:nowrap;margin-left:auto;">' +
+                      '<span class="mebi-btn-badge">' + window.MebiSVG.icon('sparkles') + '</span>' +
+                      '<span>Tanecik Kamerasına Geç ➔</span>' +
+                    '</button>' +
+                  '</div>'
+                : '<div class="report-quiz-inline-status status-wrong" style="margin-top:10px;padding:9px 12px;border-radius:8px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:var(--mebi-danger);font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;width:100%;"><span>!</span><span>Henüz tam doğru değil. İşaretlediğiniz seçenekleri tekrar gözden geçirip yanıtınızı kontrol ediniz.</span></div>'
+              )
             : ''
           ) +
+          
           (curSelections.length === 0
             ? '<span class="report-quiz-hint">(En az bir seçenek işaretleyiniz)</span>'
-            : (S.typeChecked ? '' : '<span class="report-quiz-hint" style="color:var(--mebi-primary);font-weight:600;">Seçiminizi tamamlayınca kontrol ediniz.</span>')
+            : ''
           ) +
         '</div>' +
       '</div>';
@@ -894,28 +901,7 @@
           }
 
         html += '</div>'; // mebi-report-sheet end
-
-        // Alt Eylem Butonları
-        html += '<div class="report-bottom-bar">' +
-          '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm" data-action="undoLast">' +
-            '<span class="mebi-btn-badge">' + window.MebiSVG.icon('undo') + '</span>' +
-            '<span>Deney Masasına Dön</span>' +
-          '</button>' +
-          (activeTab === 'quiz'
-            ? '<button class="mebi-btn mebi-btn-ghost mebi-btn-sm" data-action="setReportTab" data-arg="analysis">' +
-                '<span>⬅ 1. Süreç Analizine Geri Dön</span>' +
-              '</button>'
-            : ''
-          ) +
-          (activeTab === 'quiz' && S.typeChecked
-            ? '<button class="mebi-btn mebi-btn-primary mebi-btn-sm" data-action="saveCard">' +
-                '<span class="mebi-btn-badge">' + window.MebiSVG.icon('sparkles') + '</span>' +
-                '<span>Tanecik Kamerasına Geç (Alt-Mikroskobik Boyut) ➔</span>' +
-              '</button>'
-            : ''
-          ) +
-        '</div>' +
-      '</div>';
+      html += '</div>';
 
     return html;
   }
@@ -1065,16 +1051,14 @@
       return isHclNaoh ? 'Na⁺ + Cl⁻ (Serbest İyonlar)' : ((rx && rx.spectators) ? (rx.spectators + ' (Serbest İyonlar)') : 'Çözeltide Serbest İyonlar');
     }
     function particleIdentityHTML(formulaHTML, symbols, chemicalNameHTML, ionicFormulaHTML) {
-      var legend = uniqueSymbols(symbols).map(function(symbol) {
-        var atom = CPK_DATA[symbol];
-        return '<span class="particle-element-item"><i style="--atom-color:' + atom.color + ';' + (atom.border ? 'border-color:' + atom.border + ';' : '') + '"></i><b>' + symbol + '</b> ' + atom.name + '</span>';
-      }).join('');
-      return '<div class="particle-interaction-hint">Boş alanda sürükle: taşı • atomda sürükle: döndür • tekerlek: yakınlaştır</div>' +
-        '<div class="particle-divider"></div>' +
-        '<div class="particle-formula-line">' + formulaHTML + '</div>' +
-        (ionicFormulaHTML ? '<div class="particle-ionic-line" aria-label="İyonik gösterim">' + ionicFormulaHTML + '</div>' : '') +
-        (chemicalNameHTML ? '<div class="particle-chemical-name">' + chemicalNameHTML + '</div>' : '') +
-        '<div class="particle-element-legend" aria-label="Modelde kullanılan CPK atom renkleri">' + legend + '</div>';
+      var parts = [];
+      if (ionicFormulaHTML) {
+        parts.push('<span class="particle-ionic-line" aria-label="Kimyasal gösterim">' + ionicFormulaHTML + '</span>');
+      }
+      if (chemicalNameHTML) {
+        parts.push('<span class="particle-chemical-name">' + chemicalNameHTML + '</span>');
+      }
+      return '<div class="particle-identity-compact is-inline">' + parts.join('<span class="particle-identity-sep">·</span>') + '</div>';
     }
 
     var activeSymbols = [];
@@ -1165,10 +1149,9 @@
                 '<span>' + esc(r1.f) + ' ' + (r1.solid ? '(katı)' : '(suda)') + '</span>' +
               '</div>' +
             '</div>' +
-            '<div class="particle-subcard-body particle-3d-host" data-particle-view="r1" aria-label="' + esc(r1.name) + ' üç boyutlu tanecik modeli"></div>' + particleIdentityHTML(esc(r1.f), list1, esc(r1.name), esc(ionicNotation(r1))) +
+            '<div class="particle-subcard-body particle-3d-host" data-particle-view="r1" data-particle-type="' + esc(r1.id) + '" data-particle-mode="' + (r1.solid ? 'crystal' : 'solution') + '" aria-label="' + esc(r1.name) + ' üç boyutlu tanecik modeli"></div>' + particleIdentityHTML(esc(r1.f), list1, esc(r1.name), esc(ionicNotation(r1))) +
             '<div class="particle-caption">' +
-              '<div>' + esc(r1.name) + '</div>' +
-              '<div class="sub-ion">' + (r1.solid ? '3B iyonik yapı' : (r1.id === 'H2O2' || r1.id === 'NH3' ? 'Suda çözünmüş molekül' : 'Suda birbirinden bağımsız iyonlar')) + '</div>' +
+              '<div class="sub-ion">' + (r1.solid ? '3B iyonik yapı (kristal)' : (r1.id === 'H2O2' || r1.id === 'NH3' ? 'Suda çözünmüş molekül' : 'Suda birbirinden bağımsız iyonlar')) + '</div>' +
             '</div>' +
           '</div>' +
 
@@ -1182,10 +1165,9 @@
                 '<span>' + esc(r2.f) + ' ' + (r2.solid ? '(katı)' : '(suda)') + '</span>' +
               '</div>' +
             '</div>' +
-            '<div class="particle-subcard-body particle-3d-host" data-particle-view="r2" aria-label="' + esc(r2.name) + ' üç boyutlu tanecik modeli"></div>' + particleIdentityHTML(esc(r2.f), list2, esc(r2.name), esc(ionicNotation(r2))) +
+            '<div class="particle-subcard-body particle-3d-host" data-particle-view="r2" data-particle-type="' + esc(r2.id) + '" data-particle-mode="' + (r2.solid ? 'crystal' : 'solution') + '" aria-label="' + esc(r2.name) + ' üç boyutlu tanecik modeli"></div>' + particleIdentityHTML(esc(r2.f), list2, esc(r2.name), esc(ionicNotation(r2))) +
             '<div class="particle-caption">' +
-              '<div>' + esc(r2.name) + '</div>' +
-              '<div class="sub-ion">' + (r2.solid ? '3B iyonik yapı' : (r2.id === 'H2O2' || r2.id === 'NH3' ? 'Suda çözünmüş molekül' : 'Suda birbirinden bağımsız iyonlar')) + '</div>' +
+              '<div class="sub-ion">' + (r2.solid ? '3B iyonik yapı (kristal)' : (r2.id === 'H2O2' || r2.id === 'NH3' ? 'Suda çözünmüş molekül' : 'Suda birbirinden bağımsız iyonlar')) + '</div>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -1219,7 +1201,6 @@
             '</div>' +
             '<div class="particle-subcard-body particle-3d-host" data-particle-view="p1" aria-label="Birinci madde üç boyutlu karışım modeli"></div>' + particleIdentityHTML(esc(r1.f), list1, esc(r1.name), esc(ionicNotation(r1))) +
             '<div class="particle-caption">' +
-              '<div>' + esc(r1.name) + '</div>' +
               '<div class="sub-ion">' + (r1.solid ? 'Katı Yapısını Korur (Tepkime Yok)' : 'Sulu Çözeltide Orijinal Halinde Kalır') + '</div>' +
             '</div>' +
           '</div>' +
@@ -1233,7 +1214,6 @@
             '</div>' +
             '<div class="particle-subcard-body particle-3d-host" data-particle-view="p2" aria-label="İkinci madde üç boyutlu karışım modeli"></div>' + particleIdentityHTML(esc(r2.f), list2, esc(r2.name), esc(ionicNotation(r2))) +
             '<div class="particle-caption">' +
-              '<div>' + esc(r2.name) + '</div>' +
               '<div class="sub-ion">' + (r2.solid ? 'Katı Yapısını Korur (Tepkime Yok)' : 'Sulu Çözeltide Orijinal Halinde Kalır') + '</div>' +
             '</div>' +
           '</div>';
@@ -1294,7 +1274,7 @@
               type: gasType,
               mode: 'gas',
               badge: '<span class="particle-state-badge badge-gas">Açığa Çıkan Gaz</span>',
-              title: gasForm + ' (' + gasName + ')',
+              title: gasForm + ' (Gaz)',
               formula: gasForm,
               chemicalName: gasName,
               caption: 'Tepkime sonucu oluşan serbest gaz molekülleri çözeltiden ayrılır.',
@@ -1325,11 +1305,11 @@
               type: 'H2O',
               mode: 'solution',
               badge: '<span class="particle-state-badge badge-aqueous">Tepkime Suyu</span>',
-              title: 'H₂O (Su Molekülleri)',
+              title: 'H₂O (Su)',
               formula: 'H₂O',
               chemicalName: 'Su',
               caption: 'Tepkime sürecinde oluşan kararlı kovalent H₂O molekülleri.',
-              ionic: 'H⁺ + OH⁻ → H₂O (Kovalent Molekül)'
+              ionic: 'H₂O (Kovalent Molekül)'
             });
           }
 
@@ -1345,7 +1325,7 @@
               badge: '<span class="particle-state-badge badge-aqueous">Sulu Çözelti</span>',
               title: esc(cleanSpecTitle) + ' (Çözeltideki İyonlar)',
               formula: esc(cleanSpecTitle),
-              chemicalName: 'Suda çözünmüş seyirci iyonlar',
+              chemicalName: 'Seyirci iyonlar',
               caption: 'Çökelmeye veya gaza katılmayan serbest iyonlar çözeltide bağımsız solvatize hareket eder.',
               ionic: esc(cleanSpecTitle) + ' (Serbest İyonlar)'
             });
@@ -1392,10 +1372,10 @@
 
     // 4. Entegre Alt Eylem & Başarı Çubuğu
     html += '<div class="camera-bottom-bar">' +
-      '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm" data-action="undoLast">' +
-        '<span class="mebi-btn-badge">' + window.MebiSVG.icon('undo') + '</span>' +
-        '<span>Rapor Sayfasına Dön</span>' +
-      '</button>' +
+
+
+
+
 
       '<div class="camera-mastery-pill">' +
         '<span class="mastery-pill-icon">' + window.MebiSVG.icon('award') + '</span>' +
@@ -1568,7 +1548,7 @@
       S.poured = false;
       S.labStep = 'predict';
       S.prediction = [];
-      S.labView = 'wide';
+      S.labView = 'desk';
       render();
     },
     changeReactants: function() {
@@ -1687,7 +1667,7 @@
         S.selectedSlot2 = id;
       }
       S.reagentPanelCollapsed = !!(S.selectedSlot1 && S.selectedSlot2);
-      S.labView = S.selectedSlot1 && S.selectedSlot2 ? 'closeup' : (S.selectedSlot1 || S.selectedSlot2 ? 'desk' : 'wide');
+      S.labView = 'desk';
       finishSelection();
     },
     clearSlot: function(num) {
@@ -1696,7 +1676,7 @@
       if (num === '1') S.selectedSlot1 = null;
       if (num === '2') S.selectedSlot2 = null;
       S.reagentPanelCollapsed = false;
-      S.labView = S.selectedSlot1 || S.selectedSlot2 ? 'desk' : 'wide';
+      S.labView = 'desk';
       finishSelection();
     },
     resetPool: function() {
@@ -1707,7 +1687,7 @@
       S.searchQuery = '';
       S.categoryFilter = 'all';
       S.reagentPanelCollapsed = false;
-      S.labView = 'wide';
+      S.labView = 'desk';
       finishSelection();
     },
     resetExperiment: function() {
@@ -1885,17 +1865,25 @@
       S.manualTypeInput = S.manualTypeSelections.join(', ');
 
       // Değerlendirme daha önce yapılmışsa güncel seçime göre anında yeniden değerlendir
-      if (S.typeChecked) {
+      if (!S.activeReaction) S.activeReaction = window.MebiData.getReaction(S.selectedSlot1, S.selectedSlot2);
+      if (S.manualTypeSelections.length > 0) {
+        S.typeChecked = true;
         var rx = S.activeReaction;
         S.typeEvaluation = window.MebiData.evaluateReactionTypes(S.manualTypeSelections, rx);
         S.typeCorrect = (S.typeEvaluation && S.typeEvaluation.status === 'exact');
+        if (S.typeCorrect && window.MebiAudio) window.MebiAudio.playSuccess();
+      } else {
+        S.typeEvaluation = null;
+        S.typeChecked = false;
+        S.typeCorrect = false;
       }
       render(false);
     },
     checkType: function() {
       if (!S.manualTypeSelections || S.manualTypeSelections.length === 0) return;
       if (window.MebiAudio) window.MebiAudio.playClick();
-      var rx = S.activeReaction;
+      var rx = S.activeReaction || window.MebiData.getReaction(S.selectedSlot1, S.selectedSlot2);
+      S.activeReaction = rx;
       S.typeEvaluation = window.MebiData.evaluateReactionTypes(S.manualTypeSelections, rx);
       S.typeChecked = true;
       S.typeCorrect = (S.typeEvaluation && S.typeEvaluation.status === 'exact');
@@ -1907,9 +1895,7 @@
       }
       render(false);
 
-      if (window.MebiUI && window.MebiUI.openEvalModal) {
-        window.MebiUI.openEvalModal(S.typeEvaluation, S.manualTypeSelections, rx);
-      }
+      // Inline evaluation status is shown directly in the quiz card
     },
     showEvalModal: function() {
       if (!S.typeEvaluation) return;
@@ -1919,13 +1905,15 @@
       }
     },
     saveCard: function() {
+      if (!S.typeCorrect) return;
       if (window.MebiUI && window.MebiUI.closeEvalModal) {
         window.MebiUI.closeEvalModal();
       }
       if (window.MebiAudio) window.MebiAudio.playClick();
       var r1 = window.MebiData.getReagent(S.selectedSlot1);
       var r2 = window.MebiData.getReagent(S.selectedSlot2);
-      var rx = S.activeReaction;
+      var rx = S.activeReaction || (S.selectedSlot1 && S.selectedSlot2 ? window.MebiData.getReaction(S.selectedSlot1, S.selectedSlot2) : null);
+      S.activeReaction = rx;
 
       var alreadyIn = false;
       for (var i = 0; i < S.collection.length; i++) {
@@ -1935,7 +1923,7 @@
         }
       }
 
-      if (!alreadyIn && rx.typeCategory !== 'none') {
+      if (rx && !alreadyIn && rx.typeCategory !== 'none') {
         S.collection.push({
           r1: r1.f,
           r2: r2.f,

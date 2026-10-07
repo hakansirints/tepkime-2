@@ -29,7 +29,8 @@ const ION_LABELS = {
   Cl:'Cl⁻', I:'I⁻', OH:'OH⁻', NO3:'NO₃⁻', HCO3:'HCO₃⁻', HO2:'HO₂⁻',
   CO3:'CO₃²⁻', SO4:'SO₄²⁻', O:'O²⁻',
   H2O:'H₂O', H2O2:'H₂O₂', NH3:'NH₃', CO2:'CO₂', O2:'O₂', Cl2:'Cl₂',
-  'CuCl4':'[CuCl₄]²⁻', 'Ag(NH3)2':'[Ag(NH₃)₂]⁺', 'Cu(NH3)4':'[Cu(NH₃)₄]²⁺'
+  'CuCl4':'[CuCl₄]²⁻', 'Ag(NH3)2':'[Ag(NH₃)₂]⁺', 'Cu(NH3)4':'[Cu(NH₃)₄]²⁺',
+  CaCO3:'CaCO₃', PbI2:'PbI₂', AgCl:'AgCl', BaSO4:'BaSO₄', MnO2:'MnO₂'
 };
 
 function createIonLabelSprite(text) {
@@ -41,16 +42,19 @@ function createIonLabelSprite(text) {
   const ctx = canvas.getContext('2d');
   if (!ctx || !ctx.fillText) return null;
   ctx.clearRect(0, 0, 512, 256);
-  ctx.font = '700 96px "JetBrains Mono", "Plus Jakarta Sans", sans-serif';
+  ctx.font = '500 58px "Plus Jakarta Sans", system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#2563eb';
+  ctx.fillStyle = '#1e40af';
   ctx.fillText(text, 256, 128);
   const texture = new THREE.CanvasTexture(canvas);
   texture.minFilter = THREE.LinearFilter;
   const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false });
   const sprite = new THREE.Sprite(material);
-  sprite.scale.set(1.4, 0.7, 1);
+  sprite.userData.isLabelSprite = true;
+  sprite.userData.baseScaleX = 1.05;
+  sprite.userData.baseScaleY = 0.52;
+  sprite.scale.set(1.05, 0.52, 1);
   return sprite;
 }
 
@@ -275,7 +279,7 @@ function assemblyFor(descriptor) {
     const speciesName = formulaParts[index];
     const scale = covalent ? (count === 1 ? 1.02 : 0.82) : separatedIons ? (count > 3 ? 0.68 : 0.76) : (count > 4 ? 0.64 : 0.74);
     const item = speciesObject(speciesName, scale, separatedIons);
-    if ((separatedIons || covalent) && ION_LABELS[speciesName]) {
+    if (ION_LABELS[speciesName]) {
       const sprite = createIonLabelSprite(ION_LABELS[speciesName]);
       if (sprite) {
         sprite.position.set(0, -0.42 * scale - 0.22, 0.05);
@@ -459,6 +463,20 @@ function animate() {
         base.y + Math.cos(driftTime * 0.48 + phase * 1.3) * 0.035,
         base.z + Math.sin(driftTime * 0.41 + phase * 0.7) * 0.038
       );
+    });
+    const baseDist = 4.8;
+    viewer.scene.traverse(obj => {
+      if (obj.isSprite && obj.userData && obj.userData.isLabelSprite) {
+        const spriteWorld = new THREE.Vector3();
+        obj.getWorldPosition(spriteWorld);
+        const dist = viewer.camera.position.distanceTo(spriteWorld);
+        const factor = Math.max(0.4, Math.min(2.5, dist / baseDist));
+        obj.scale.set(
+          obj.userData.baseScaleX * factor,
+          obj.userData.baseScaleY * factor,
+          1
+        );
+      }
     });
     if (!viewer.dragging && !viewer.selected) viewer.model.rotation.y = Math.sin(now + viewer.key.length) * 0.08;
     viewer.renderer.render(viewer.scene, viewer.camera);
