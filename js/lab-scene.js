@@ -340,7 +340,7 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
   const screw2 = cylinder(0.008, 0.005, standard('#38bdf8'), thermoHead, 0.075, -0.055, 0.0185);
   screw2.rotation.x = Math.PI / 2;
 
-  const streamCurve = new THREE.QuadraticBezierCurve3(new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3());
+  const streamCurve = new THREE.CubicBezierCurve3(new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3());
   const streamMaterial = new THREE.MeshPhysicalMaterial({
     color: '#38bdf8',
     roughness: 0.06,
@@ -712,7 +712,7 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
   }
 
   function pourSpoutPoint() {
-    return secondary.group.localToWorld(new THREE.Vector3(-secondary.radius * 0.91, secondary.height * 0.91, 0));
+    return secondary.group.localToWorld(new THREE.Vector3(-secondary.radius * 0.98, secondary.height * 0.98, 0));
   }
 
   function place(element, point, dy = 0) {
@@ -831,20 +831,38 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
     }
     if (pouring && r2) {
       secondary.group.rotation.z = pourAngle;
-      const spoutLocal = new THREE.Vector3(-secondary.radius * 0.92, secondary.height * 0.95, 0);
+      // 2. Beherin dökme ucu (sol üst kenar / spout lip)
+      const spoutLocal = new THREE.Vector3(-secondary.radius * 0.98, secondary.height * 0.98, 0);
       const spoutOffset = spoutLocal.clone().multiplyScalar(beakerScale)
         .applyAxisAngle(new THREE.Vector3(0, 0, 1), secondary.group.rotation.z);
       const restSpout = secondaryHome.clone().add(spoutLocal.clone().multiplyScalar(beakerScale));
-      // Gerçek kimya laboratuvarı: Dökülen beherin ağzı alıcı beherin ağız kenarına tam yaslanır
-      const targetSpout = new THREE.Vector3(main.group.position.x + (main.radius * beakerScale * 0.88), tableY + main.height * beakerScale + 0.012, main.group.position.z);
+
+      // Gerçekçi laboratuvar dökme konumu: 2. beher 1. beherin ağız seviyesinin belirgin şekilde üzerinde durur
+      const targetSpout = new THREE.Vector3(
+        main.group.position.x + (main.radius * beakerScale * 0.72),
+        tableY + main.height * beakerScale + 0.075,
+        main.group.position.z
+      );
       let desiredSpout;
-      if (progress < 0.22) desiredSpout = restSpout.clone().lerp(targetSpout, lift);
-      else if (progress < 0.80) desiredSpout = targetSpout.clone().add(new THREE.Vector3(0, Math.sin(time * 5) * 0.001, 0));
-      else desiredSpout = targetSpout.clone().lerp(restSpout, returnPhase);
+      if (progress < 0.22) {
+        desiredSpout = restSpout.clone().lerp(targetSpout, lift);
+        // Dökülme animasyonunun daha yukarıdan başlaması için kavisli yükseliş (lift arc)
+        desiredSpout.y += Math.sin(lift * Math.PI) * 0.085;
+      } else if (progress < 0.80) {
+        desiredSpout = targetSpout.clone().add(new THREE.Vector3(0, Math.sin(time * 5) * 0.0012, 0));
+      } else {
+        desiredSpout = targetSpout.clone().lerp(restSpout, returnPhase);
+        desiredSpout.y += Math.sin(returnPhase * Math.PI) * 0.065;
+      }
       secondary.group.position.copy(desiredSpout.sub(spoutOffset));
+
+      // 2. Beherin tam ucundan başlayan dünya koordinatı
       const start = secondary.group.localToWorld(spoutLocal.clone());
+
+      // 1. Beherin içine doğru akış hedefi (sıvı/taban yüzeyinin iç orta ekseni)
       const end = main.group.position.clone();
-      end.x += (main.radius * beakerScale * 0.18);
+      end.x += (main.radius * beakerScale * 0.08);
+
       // Beher 1 içindeki anlık sıvı/katı yüzeyi (Dökme akışı yüzeye çarpar ve sıvı doldukça yükselir)
       let localSurfaceY = 0.07;
       if (mix && mix.liquid > 0.005) {
@@ -858,33 +876,42 @@ for(let x of [-2,2]){roomBox(.022,.7,.022,x,4.4,.05,roomMat(t.metal));roomBox(1.
       }
       end.y = main.group.position.y + (localSurfaceY * beakerScale);
       end.z = main.group.position.z;
+
       const visual = window.MebiChemistry.appearance(r2);
+      const exitDir = new THREE.Vector3(-Math.sin(pourAngle * 0.82), -Math.cos(pourAngle * 0.82), 0).normalize();
+
       if (transferring && !r2.solid) {
-        // Kesintisiz, pürüzsüz laminer sıvı akışı (Smooth laminar jet)
-        const control = start.clone().lerp(end, 0.40);
-        control.y = Math.min(start.y - 0.012, (start.y + end.y) * 0.5 - 0.018);
+        // Gerçekçi yerçekimli laminer sıvı akışı: 2. beherin ucundan çıkıp 1. beherin içine yay çizer
+        const c1 = start.clone().addScaledVector(exitDir, 0.038);
+        const c2 = new THREE.Vector3(end.x, Math.max(end.y + 0.025, start.y - (start.y - end.y) * 0.58), end.z);
         streamCurve.v0.copy(start);
-        streamCurve.v1.copy(control);
-        streamCurve.v2.copy(end);
+        streamCurve.v1.copy(c1);
+        streamCurve.v2.copy(c2);
+        streamCurve.v3.copy(end);
         streamMesh.geometry.dispose();
-        const streamRadius = 0.0068 + Math.sin(time * 7) * 0.0003;
-        streamMesh.geometry = new THREE.TubeGeometry(streamCurve, 18, streamRadius, 8, false);
+        const streamRadius = 0.0058 + Math.sin(time * 10) * 0.0003;
+        streamMesh.geometry = new THREE.TubeGeometry(streamCurve, 24, streamRadius, 8, false);
         streamMaterial.color.set(visual.color);
-        streamMaterial.opacity = Math.max(0.72, visual.opacity);
+        streamMaterial.opacity = Math.max(0.75, visual.opacity);
 
         // Sıvı yüzeyine çarpma dalga halkaları (Ripples)
         splashRings.forEach((ring, index) => {
-          const phase = (time * 2.2 + index / splashRings.length) % 1;
+          const phase = (time * 2.6 + index / splashRings.length) % 1;
           ring.visible = true;
-          ring.position.copy(end).add(new THREE.Vector3(0, 0.0015 + index * 0.0008, 0));
-          ring.scale.setScalar(0.35 + phase * 0.95);
+          ring.position.copy(end).add(new THREE.Vector3(0, 0.0012 + index * 0.0006, 0));
+          ring.scale.setScalar(0.28 + phase * 0.88);
           ring.material.color.set(visual.color);
-          ring.material.opacity = (1 - phase) * 0.52;
+          ring.material.opacity = (1 - phase) * 0.55;
         });
         const wobble = Math.sin(time * 14) * 0.015 * (1 - transfer * 0.3);
         main.surface.scale.set(1 + wobble, 1 - wobble * 0.4, 1);
       }
-      const solidCurve = new THREE.QuadraticBezierCurve3(start, start.clone().lerp(end, 0.48).add(new THREE.Vector3(0, -0.10, 0)), end);
+      const solidCurve = new THREE.CubicBezierCurve3(
+        start,
+        start.clone().addScaledVector(exitDir, 0.03),
+        new THREE.Vector3(end.x, (start.y + end.y) * 0.5, end.z),
+        end
+      );
       for (let i = 0; i < 70; i++) {
         const fall = (time * 2.2 + i / 70) % 1;
         dummy.position.copy(solidCurve.getPoint(fall));

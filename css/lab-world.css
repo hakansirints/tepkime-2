@@ -297,6 +297,26 @@ body[data-panel-compact="true"] #app .lab-panel-footer { padding-top:5px; }
 .mebi-topbar,.mebi-topbar-tools { overflow:visible; }
 .lab-settings-wrap { position:relative; display:flex; }
 .lab-settings-trigger svg { width:20px; height:20px; }
+.lab-settings-trigger.gear-attention-highlight {
+  animation: gearAttentionPulse 1.2s ease-in-out infinite, gearWobble 2.2s ease-in-out infinite !important;
+  box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.75), 0 0 16px rgba(14, 165, 233, 0.6) !important;
+  border-color: #0284c7 !important;
+  color: #0284c7 !important;
+  transform-origin: center;
+  position: relative;
+  z-index: 50;
+}
+@keyframes gearAttentionPulse {
+  0% { box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.75), 0 0 12px rgba(14, 165, 233, 0.5); }
+  70% { box-shadow: 0 0 0 14px rgba(2, 132, 199, 0), 0 0 20px rgba(14, 165, 233, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(2, 132, 199, 0), 0 0 0 rgba(14, 165, 233, 0); }
+}
+@keyframes gearWobble {
+  0%, 100% { transform: rotate(0deg) scale(1.1); }
+  25% { transform: rotate(-30deg) scale(1.15); }
+  50% { transform: rotate(30deg) scale(1.15); }
+  75% { transform: rotate(-12deg) scale(1.12); }
+}
 .lab-settings-panel { position:absolute; z-index:120; top:calc(100% + 10px); right:-10px; width:min(280px,calc(100vw - 20px)); padding:11px 13px; color:var(--mebi-text-main); border:1px solid rgba(255,255,255,.58); border-radius:18px; background:rgba(247,250,247,.88); box-shadow:0 16px 45px rgba(24,39,31,.22),inset 0 1px rgba(255,255,255,.82); backdrop-filter:blur(24px) saturate(145%); -webkit-backdrop-filter:blur(24px) saturate(145%); }
 .lab-settings-panel[hidden] { display:none; }
 .lab-settings-heading { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }

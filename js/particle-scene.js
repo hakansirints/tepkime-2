@@ -37,24 +37,24 @@ function createIonLabelSprite(text) {
   if (typeof document === 'undefined' || !document.createElement) return null;
   const canvas = document.createElement('canvas');
   if (!canvas || !canvas.getContext) return null;
-  canvas.width = 512;
-  canvas.height = 256;
+  canvas.width = 768;
+  canvas.height = 384;
   const ctx = canvas.getContext('2d');
   if (!ctx || !ctx.fillText) return null;
-  ctx.clearRect(0, 0, 512, 256);
-  ctx.font = '500 58px "Plus Jakarta Sans", system-ui, sans-serif';
+  ctx.clearRect(0, 0, 768, 384);
+  ctx.font = '600 87px "Plus Jakarta Sans", system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#1e40af';
-  ctx.fillText(text, 256, 128);
+  ctx.fillText(text, 384, 192);
   const texture = new THREE.CanvasTexture(canvas);
   texture.minFilter = THREE.LinearFilter;
   const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false });
   const sprite = new THREE.Sprite(material);
   sprite.userData.isLabelSprite = true;
-  sprite.userData.baseScaleX = 1.05;
-  sprite.userData.baseScaleY = 0.52;
-  sprite.scale.set(1.05, 0.52, 1);
+  sprite.userData.baseScaleX = 1.575;
+  sprite.userData.baseScaleY = 0.78;
+  sprite.scale.set(1.575, 0.78, 1);
   return sprite;
 }
 

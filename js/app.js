@@ -42,6 +42,23 @@
 
   var HISTORY = [];
   var fillToken = 0;
+  function highlightSettingsGearOnce() {
+    try {
+      if (sessionStorage.getItem('mebi_settings_gear_highlighted')) return;
+      sessionStorage.setItem('mebi_settings_gear_highlighted', 'true');
+      setTimeout(function() {
+        var triggers = document.querySelectorAll('.lab-settings-trigger');
+        triggers.forEach(function(btn) {
+          btn.classList.add('gear-attention-highlight');
+        });
+        setTimeout(function() {
+          triggers.forEach(function(btn) {
+            btn.classList.remove('gear-attention-highlight');
+          });
+        }, 5000);
+      }, 450);
+    } catch (e) {}
+  }
   function enterPredictionScreen() {
     if (!S.selectedSlot1 || !S.selectedSlot2) return false;
     S.activeReaction = window.MebiData.getReaction(S.selectedSlot1, S.selectedSlot2);
@@ -59,6 +76,7 @@
     S.screen = 'lab';
     S.labView = 'desk';
     S.reagentPanelCollapsed = true;
+    highlightSettingsGearOnce();
     return true;
   }
   function finishSelection() {
@@ -152,6 +170,9 @@
         '</div></div>' +
       '</section></div>' : '';
       var toolsHTML = settingsHTML +
+        '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm mebi-btn-icon-only' + (S.screen === 'collection' ? ' is-active' : '') + '" data-action="goCollection" title="Tepkime Koleksiyonum (' + totalDiscovered + ')" aria-label="Tepkime Koleksiyonum">' +
+          '<span class="mebi-btn-badge">' + window.MebiSVG.icon('grid') + '</span>' +
+        '</button>' +
         '<button class="mebi-btn mebi-btn-secondary mebi-btn-sm mebi-btn-icon-only" data-action="openGuideDrawer" title="Laboratuvar Rehberi" aria-label="Rehber">' +
           '<span class="mebi-btn-badge">' + window.MebiSVG.icon('helpCircle') + '</span>' +
         '</button>';
@@ -1175,9 +1196,6 @@
         '<span class="cpk-smart-label">ATOM RENKLERİ:</span>' +
         cpkChipsHtml +
       '</div>' +
-      '<button type="button" class="cpk-drawer-btn" data-action="openAllCpkDrawer" title="Tüm standart CPK periyodik atom renklerini incele">' +
-        '<span>🎨 Tüm Renkler (CPK) ▾</span>' +
-      '</button>' +
     '</div>';
 
     // 3. İÇERİK BÖLÜMÜ
@@ -1581,18 +1599,6 @@
     window.addEventListener('pointercancel', onPointerUp);
   }
 
-  function checkSettingsHint() {
-    try {
-      if (sessionStorage.getItem('mebi_settings_hint_shown')) return;
-      sessionStorage.setItem('mebi_settings_hint_shown', 'true');
-      setTimeout(function() {
-        if (window.MebiUI && window.MebiUI.showToast) {
-          window.MebiUI.showToast('settings', 'Laboratuvar Ayarları', 'Buradan laboratuvar ortamının ayarlarını yapabilirsiniz.', 4000);
-        }
-      }, 700);
-    } catch (e) {}
-  }
-
   /* ----------------- 5. EYLEMLER VE YÖNLENDİRİCİ (ACTIONS & ROUTER) ----------------- */
   var actions = {
     toggleReagentPanel: function() {
@@ -1618,7 +1624,6 @@
         window.Mebi3DLab.setView('wide');
       }
       render();
-      checkSettingsHint();
     },
     changeReactants: function() {
       ++fillToken; S.isFilling = false;
@@ -1682,6 +1687,8 @@
       render(false);
     },
     toggleLabSettings: function() {
+      var triggers = document.querySelectorAll('.lab-settings-trigger');
+      triggers.forEach(function(btn) { btn.classList.remove('gear-attention-highlight'); });
       S.labSettingsOpen = !S.labSettingsOpen;
       render(false);
     },
@@ -2308,11 +2315,21 @@
       }
     },
     clearCollection: function() {
-      if (window.MebiAudio) window.MebiAudio.playClick();
-      S.collection = [];
-      saveCollectionToStorage();
-      window.MebiUI.showToast('info', 'Koleksiyon Sıfırlandı', 'Kayıtlı tüm deney kartları temizlendi.', 2500);
-      render();
+      function doClear() {
+        if (window.MebiAudio) window.MebiAudio.playClick();
+        S.collection = [];
+        saveCollectionToStorage();
+        render();
+        if (window.MebiUI && window.MebiUI.showToast) {
+          window.MebiUI.showToast('info', 'Koleksiyon Sıfırlandı', 'Kayıtlı tüm deney kartları temizlendi.', 2500);
+        }
+      }
+      if (window.MebiUI && window.MebiUI.openResetModal) {
+        window.MebiUI.openResetModal(S.collection.length, doClear);
+      } else {
+        var approved = typeof window.confirm === 'function' && window.confirm('Bu işlem keşfettiğiniz tüm tepkime kartlarını (' + S.collection.length + ' adet) ve mevcut laboratuvar deney ilerlemesini kalıcı olarak silecektir. Devam etmek istiyor musunuz?');
+        if (approved) doClear();
+      }
     },
     undoLast: function() {
       if (window.MebiAudio) window.MebiAudio.playClick();
