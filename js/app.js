@@ -2409,8 +2409,8 @@
     if (window.ParticleScene) window.ParticleScene.sync(S);
     wireInputs();
     wireDragAndDrop();
-    if (S.screen === 'pool' || S.screen === 'lab') {
-      checkSettingsHint();
+    if (S.screen === 'lab' && S.labStep === 'predict') {
+      highlightSettingsGearOnce();
     }
 
     if (scrollTop !== false) {
