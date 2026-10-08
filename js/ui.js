@@ -562,6 +562,67 @@
   /* ----------------- 6.5. ÖĞRENCİ BAŞLANGIÇ REHBERİ POP-UP KARTI ----------------- */
   var isWelcomeOpened = false;
 
+  /* ----------------- 6.6. MİNİMALİST SEKMELİ REHBER KARTI (ÖNERİ 3) ----------------- */
+  var currentWelcomeStep = 1;
+  var welcomeStepData = {
+    1: { pillText: '👁️ 1. Makroskobik Gözlem Seviyesi', pillClass: 'pill-makro' },
+    2: { pillText: '⚗️ 2. Sembolik & Hipotez Seviyesi', pillClass: 'pill-sembolik' },
+    3: { pillText: '👁️ 1. Makroskobik Gözlem Seviyesi', pillClass: 'pill-cyan' },
+    4: { pillText: '⚗️ 2. Sembolik Analiz Seviyesi', pillClass: 'pill-emerald' },
+    5: { pillText: '🔬 3. Alt-Mikroskobik Tanecik Boyutu', pillClass: 'pill-purple' }
+  };
+
+  function setWelcomeStep(stepNum) {
+    if (stepNum < 1) stepNum = 1;
+    if (stepNum > 5) stepNum = 5;
+    currentWelcomeStep = stepNum;
+
+    var tabs = document.querySelectorAll('.welcome-tab-btn');
+    for (var t = 0; t < tabs.length; t++) {
+      var tab = tabs[t];
+      var s = parseInt(tab.getAttribute('data-step'), 10);
+      if (s === currentWelcomeStep) {
+        tab.classList.add('tab-active');
+        tab.setAttribute('aria-selected', 'true');
+      } else {
+        tab.classList.remove('tab-active');
+        tab.setAttribute('aria-selected', 'false');
+      }
+    }
+
+    for (var i = 1; i <= 5; i++) {
+      var panel = document.getElementById('welcomeStep' + i);
+      if (panel) {
+        if (i === currentWelcomeStep) {
+          panel.classList.add('is-active');
+        } else {
+          panel.classList.remove('is-active');
+        }
+      }
+    }
+
+    var jPill = document.getElementById('welcomeJohnstonePill');
+    if (jPill && welcomeStepData[currentWelcomeStep]) {
+      jPill.textContent = welcomeStepData[currentWelcomeStep].pillText;
+      jPill.className = 'welcome-johnstone-pill ' + welcomeStepData[currentWelcomeStep].pillClass;
+    }
+
+    var counter = document.getElementById('welcomeStepCounter');
+    if (counter) counter.textContent = currentWelcomeStep + ' / 5';
+
+    var btnPrev = document.getElementById('btnWelcomePrev');
+    if (btnPrev) btnPrev.disabled = (currentWelcomeStep === 1);
+
+    var btnNext = document.getElementById('btnWelcomeNext');
+    if (btnNext) {
+      if (currentWelcomeStep === 5) {
+        btnNext.innerHTML = '<span>Başa Dön</span> ↺';
+      } else {
+        btnNext.innerHTML = '<span>Sonraki</span> →';
+      }
+    }
+  }
+
   function openWelcomeModal() {
     var overlay = document.getElementById('welcomeModalOverlay');
     var chk = document.getElementById('chkDoNotShowWelcome');
@@ -575,6 +636,7 @@
       }
     }
 
+    setWelcomeStep(1);
     isWelcomeOpened = true;
     overlay.classList.add('is-active');
     overlay.setAttribute('aria-hidden', 'false');
@@ -612,18 +674,45 @@
     // Öğrenci Başlangıç Rehberi Pop-up Kartı butonları
     var closeWelcomeBtn = document.getElementById('btnCloseWelcomeModal');
     var dismissWelcomeBtn = document.getElementById('btnDismissWelcomeModal');
-    var startWelcomeBtn = document.getElementById('btnStartFromWelcome');
     var welcomeOverlay = document.getElementById('welcomeModalOverlay');
     var chkWelcome = document.getElementById('chkDoNotShowWelcome');
 
     if (closeWelcomeBtn) closeWelcomeBtn.addEventListener('click', closeWelcomeModal);
     if (dismissWelcomeBtn) dismissWelcomeBtn.addEventListener('click', closeWelcomeModal);
-    if (startWelcomeBtn) {
-      startWelcomeBtn.addEventListener('click', function() {
-        closeWelcomeModal();
-        if (window.TepkimeArenasi && window.TepkimeArenasi.dispatch) {
-          window.TepkimeArenasi.dispatch('goPool');
+
+    // Sekme Butonları Dinleyicileri
+    var tabBtns = document.querySelectorAll('.welcome-tab-btn');
+    for (var b = 0; b < tabBtns.length; b++) {
+      (function(btn) {
+        btn.addEventListener('click', function() {
+          var s = parseInt(btn.getAttribute('data-step'), 10);
+          if (s) {
+            setWelcomeStep(s);
+            if (window.MebiAudio) window.MebiAudio.playHover();
+          }
+        });
+      })(tabBtns[b]);
+    }
+
+    // İleri / Geri Butonları
+    var btnPrev = document.getElementById('btnWelcomePrev');
+    var btnNext = document.getElementById('btnWelcomeNext');
+    if (btnPrev) {
+      btnPrev.addEventListener('click', function() {
+        if (currentWelcomeStep > 1) {
+          setWelcomeStep(currentWelcomeStep - 1);
+          if (window.MebiAudio) window.MebiAudio.playHover();
         }
+      });
+    }
+    if (btnNext) {
+      btnNext.addEventListener('click', function() {
+        if (currentWelcomeStep < 5) {
+          setWelcomeStep(currentWelcomeStep + 1);
+        } else {
+          setWelcomeStep(1);
+        }
+        if (window.MebiAudio) window.MebiAudio.playHover();
       });
     }
 

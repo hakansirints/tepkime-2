@@ -165,113 +165,205 @@
       <!-- Modal Üst Başlık (Header) -->
       <div class="welcome-modal-header">
         <div class="welcome-modal-title-wrap">
-          <div class="welcome-modal-icon-badge">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              <path d="M9 12l2 2 4-4"/>
-            </svg>
+          <div class="welcome-modal-icon-badge" aria-hidden="true">
+            🧪
           </div>
           <div>
-            <div class="welcome-modal-badge-row">
-              <span class="mebi-badge mebi-badge-cyan">LABORATUVAR REHBERİ</span>
-              <span class="welcome-modal-step-count">5 Adımda Deney Akışı</span>
-            </div>
-            <h3 class="welcome-modal-title" id="welcomeModalTitle">Tepkime Arenası'na Hoş Geldin!</h3>
+            <h3 class="welcome-modal-title" id="welcomeModalTitle">Laboratuvar Rehberi</h3>
+            <p class="welcome-modal-subtitle">Minimalist sekmeli tur: Odaklı ve taşmasız deney akışı</p>
           </div>
         </div>
         <button type="button" class="welcome-modal-close-btn" id="btnCloseWelcomeModal" title="Kapat" aria-label="Rehberi Kapat">✕</button>
       </div>
 
-      <!-- Modal Gövdesi (Body - Öneri 1: Kompakt Yatay Süreç Hattı & Johnstone Üçgeni) -->
+      <!-- Modal Gövdesi (Body - Öneri 3: Minimalist Etkileşimli Sekmeli Kart) -->
       <div class="welcome-modal-body" id="welcomeModalBody">
-        <!-- Giriş ve Amaç Özeti -->
-        <div class="welcome-intro-box">
-          <span class="welcome-intro-icon">💡</span>
-          <div class="welcome-intro-text">
-            12 kimyasal maddeyi seçip deney masasında karıştırarak gaz çıkışı, çökelti, renk ve sıcaklık değişimini gözlemle ve 3B tanecik kamerasıyla moleküler dünyayı keşfet:
-          </div>
+        
+        <!-- 5'li Sekme Çubuğu (Segmented Step Controller) -->
+        <div class="welcome-tabs-track" role="tablist" aria-label="Rehber Adımları">
+          <button type="button" class="welcome-tab-btn tab-active" data-step="1" role="tab" aria-selected="true">
+            <span class="tab-num">1</span>
+            <span class="tab-text">Maddeler</span>
+          </button>
+          <button type="button" class="welcome-tab-btn" data-step="2" role="tab" aria-selected="false">
+            <span class="tab-num">2</span>
+            <span class="tab-text">Tahmin</span>
+          </button>
+          <button type="button" class="welcome-tab-btn" data-step="3" role="tab" aria-selected="false">
+            <span class="tab-num">3</span>
+            <span class="tab-text">Dök & Karıştır</span>
+          </button>
+          <button type="button" class="welcome-tab-btn" data-step="4" role="tab" aria-selected="false">
+            <span class="tab-num">4</span>
+            <span class="tab-text">Gözlem</span>
+          </button>
+          <button type="button" class="welcome-tab-btn" data-step="5" role="tab" aria-selected="false">
+            <span class="tab-num">5</span>
+            <span class="tab-text">3B Tanecik</span>
+          </button>
         </div>
 
-        <!-- 5 Adımlı Yatay Süreç Akışı (Interactive Stepper Track) -->
-        <div class="welcome-stepper-track">
-          <div class="welcome-step-chip">
-            <div class="chip-step-badge step-1">1</div>
-            <div class="chip-content">
-              <div class="chip-title"><span class="chip-emoji">🧪</span> 1. Maddeleri Seç</div>
-              <div class="chip-desc">12 kimyasaldan 2'sini 1. ve 2. behere koy.</div>
-            </div>
-          </div>
-          <div class="chip-arrow" aria-hidden="true">➔</div>
-
-          <div class="welcome-step-chip">
-            <div class="chip-step-badge step-2">2</div>
-            <div class="chip-content">
-              <div class="chip-title"><span class="chip-emoji">🎯</span> 2. Değişimi Tahmin Et</div>
-              <div class="chip-desc">Gaz, çökelti, renk veya sıcaklığı öngör.</div>
-            </div>
-          </div>
-          <div class="chip-arrow" aria-hidden="true">➔</div>
-
-          <div class="welcome-step-chip">
-            <div class="chip-step-badge step-3">3</div>
-            <div class="chip-content">
-              <div class="chip-title"><span class="chip-emoji">🫗</span> 3. Dök ve Karıştır</div>
-              <div class="chip-desc">Sağdaki beheri sürükle veya butona tıkla.</div>
-            </div>
-          </div>
-          <div class="chip-arrow" aria-hidden="true">➔</div>
-
-          <div class="welcome-step-chip">
-            <div class="chip-step-badge step-4">4</div>
-            <div class="chip-content">
-              <div class="chip-title"><span class="chip-emoji">🌡️</span> 4. Belirtileri İzle</div>
-              <div class="chip-desc">Sıcaklığı takip et, raporla tepkime türünü bul.</div>
-            </div>
-          </div>
-          <div class="chip-arrow" aria-hidden="true">➔</div>
-
-          <div class="welcome-step-chip">
-            <div class="chip-step-badge step-5">5</div>
-            <div class="chip-content">
-              <div class="chip-title"><span class="chip-emoji">🔬</span> 5. 3B Kamerayı İncele</div>
-              <div class="chip-desc">İyon kılıflarını ve kristal örgüleri 3B gör.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Johnstone Kimya Üçgeni Kompakt 3'lü Bilgi Hattı -->
-        <div class="welcome-johnstone-compact">
-          <div class="johnstone-compact-title">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+        <!-- Adım 1 Paneli -->
+        <div class="welcome-step-card is-active" id="welcomeStep1" role="tabpanel">
+          <div class="welcome-step-illus">
+            <svg viewBox="0 0 100 80" class="welcome-illus-svg" aria-hidden="true">
+              <rect x="15" y="25" width="28" height="42" rx="4" fill="none" stroke="#0284c7" stroke-width="2.5"/>
+              <path d="M16 48 Q29 45 42 48 L42 63 Q29 65 16 63 Z" fill="#0284c7" opacity="0.35"/>
+              <rect x="57" y="25" width="28" height="42" rx="4" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+              <path d="M58 52 Q71 50 84 52 L84 63 Q71 65 58 63 Z" fill="#f59e0b" opacity="0.35"/>
+              <text x="29" y="38" font-size="7.5" font-weight="bold" text-anchor="middle" fill="#0284c7">1. Beher</text>
+              <text x="71" y="38" font-size="7.5" font-weight="bold" text-anchor="middle" fill="#d97706">2. Beher</text>
             </svg>
-            <span>Johnstone Kimya Üçgeni:</span>
           </div>
-          <div class="johnstone-compact-grid">
-            <div class="johnstone-pill">
-              <span class="johnstone-pill-badge">1. Makroskobik</span>
-              <span class="johnstone-pill-text">Deney masası, renk, çökelti ve sıcaklık</span>
+          <div class="welcome-step-text">
+            <div class="welcome-step-heading">
+              <span class="welcome-step-badge bg-sky">1</span>
+              <h4 class="welcome-step-title">1. Maddeleri Seç ve Beherlere Yerleştir</h4>
             </div>
-            <div class="johnstone-pill">
-              <span class="johnstone-pill-badge">2. Sembolik</span>
-              <span class="johnstone-pill-text">Formüller, tepkime türü ve denklemler</span>
-            </div>
-            <div class="johnstone-pill">
-              <span class="johnstone-pill-badge">3. Alt-Mikroskobik</span>
-              <span class="johnstone-pill-text">3B atomlar, solvatasyon ve kristal kafes</span>
+            <p class="welcome-step-desc">
+              Soldaki madde panelinde yer alan <b>12 farklı kimyasal reaktif</b> arasından denemek istediğin iki tanesini seç. İlk seçim 1. behere (sabit), ikinci seçim ise 2. behere (hareketli) doldurulur.
+            </p>
+            <div class="welcome-tip-box">
+              💡 <b>Öğretmen İpucu:</b> Asit-baz nötralleşmesi veya çökelme tepkimesi gözlemlemek için farklı kategorideki maddeleri eşleştirebilirsin.
             </div>
           </div>
         </div>
+
+        <!-- Adım 2 Paneli -->
+        <div class="welcome-step-card" id="welcomeStep2" role="tabpanel">
+          <div class="welcome-step-illus">
+            <svg viewBox="0 0 100 80" class="welcome-illus-svg" aria-hidden="true">
+              <rect x="15" y="15" width="70" height="50" rx="8" fill="none" stroke="#f59e0b" stroke-width="2"/>
+              <circle cx="32" cy="35" r="8" fill="#f59e0b" opacity="0.2"/>
+              <text x="32" y="38" font-size="10" text-anchor="middle">💨</text>
+              <circle cx="50" cy="35" r="8" fill="#10b981" opacity="0.2"/>
+              <text x="50" y="38" font-size="10" text-anchor="middle">🧱</text>
+              <circle cx="68" cy="35" r="8" fill="#8b5cf6" opacity="0.2"/>
+              <text x="68" y="38" font-size="10" text-anchor="middle">🎨</text>
+              <text x="50" y="55" font-size="7" font-weight="bold" text-anchor="middle" fill="#d97706">Tahmin Çipleri</text>
+            </svg>
+          </div>
+          <div class="welcome-step-text">
+            <div class="welcome-step-heading">
+              <span class="welcome-step-badge bg-amber">2</span>
+              <h4 class="welcome-step-title">2. Reaksiyon Belirtilerini Tahmin Et</h4>
+            </div>
+            <p class="welcome-step-desc">
+              Maddeleri karıştırmadan önce; reaksiyonda <b>gaz çıkışı</b>, <b>çökelti (katı) oluşumu</b>, <b>renk değişimi</b> veya <b>sıcaklık artışı</b> olup olmayacağını tahmin çipleriyle işaretle.
+            </p>
+            <div class="welcome-tip-box">
+              💡 <b>Öğretmen İpucu:</b> Bilimsel yöntemin en kritik adımı hipotez kurmaktır. Tahminlerin deney sonunda otomatik değerlendirilir.
+            </div>
+          </div>
+        </div>
+
+        <!-- Adım 3 Paneli -->
+        <div class="welcome-step-card" id="welcomeStep3" role="tabpanel">
+          <div class="welcome-step-illus">
+            <svg viewBox="0 0 100 80" class="welcome-illus-svg" aria-hidden="true">
+              <rect x="20" y="30" width="30" height="42" rx="4" fill="none" stroke="#0284c7" stroke-width="2"/>
+              <path d="M60 20 L78 35 L68 45 L50 30 Z" fill="none" stroke="#f59e0b" stroke-width="2"/>
+              <path d="M50 30 Q40 40 35 55" stroke="#f59e0b" stroke-width="3" stroke-dasharray="3 2" fill="none"/>
+              <circle cx="35" cy="62" r="3" fill="#0284c7"/>
+              <text x="75" y="65" font-size="7" font-weight="bold" fill="#0284c7">Sürükle / Dök</text>
+            </svg>
+          </div>
+          <div class="welcome-step-text">
+            <div class="welcome-step-heading">
+              <span class="welcome-step-badge bg-cyan">3</span>
+              <h4 class="welcome-step-title">3. Beheri Dök ve Karışımı Başlat</h4>
+            </div>
+            <p class="welcome-step-desc">
+              Sağdaki 2. beheri farenle tutup 1. beherin ağzına sürükleyip bırak veya alt çubuktaki <b>"Beheri Dök"</b> butonuna tıkla. Sıvı pürüzsüzce akarken reaksiyon başlar.
+            </p>
+            <div class="welcome-tip-box">
+              💡 <b>Öğretmen İpucu:</b> Dokunmatik cihazlarda beheri tek tıkla dökebilir veya parmağınla gerçek bir laboratuvardaymış gibi eğebilirsin.
+            </div>
+          </div>
+        </div>
+
+        <!-- Adım 4 Paneli -->
+        <div class="welcome-step-card" id="welcomeStep4" role="tabpanel">
+          <div class="welcome-step-illus">
+            <svg viewBox="0 0 100 80" class="welcome-illus-svg" aria-hidden="true">
+              <rect x="25" y="15" width="50" height="52" rx="6" fill="none" stroke="#10b981" stroke-width="2"/>
+              <rect x="32" y="22" width="36" height="12" rx="3" fill="#10b981" opacity="0.15"/>
+              <text x="50" y="31" font-size="7.5" font-weight="bold" fill="#059669" text-anchor="middle">24.5°C ➔ 38.2°C</text>
+              <line x1="32" y1="42" x2="68" y2="42" stroke="#10b981" stroke-width="1.5"/>
+              <line x1="32" y1="50" x2="58" y2="50" stroke="#10b981" stroke-width="1.5"/>
+              <text x="50" y="62" font-size="6" font-weight="bold" fill="#059669" text-anchor="middle">Tepkime Raporu</text>
+            </svg>
+          </div>
+          <div class="welcome-step-text">
+            <div class="welcome-step-heading">
+              <span class="welcome-step-badge bg-emerald">4</span>
+              <h4 class="welcome-step-title">4. Belirtileri İzle ve Raporu Doldur</h4>
+            </div>
+            <p class="welcome-step-desc">
+              Sağ dock panelinde canlı sıcaklık değişimini (ekzotermik/endotermik) ve oluşan çökelti/gaz belirtilerini izle. Doğru tespitlerle tepkime türünü belirleyerek rozeti kazan.
+            </p>
+            <div class="welcome-tip-box">
+              💡 <b>Öğretmen İpucu:</b> Tahminin doğruysa doğrudan "Rapor Aşamasına Geç" açılır; eksikse "Tahmini Tekrarla" ile bilgin pekiştirilir.
+            </div>
+          </div>
+        </div>
+
+        <!-- Adım 5 Paneli -->
+        <div class="welcome-step-card" id="welcomeStep5" role="tabpanel">
+          <div class="welcome-step-illus">
+            <svg viewBox="0 0 100 80" class="welcome-illus-svg" aria-hidden="true">
+              <circle cx="50" cy="40" r="14" fill="#8b5cf6" opacity="0.2" stroke="#8b5cf6" stroke-width="1.5"/>
+              <circle cx="50" cy="40" r="7" fill="#8b5cf6"/>
+              <circle cx="30" cy="30" r="4" fill="#06b6d4"/>
+              <circle cx="70" cy="50" r="4" fill="#06b6d4"/>
+              <circle cx="68" cy="28" r="3" fill="#10b981"/>
+              <circle cx="32" cy="52" r="3" fill="#10b981"/>
+              <text x="50" y="68" font-size="6.5" font-weight="bold" fill="#6d28d9" text-anchor="middle">Solvatasyon / Kristal</text>
+            </svg>
+          </div>
+          <div class="welcome-step-text">
+            <div class="welcome-step-heading">
+              <span class="welcome-step-badge bg-purple">5</span>
+              <h4 class="welcome-step-title">5. 3B Tanecik Kamerasında Atomları İncele</h4>
+            </div>
+            <p class="welcome-step-desc">
+              <b>"TEPKENLER"</b> ve <b>"ÜRÜNLER"</b> sekmelerinde iyonların etrafındaki su moleküllerinin kılıfını (solvasyon), çöken katıların kristal kafes örgülerini 3 boyutlu olarak keşfet.
+            </p>
+            <div class="welcome-tip-box">
+              💡 <b>Öğretmen İpucu:</b> Johnstone Kimya Üçgeninin zirvesi alt-mikroskobik boyuttur. Gözle göremediğin atomik etkileşimleri burada canlandırabilirsin.
+            </div>
+          </div>
+        </div>
+
+        <!-- Alt Kontrol Hattı: Johnstone Boyutu Rozeti & İleri/Geri Navigasyon -->
+        <div class="welcome-stepper-ctrl-bar">
+          <div class="welcome-johnstone-tag-wrap">
+            <span class="welcome-johnstone-label">JOHNSTONE BOYUTU:</span>
+            <div class="welcome-johnstone-pill pill-makro" id="welcomeJohnstonePill">
+              👁️ 1. Makroskobik Gözlem Seviyesi
+            </div>
+          </div>
+          <div class="welcome-step-nav-wrap">
+            <button type="button" class="welcome-nav-btn welcome-nav-prev" id="btnWelcomePrev" disabled>
+              ← Önceki
+            </button>
+            <span class="welcome-step-counter" id="welcomeStepCounter">1 / 5</span>
+            <button type="button" class="welcome-nav-btn welcome-nav-next" id="btnWelcomeNext">
+              <span>Sonraki</span> →
+            </button>
+          </div>
+        </div>
+
       </div>
 
       <!-- Modal Alt Çubuk (Footer) -->
       <div class="welcome-modal-footer">
         <label class="welcome-modal-dont-show">
           <input type="checkbox" id="chkDoNotShowWelcome">
-          <span>Bir sonraki açılışta bu kartı otomatik gösterme</span>
+          <span>Bir daha otomatik gösterme</span>
         </label>
         <div class="welcome-modal-buttons">
-          <button type="button" class="mebi-btn mebi-btn-secondary mebi-btn-sm" id="btnDismissWelcomeModal">
+          <button type="button" class="mebi-btn welcome-btn-close-footer" id="btnDismissWelcomeModal">
             <span>Rehberi Kapat</span>
           </button>
         </div>
